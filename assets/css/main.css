@@ -1,4 +1,7 @@
 * { box-sizing: border-box; }
+p{
+	line-height: 1.5;
+}
 :root {
 	--red: #b3000a;
 	--red-dark: #7a0006;
@@ -72,6 +75,7 @@ ul { padding-left: 20px; margin: 0; }
 	background: #ffffff;
 	z-index: 10;
 	border-bottom: 1px solid #f0f0f0;
+	box-shadow: 1px 4px 6px rgba(0, 0, 0, 0.1);
 }
 .nav {
 	display: flex;
@@ -87,9 +91,7 @@ ul { padding-left: 20px; margin: 0; }
 	font-weight: 700;
 }
 .logo-img {
-	width: 48px;
-	height: 48px;
-	object-fit: contain;
+	width: 120PX;
 }
 .logo-text span {
 	font-size: 18px;
@@ -299,8 +301,11 @@ input, select {
 	box-shadow: 0 24px 50px rgba(17, 19, 24, 0.12);
 }
 .course__image {
-	height: 180px;
+	height: 250px;
 	background: #f3f3f3 center/cover no-repeat;
+}
+.course__body{
+	padding: 20px;
 }
 .course-img-equipos { background-image: url("/assets/img/03_EQUIPOS_MOVILES.png"); }
 .course-img-altura { background-image: url("/assets/img/02_TRABAJO_EN_ALTURA.png"); }

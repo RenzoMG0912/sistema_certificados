@@ -440,7 +440,7 @@ input, select {
 	width: 100%;
 	font-size: 6em;
 	text-align: center;
-	color: var(--red);
+	color: #b3000a;
 }
 .card{
 	text-align: center;
@@ -463,4 +463,26 @@ input, select {
 .center{
 	text-align: center;
 	justify-content: center;
+}
+.footer-copy{
+	background-color: #111318;
+	padding: 10px 0;
+	text-align: center;
+	color: #f3f3f3;
+	font-size: 12px;
+}
+.feature{
+	padding: 60px 0;
+	background-color: #fff;
+	box-shadow: 20px 40px 60px rgba(17, 19, 24, 0.08);
+}
+.img-cip{
+	width: 100%;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.img-cip img{
+	width: 200px;
 }

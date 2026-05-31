@@ -250,6 +250,7 @@ ul { padding-left: 20px; margin: 0; }
 	align-items: center;
 }
 .features { display: grid; gap: 16px; margin-top: 20px; }
+.mt-24 { margin-top: 24px; }
 .feature {
 	background: #ffffff;
 	padding: 16px 18px;
@@ -299,14 +300,17 @@ input, select {
 }
 .course__image {
 	height: 180px;
-	background: url("https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80") center/cover;
+	background: #f3f3f3 center/cover no-repeat;
 }
-.course__image.alt {
-	background-image: url("https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=1200&q=80");
-}
-.course__image.alt2 {
-	background-image: url("https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80");
-}
+.course-img-equipos { background-image: url("/assets/img/03_EQUIPOS_MOVILES.png"); }
+.course-img-altura { background-image: url("/assets/img/02_TRABAJO_EN_ALTURA.png"); }
+.course-img-emergencias { background-image: url("/assets/img/01_RESPUESTA_A_EMERGENCIAS.png"); }
+.course-img-quimicas { background-image: url("/assets/img/09_SUSTANCIAS_QUIMICAS.png"); }
+.course-img-herramientas { background-image: url("/assets/img/08_HERRAMIENTAS_MANUALES.png"); }
+.course-img-incendio { background-image: url("/assets/img/07_INCENDIO_Y_EXPLOSION.png"); }
+.course-img-izaje { background-image: url("/assets/img/06_ELEVACION_IZAJE.png"); }
+.course-img-electrica { background-image: url("/assets/img/05_SEGURIDAD_ELECTRICA.png"); }
+.course-img-bloqueo { background-image: url("/assets/img/04_AISLAMIENTO_Y_BLOQUEO.png"); }
 .course__body { padding: 20px; display: grid; gap: 10px; }
 
 .certs {
@@ -341,6 +345,50 @@ input, select {
 	flex-wrap: wrap;
 	margin-top: 16px;
 }
+.search__help {
+	margin: 6px 0 0;
+	color: var(--muted);
+}
+.results {
+	margin-top: 18px;
+	display: grid;
+	gap: 10px;
+}
+.result {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 14px;
+	border-radius: 10px;
+	border: 1px solid #f0e0b9;
+	color: var(--ink);
+	background: #fff;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.result:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow);
+}
+.result__name {
+	font-weight: 600;
+}
+.result__view {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 12px;
+	border-radius: 999px;
+	border: 1px solid #f0e0b9;
+	color: var(--red);
+	background: #fff;
+}
+.result__icon {
+	font-size: 16px;
+}
+.results__empty {
+	color: var(--muted);
+}
 
 .footer {
 	background: #ffffff;
@@ -355,11 +403,15 @@ input, select {
 }
 
 .reveal {
+	opacity: 1;
+	transform: translateY(0);
+}
+.js-enabled .reveal {
 	opacity: 0;
 	transform: translateY(18px);
 	transition: opacity 0.5s ease, transform 0.5s ease;
 }
-.reveal.is-visible {
+.js-enabled .reveal.is-visible {
 	opacity: 1;
 	transform: translateY(0);
 }

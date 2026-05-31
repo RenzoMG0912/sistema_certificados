@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS participantes (
+  id SERIAL PRIMARY KEY,
+  nombres VARCHAR(150) NOT NULL,
+  dni VARCHAR(20) NOT NULL UNIQUE,
+  email VARCHAR(150),
+  created_at TIMESTAMP DEFAULT NOW()
+);

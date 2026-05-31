@@ -364,6 +364,21 @@ input, select {
 	display: grid;
 	gap: 10px;
 }
+.result-group {
+	border: 1px solid #f0e0b9;
+	border-radius: 12px;
+	padding: 12px;
+	background: #fff;
+}
+.result-group__title {
+	font-weight: 700;
+	color: var(--red);
+	margin-bottom: 10px;
+}
+.result-group__list {
+	display: grid;
+	gap: 10px;
+}
 .result {
 	display: flex;
 	align-items: center;
@@ -382,6 +397,11 @@ input, select {
 }
 .result__name {
 	font-weight: 600;
+}
+.result__info {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
 }
 .result__view {
 	display: inline-flex;

@@ -3,17 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buscar certificado</title>
+  <title>TEAM HSEC | Certificados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" type="image/x-icon" href="img/favicon_teamhsec.ico">
 </head>
 <body>
-  <main class="page">
-    <h1>Buscar certificado</h1>
-    <form class="card">
-      <input type="text" placeholder="Código de certificado">
-      <input type="text" placeholder="DNI">
-      <button type="submit">Buscar</button>
-    </form>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo">
+        <img class="logo-img" src="img/logo_teamhsec.png" alt="TEAM HSEC">
+        <div class="logo-text">
+          <h2>TEAM HSEC</h2>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="/">Inicio</a>
+        <a href="/#nosotros">Nosotros</a>
+        <a href="/#cursos">Cursos</a>
+        <a class="active" href="/certificados.html">Certificados</a>
+        <a href="/#contacto">Contacto</a>
+      </nav>
+      <div class="nav-actions"></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="certificados">
+      <div class="container">
+        <div class="section__header">
+          <h2>Nuestros certificados</h2>
+          <div class="section__bar"></div>
+        </div>
+        <div class="certs">
+          <div class="cert">
+            <h4>Certificado digital</h4>
+            <p>Accede a tu certificado en PDF listo para compartir.</p>
+          </div>
+          <div class="cert">
+            <h4>Certificado fisico</h4>
+            <p>Documento impreso con acabados profesionales.</p>
+          </div>
+          <div class="cert">
+            <h4>Reconocimiento profesional</h4>
+            <p>Validacion respaldada por instructores expertos.</p>
+          </div>
+        </div>
+        <form class="search" id="cert-search">
+          <h3>Buscar certificado</h3>
+          <p class="search__help">Filtra por curso y luego escribe el apellido para refinar resultados.</p>
+          <div class="search__fields">
+            <select id="course-filter" aria-label="Curso">
+              <option value="">Seleccionar curso</option>
+            </select>
+            <input id="lastname-filter" type="text" placeholder="Apellido">
+            <button class="button primary" type="submit">Buscar</button>
+          </div>
+          <div class="results" id="cert-results"></div>
+        </form>
+      </div>
+    </section>
   </main>
+
+  <footer class="footer" id="contacto">
+    <div class="container footer__content">
+      <div>
+        <strong>TEAM HSEC</strong>
+        <p>Formacion profesional que impulsa tu carrera.</p>
+      </div>
+      <div>
+        <p>Contacto</p>
+        <p>contacto@teamhsec.com</p>
+        <p>+51 992 809 049</p>
+      </div>
+      <div>
+        <p>Direccion</p>
+        <p>Mza. C Lote. 21 Dpto. Lima, Ate - Peru</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/app.js" defer></script>
 </body>
 </html>

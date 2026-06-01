@@ -113,124 +113,234 @@ const initPage = () => {
     revealAll();
   }
 
+  const courseData = {
+    'respuesta-emergencias': {
+      title: 'Respuesta a emergencias',
+      duration: '2 horas',
+      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
+      summary:
+        'Capacitacion orientada a preparar al personal para actuar correctamente ante emergencias, evacuaciones, incidentes y situaciones de riesgo dentro de operaciones mineras e industriales.',
+    },
+    'trabajo-altura': {
+      title: 'Trabajo en altura y plataforma elevada',
+      duration: '4 horas',
+      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
+      summary:
+        'Curso enfocado en el uso seguro de trabajos en altura, lineas de vida, arneses y plataformas elevadas, reduciendo riesgos de caidas y accidentes laborales.',
+    },
+    'equipos-moviles': {
+      title: 'Equipos moviles / Manejo de llantas',
+      duration: '2 horas',
+      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
+      summary:
+        'Capacitacion sobre operacion segura de equipos moviles y procedimientos adecuados para el manejo y cambio de llantas en entornos mineros.',
+    },
+    'aislamiento-bloqueo': {
+      title: 'Aislamiento y bloqueo',
+      duration: '3 horas',
+      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
+      summary:
+        'Curso disenado para aplicar procedimientos LOTO (Lockout/Tagout), asegurando el aislamiento de energias peligrosas durante mantenimientos y reparaciones.',
+    },
+    'seguridad-electrica': {
+      title: 'Seguridad electrica',
+      duration: '3 horas',
+      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
+      summary:
+        'Capacitacion enfocada en la prevencion de accidentes electricos, identificacion de riesgos y aplicacion de medidas de proteccion en trabajos electricos.',
+    },
+    'elevacion-izaje': {
+      title: 'Elevacion / izaje de cargas',
+      duration: '2 horas',
+      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
+      summary:
+        'Curso orientado al manejo seguro de maniobras de izaje, uso de accesorios y control de cargas para prevenir incidentes operacionales.',
+    },
+    'incendio-explosion': {
+      title: 'Incendio y explosion',
+      duration: '2 horas',
+      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
+      summary:
+        'Capacitacion sobre prevencion, control y respuesta ante incendios y explosiones en areas industriales y mineras.',
+    },
+    'herramientas-manuales': {
+      title: 'Herramientas manuales y de poder',
+      duration: '2 horas',
+      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
+      summary:
+        'Curso enfocado en el uso seguro, inspeccion y mantenimiento basico de herramientas manuales y electricas utilizadas en operaciones industriales.',
+    },
+    'sustancias-quimicas': {
+      title: 'Sustancias quimicas',
+      duration: '2 horas',
+      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
+      summary:
+        'Capacitacion para la manipulacion segura de sustancias quimicas, lectura de hojas MSDS y control de riesgos quimicos en el trabajo.',
+    },
+  };
+
+  const courseModal = document.getElementById('course-modal');
+  if (courseModal) {
+    const titleEl = document.getElementById('modal-title');
+    const durationEl = document.getElementById('modal-duration');
+    const trainerEl = document.getElementById('modal-trainer');
+    const summaryEl = document.getElementById('modal-summary');
+
+    const openCourseModal = (data) => {
+      if (!data) {
+        return;
+      }
+      titleEl.textContent = data.title;
+      durationEl.textContent = data.duration;
+      trainerEl.textContent = data.trainer;
+      summaryEl.textContent = data.summary;
+      courseModal.classList.add('is-open');
+      courseModal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+    };
+
+    const closeCourseModal = () => {
+      courseModal.classList.remove('is-open');
+      courseModal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+    };
+
+    document.querySelectorAll('[data-course]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const key = button.dataset.course || '';
+        openCourseModal(courseData[key]);
+      });
+    });
+
+    courseModal.addEventListener('click', (event) => {
+      if (event.target.closest('[data-modal-close]')) {
+        closeCourseModal();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && courseModal.classList.contains('is-open')) {
+        closeCourseModal();
+      }
+    });
+  }
+
   const courseSelect = document.getElementById('course-filter');
   const lastNameInput = document.getElementById('lastname-filter');
   const results = document.getElementById('cert-results');
   let certData = [];
 
-  if (!courseSelect || !lastNameInput || !results) {
-    return;
-  }
-
-  const renderResults = (items, courseOrder) => {
-    if (!items.length) {
-      results.innerHTML = '<p class="results__empty">Sin resultados.</p>';
-      return;
-    }
-
-    const grouped = courseOrder
-      .map((course) => ({
-        course,
-        items: items
-          .filter((item) => item.course === course)
-          .sort((a, b) => a.file.localeCompare(b.file, 'es', { sensitivity: 'base' })),
-      }))
-      .filter((group) => group.items.length);
-
-    results.innerHTML = grouped
-      .map((group) => {
-        const rows = group.items
-          .map((item) => {
-            const name = item.file.replace(/\.pdf$/i, '');
-            const href = `/certificados/${encodeURIComponent(item.course)}/${encodeURIComponent(item.file)}`;
-            return `
-              <div class="result">
-                <div class="result__info">
-                  <span class="result__name">${name}</span>
-                </div>
-                <a class="result__view" href="${href}" target="_blank" rel="noopener" aria-label="Ver certificado">
-                  <span class="result__icon">&#128065;</span>
-                  Ver
-                </a>
-              </div>
-            `;
-          })
-          .join('');
-        return `
-          <div class="result-group">
-            <div class="result-group__title">${group.course}</div>
-            <div class="result-group__list">${rows}</div>
-          </div>
-        `;
-      })
-      .join('');
-  };
-
-  const applyFilters = () => {
-    const courseName = courseSelect.value;
-    const lastName = lastNameInput.value.trim().toLowerCase();
-
-    const items = certData.flatMap((course) =>
-      course.files.map((file) => ({
-        course: course.name,
-        file,
-      }))
-    );
-
-    const filtered = items.filter((item) => {
-      const matchesCourse = !courseName || item.course === courseName;
-      const matchesLast = item.file.toLowerCase().includes(lastName);
-      return matchesCourse && matchesLast;
-    });
-
-    const order = certData.map((course) => course.name);
-    renderResults(filtered, order);
-  };
-
-  document.getElementById('cert-search').addEventListener('submit', (event) => {
-    event.preventDefault();
-    applyFilters();
-  });
-
-  lastNameInput.addEventListener('input', applyFilters);
-  courseSelect.addEventListener('change', applyFilters);
-
-  const certIndexUrl = window.location.protocol === 'file:'
-    ? 'certificados/index.json'
-    : new URL('/certificados/index.json', window.location.origin).toString();
-
-  results.innerHTML = '<p class="results__empty">Cargando certificados...</p>';
-
-  fetch(certIndexUrl, { cache: 'no-store' })
-    .then(async (response) => {
-      const text = await response.text();
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status} - ${text.slice(0, 120)}`);
-      }
-      try {
-        return JSON.parse(text);
-      } catch (error) {
-        throw new Error('JSON invalido');
-      }
-    })
-    .then((data) => {
-      certData = data.courses || [];
-      if (!certData.length) {
-        results.innerHTML = '<p class="results__empty">No hay cursos en el indice.</p>';
+  if (courseSelect && lastNameInput && results) {
+    const renderResults = (items, courseOrder) => {
+      if (!items.length) {
+        results.innerHTML = '<p class="results__empty">Sin resultados.</p>';
         return;
       }
-      certData.forEach((course) => {
-        const option = document.createElement('option');
-        option.value = course.name;
-        option.textContent = course.name;
-        courseSelect.appendChild(option);
+
+      const grouped = courseOrder
+        .map((course) => ({
+          course,
+          items: items
+            .filter((item) => item.course === course)
+            .sort((a, b) => a.file.localeCompare(b.file, 'es', { sensitivity: 'base' })),
+        }))
+        .filter((group) => group.items.length);
+
+      results.innerHTML = grouped
+        .map((group) => {
+          const rows = group.items
+            .map((item) => {
+              const name = item.file.replace(/\.pdf$/i, '');
+              const href = `/certificados/${encodeURIComponent(item.course)}/${encodeURIComponent(item.file)}`;
+              return `
+                <div class="result">
+                  <div class="result__info">
+                    <span class="result__name">${name}</span>
+                  </div>
+                  <a class="result__view" href="${href}" target="_blank" rel="noopener" aria-label="Ver certificado">
+                    <span class="result__icon">&#128065;</span>
+                    Ver
+                  </a>
+                </div>
+              `;
+            })
+            .join('');
+          return `
+            <div class="result-group">
+              <div class="result-group__title">${group.course}</div>
+              <div class="result-group__list">${rows}</div>
+            </div>
+          `;
+        })
+        .join('');
+    };
+
+    const applyFilters = () => {
+      const courseName = courseSelect.value;
+      const lastName = lastNameInput.value.trim().toLowerCase();
+
+      const items = certData.flatMap((course) =>
+        course.files.map((file) => ({
+          course: course.name,
+          file,
+        }))
+      );
+
+      const filtered = items.filter((item) => {
+        const matchesCourse = !courseName || item.course === courseName;
+        const matchesLast = item.file.toLowerCase().includes(lastName);
+        return matchesCourse && matchesLast;
       });
-      courseSelect.value = '';
+
+      const order = certData.map((course) => course.name);
+      renderResults(filtered, order);
+    };
+
+    document.getElementById('cert-search').addEventListener('submit', (event) => {
+      event.preventDefault();
       applyFilters();
-    })
-    .catch((error) => {
-      results.innerHTML = `<p class="results__empty">No se pudo cargar la lista de certificados. ${error.message}</p>`;
     });
+
+    lastNameInput.addEventListener('input', applyFilters);
+    courseSelect.addEventListener('change', applyFilters);
+
+    const certIndexUrl = window.location.protocol === 'file:'
+      ? 'certificados/index.json'
+      : new URL('/certificados/index.json', window.location.origin).toString();
+
+    results.innerHTML = '<p class="results__empty">Cargando certificados...</p>';
+
+    fetch(certIndexUrl, { cache: 'no-store' })
+      .then(async (response) => {
+        const text = await response.text();
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} - ${text.slice(0, 120)}`);
+        }
+        try {
+          return JSON.parse(text);
+        } catch (error) {
+          throw new Error('JSON invalido');
+        }
+      })
+      .then((data) => {
+        certData = data.courses || [];
+        if (!certData.length) {
+          results.innerHTML = '<p class="results__empty">No hay cursos en el indice.</p>';
+          return;
+        }
+        certData.forEach((course) => {
+          const option = document.createElement('option');
+          option.value = course.name;
+          option.textContent = course.name;
+          courseSelect.appendChild(option);
+        });
+        courseSelect.value = '';
+        applyFilters();
+      })
+      .catch((error) => {
+        results.innerHTML = `<p class="results__empty">No se pudo cargar la lista de certificados. ${error.message}</p>`;
+      });
+  }
 };
 
 if (document.readyState === 'loading') {

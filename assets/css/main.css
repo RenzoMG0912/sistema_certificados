@@ -213,8 +213,8 @@ ul { padding-left: 20px; margin: 0; }
 	50%, 100% { opacity: 0; }
 }
 @keyframes pageFadeIn {
-	from { opacity: 0; transform: translateY(6px); }
-	to { opacity: 1; transform: translateY(0); }
+	from { opacity: 0; }
+	to { opacity: 1; }
 }
 @keyframes navUnderline {
 	0% { transform: scaleX(0.4); }
@@ -348,6 +348,96 @@ input, select {
 .course-img-bloqueo { background-image: url("/assets/img/04_AISLAMIENTO_Y_BLOQUEO.png"); }
 .course__body { padding: 20px; display: grid; gap: 10px; }
 
+.modal {
+	position: fixed;
+	inset: 0;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	z-index: 50;
+}
+.modal.is-open {
+	display: flex;
+}
+.modal__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(17, 19, 24, 0.55);
+	backdrop-filter: blur(2px);
+}
+.modal__panel {
+	position: relative;
+	background: #ffffff;
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	border: 1px solid #f0e0b9;
+	width: min(680px, 100%);
+	padding: 28px;
+	margin: 0 auto;
+	transform: translateY(12px);
+	opacity: 0;
+	animation: modalIn 0.3s ease forwards;
+}
+.modal__close {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	width: 40px;
+	height: 40px;
+	border-radius: 999px;
+	background: #ffffff;
+	border: 1px solid #f0e0b9;
+	color: var(--ink);
+	box-shadow: var(--shadow);
+	padding: 0;
+}
+.modal__header {
+	display: grid;
+	gap: 6px;
+	margin-bottom: 18px;
+}
+.modal__tag {
+	margin: 0;
+	font-size: 12px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--red);
+}
+.modal__meta {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 14px;
+	padding: 14px 16px;
+	border-radius: 12px;
+	border: 1px solid #f0e0b9;
+	background: #fffaf0;
+}
+.modal__label {
+	display: block;
+	font-size: 12px;
+	color: var(--muted);
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+}
+.modal__value {
+	font-weight: 600;
+}
+.modal__summary {
+	margin-top: 16px;
+	color: var(--muted);
+}
+body.modal-open {
+	overflow: hidden;
+}
+
+@keyframes modalIn {
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
 .certs {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -479,6 +569,7 @@ input, select {
 	.grid { grid-template-columns: 1fr; }
 	.certs { grid-template-columns: 1fr; }
 	.footer__content { grid-template-columns: 1fr; }
+	.modal__meta { grid-template-columns: 1fr; }
 }
 
 .icon-lg{

@@ -149,7 +149,7 @@ Todos nuestros programas incluyen un CERTIFICADO QR válido, que facilita su ver
             <div class="course__body">
               <h3>Equipos moviles / Manejo de llantas</h3>
               <p>Capacitacion operativa y preventiva para trabajo seguro.</p>
-              <button class="button primary">Ver Curso</button>
+              <button class="button primary" data-course="equipos-moviles">Ver Curso</button>
             </div>
           </article>
           <article class="course">
@@ -159,7 +159,7 @@ Todos nuestros programas incluyen un CERTIFICADO QR válido, que facilita su ver
             <div class="course__body">
               <h3>Trabajo en altura y plataforma elevada</h3>
               <p>Procedimientos y normas para labores en altura.</p>
-              <button class="button primary">Ver Curso</button>
+              <button class="button primary" data-course="trabajo-altura">Ver Curso</button>
             </div>
           </article>
           <article class="course">
@@ -169,7 +169,7 @@ Todos nuestros programas incluyen un CERTIFICADO QR válido, que facilita su ver
             <div class="course__body">
               <h3>Respuesta a emergencias</h3>
               <p>Protocolos de respuesta, coordinacion y mitigacion.</p>
-              <button class="button primary">Ver Curso</button>
+              <button class="button primary" data-course="respuesta-emergencias">Ver Curso</button>
             </div>
           </article>
           <article class="course">
@@ -179,7 +179,7 @@ Todos nuestros programas incluyen un CERTIFICADO QR válido, que facilita su ver
             <div class="course__body">
               <h3>Sustancias quimicas</h3>
               <p>Manejo seguro, almacenamiento y control de riesgos.</p>
-              <button class="button primary">Ver Curso</button>
+              <button class="button primary" data-course="sustancias-quimicas">Ver Curso</button>
             </div>
           </article>
           <article class="course">
@@ -189,7 +189,7 @@ Todos nuestros programas incluyen un CERTIFICADO QR válido, que facilita su ver
             <div class="course__body">
               <h3>Herramientas manuales y de poder</h3>
               <p>Uso correcto y mantenimiento de herramientas.</p>
-              <button class="button primary">Ver Curso</button>
+              <button class="button primary" data-course="herramientas-manuales">Ver Curso</button>
             </div>
           </article>
           <article class="course">
@@ -199,7 +199,7 @@ Todos nuestros programas incluyen un CERTIFICADO QR válido, que facilita su ver
             <div class="course__body">
               <h3>Incendio y explosion</h3>
               <p>Prevencion, respuesta y control de incidentes.</p>
-              <button class="button primary">Ver Curso</button>
+              <button class="button primary" data-course="incendio-explosion">Ver Curso</button>
             </div>
           </article>
           <article class="course">
@@ -209,7 +209,7 @@ Todos nuestros programas incluyen un CERTIFICADO QR válido, que facilita su ver
             <div class="course__body">
               <h3>Elevacion / izaje de carga</h3>
               <p>Buenas practicas y seguridad en izaje.</p>
-              <button class="button primary">Ver Curso</button>
+              <button class="button primary" data-course="elevacion-izaje">Ver Curso</button>
             </div>
           </article>
           <article class="course">
@@ -219,7 +219,7 @@ Todos nuestros programas incluyen un CERTIFICADO QR válido, que facilita su ver
             <div class="course__body">
               <h3>Seguridad electrica</h3>
               <p>Riesgos electricos y controles criticos.</p>
-              <button class="button primary">Ver Curso</button>
+              <button class="button primary" data-course="seguridad-electrica">Ver Curso</button>
             </div>
           </article>
           <article class="course">
@@ -229,7 +229,7 @@ Todos nuestros programas incluyen un CERTIFICADO QR válido, que facilita su ver
             <div class="course__body">
               <h3>Aislamiento y bloqueo</h3>
               <p>Procedimientos LOTO para control de energias.</p>
-              <button class="button primary">Ver Curso</button>
+              <button class="button primary" data-course="aislamiento-bloqueo">Ver Curso</button>
             </div>
           </article>
         </div>
@@ -260,6 +260,32 @@ Ate</p>
   <div class="footer-copy">
           © 2026 TEAM HSEC E.I.R.L. Todos los derechos reservados.
         </div>
+
+  <div class="modal" id="course-modal" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close>
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal__header">
+        <p class="modal__tag">Detalle del curso</p>
+        <h3 id="modal-title"></h3>
+      </div>
+      <div class="modal__content">
+        <div class="modal__meta">
+          <div>
+            <span class="modal__label">Duracion</span>
+            <span class="modal__value" id="modal-duration"></span>
+          </div>
+          <div>
+            <span class="modal__label">Entrenador</span>
+            <span class="modal__value" id="modal-trainer"></span>
+          </div>
+        </div>
+        <p class="modal__summary" id="modal-summary"></p>
+      </div>
+    </div>
+  </div>
   <script src="/assets/js/app.js" defer></script>
 </body>
 </html>

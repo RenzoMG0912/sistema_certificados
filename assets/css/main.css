@@ -19,6 +19,15 @@ body {
 	color: var(--ink);
 	background: #ffffff;
 	scroll-behavior: smooth;
+	opacity: 1;
+	transition: opacity 0.35s ease;
+}
+body.js-enabled {
+	opacity: 0;
+	animation: pageFadeIn 0.45s ease forwards;
+}
+body.page-exit {
+	opacity: 0;
 }
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
@@ -136,6 +145,14 @@ ul { padding-left: 20px; margin: 0; }
 .nav-links a:hover::after {
 	transform: scaleX(1);
 }
+.nav-links a.is-activating {
+	color: var(--red);
+}
+.nav-links a.is-activating::after {
+	transform: scaleX(1);
+	transition: none;
+	animation: navUnderline 0.45s ease;
+}
 .nav-actions {
 	display: flex;
 	gap: 12px;
@@ -194,6 +211,14 @@ ul { padding-left: 20px; margin: 0; }
 @keyframes heroFade {
 	0%, 25% { opacity: 1; }
 	50%, 100% { opacity: 0; }
+}
+@keyframes pageFadeIn {
+	from { opacity: 0; transform: translateY(6px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+@keyframes navUnderline {
+	0% { transform: scaleX(0.4); }
+	100% { transform: scaleX(1); }
 }
 .hero__content {
 	position: relative;

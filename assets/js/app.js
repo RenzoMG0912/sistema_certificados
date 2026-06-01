@@ -19,6 +19,53 @@ const initPage = () => {
     });
   };
 
+  const triggerNavFx = (link) => {
+    link.classList.add('is-activating');
+    window.setTimeout(() => link.classList.remove('is-activating'), 460);
+  };
+
+  navLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const href = link.getAttribute('href') || '';
+      if (!href) {
+        return;
+      }
+
+      triggerNavFx(link);
+
+      let url;
+      try {
+        url = new URL(href, window.location.href);
+      } catch (error) {
+        return;
+      }
+
+      const samePage = url.pathname === window.location.pathname;
+      const isHashTarget = (href.startsWith('#') && href.length > 1) || (samePage && url.hash);
+
+      if (isHashTarget) {
+        event.preventDefault();
+        const targetId = url.hash.replace('#', '');
+        const target = document.getElementById(targetId);
+        if (!target) {
+          window.location.href = url.toString();
+          return;
+        }
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setActive(targetId);
+        return;
+      }
+
+      if (url.origin === window.location.origin) {
+        event.preventDefault();
+        document.body.classList.add('page-exit');
+        window.setTimeout(() => {
+          window.location.href = url.toString();
+        }, 220);
+      }
+    });
+  });
+
   let ticking = false;
   const updateActiveOnScroll = () => {
     const offset = window.innerHeight * 0.35;

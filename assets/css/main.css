@@ -190,7 +190,7 @@ ul { padding-left: 20px; margin: 0; }
 	position: absolute;
 	inset: 0;
 	opacity: 0;
-	animation: heroFade 8s infinite;
+	animation: heroSlide 16s infinite;
 	animation-timing-function: ease-in-out;
 	background-size: cover;
 	background-position: center;
@@ -203,14 +203,17 @@ ul { padding-left: 20px; margin: 0; }
 	inset: 0;
 	background: linear-gradient(120deg, rgba(179, 0, 10, 0.78), rgba(122, 0, 6, 0.68));
 }
-.slide-1 { background-image: url("/assets/img/pexels-chetanvlad-2892618.jpg"); }
-.slide-2 { background-image: url("/assets/img/colsan-ltda-LMb98OOtoYU-unsplash.jpg"); animation-delay: 2s; }
-.slide-3 { background-image: url("/assets/img/ehmitrich-Q3WVbAfdOoY-unsplash.jpg"); animation-delay: 4s; }
-.slide-4 { background-image: url("/assets/img/pexels-deyler-rivera-segura-1300296248-29506742.jpg"); animation-delay: 6s; }
+.slide-1 { background-image: url("/assets/img/pexels-chetanvlad-2892618.webp"); animation-delay: 0s; }
+.slide-2 { background-image: url("/assets/img/colsan-ltda-LMb98OOtoYU-unsplash.webp"); animation-delay: 4s; }
+.slide-3 { background-image: url("/assets/img/ehmitrich-Q3WVbAfdOoY-unsplash.webp"); animation-delay: 8s; }
+.slide-4 { background-image: url("/assets/img/pexels-deyler-rivera-segura-1300296248-29506742.webp"); animation-delay: 12s; }
 
-@keyframes heroFade {
-	0%, 25% { opacity: 1; }
-	50%, 100% { opacity: 0; }
+@keyframes heroSlide {
+	0% { opacity: 0; transform: scale(1.04); }
+	6% { opacity: 1; transform: scale(1.02); }
+	24% { opacity: 1; transform: scale(1.01); }
+	32% { opacity: 0; transform: scale(1.04); }
+	100% { opacity: 0; transform: scale(1.04); }
 }
 @keyframes pageFadeIn {
 	from { opacity: 0; }
@@ -337,15 +340,15 @@ input, select {
 .course__body{
 	padding: 20px;
 }
-.course-img-equipos { background-image: url("/assets/img/03_EQUIPOS_MOVILES.png"); }
-.course-img-altura { background-image: url("/assets/img/02_TRABAJO_EN_ALTURA.png"); }
-.course-img-emergencias { background-image: url("/assets/img/01_RESPUESTA_A_EMERGENCIAS.png"); }
-.course-img-quimicas { background-image: url("/assets/img/09_SUSTANCIAS_QUIMICAS.png"); }
-.course-img-herramientas { background-image: url("/assets/img/08_HERRAMIENTAS_MANUALES.png"); }
-.course-img-incendio { background-image: url("/assets/img/07_INCENDIO_Y_EXPLOSION.png"); }
-.course-img-izaje { background-image: url("/assets/img/06_ELEVACION_IZAJE.png"); }
-.course-img-electrica { background-image: url("/assets/img/05_SEGURIDAD_ELECTRICA.png"); }
-.course-img-bloqueo { background-image: url("/assets/img/04_AISLAMIENTO_Y_BLOQUEO.png"); }
+.course-img-equipos { background-image: url("/assets/img/03_EQUIPOS_MOVILES.webp"); }
+.course-img-altura { background-image: url("/assets/img/02_TRABAJO_EN_ALTURA.webp"); }
+.course-img-emergencias { background-image: url("/assets/img/01_RESPUESTA_A_EMERGENCIAS.webp"); }
+.course-img-quimicas { background-image: url("/assets/img/09_SUSTANCIAS_QUIMICAS.webp"); }
+.course-img-herramientas { background-image: url("/assets/img/08_HERRAMIENTAS_MANUALES.webp"); }
+.course-img-incendio { background-image: url("/assets/img/07_INCENDIO_Y_EXPLOSION.webp"); }
+.course-img-izaje { background-image: url("/assets/img/06_ELEVACION_IZAJE.webp"); }
+.course-img-electrica { background-image: url("/assets/img/05_SEGURIDAD_ELECTRICA.webp"); }
+.course-img-bloqueo { background-image: url("/assets/img/04_AISLAMIENTO_Y_BLOQUEO.webp"); }
 .course__body { padding: 20px; display: grid; gap: 10px; }
 
 .modal {

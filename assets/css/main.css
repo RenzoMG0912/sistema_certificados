@@ -337,6 +337,11 @@ input, select {
 	display: flex;
 	align-items: center;
 }
+.course__image img {
+	width: 90%;
+	height: 90%;
+	object-fit: contain;
+}
 .course__body{
 	padding: 20px;
 }

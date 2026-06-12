@@ -3,13 +3,380 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verificar certificado</title>
+  <title>TEAM HSEC | Verificación de Certificados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    body {
+      background: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .main-container {
+      flex-grow: 1;
+      padding: 60px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .verification-card {
+      background: #ffffff;
+      border-radius: var(--radius);
+      border: 1px solid #f0e0b9;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 620px;
+      padding: 40px;
+      text-align: center;
+      animation: fadeInUp 0.5s ease-out;
+    }
+    .logo-header {
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-header img {
+      width: 120px;
+    }
+    .logo-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      margin: 0;
+      color: var(--ink);
+    }
+    .logo-header h1 span {
+      color: var(--red);
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #334155;
+    }
+
+    /* Form Styles */
+    .form-group {
+      text-align: left;
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--muted);
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: var(--gold);
+    }
+    .submit-btn {
+      width: 100%;
+      margin-top: 10px;
+      background: var(--red);
+      color: white;
+    }
+    .submit-btn:hover {
+      background: var(--red-dark);
+    }
+
+    /* Result styles */
+    .result-section {
+      display: none;
+      text-align: left;
+      margin-top: 20px;
+      animation: fadeIn 0.4s ease-out;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 auto 24px auto;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-valid {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+    .status-expired {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+    .status-invalid {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+
+    .detail-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      background: #fafaf9;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .detail-table td {
+      padding: 12px 18px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 14px;
+    }
+    .detail-table tr:last-child td {
+      border-bottom: none;
+    }
+    .detail-label {
+      font-weight: 600;
+      color: #64748b;
+      width: 35%;
+    }
+    .detail-value {
+      color: #0f172a;
+      font-weight: 500;
+    }
+    .hash-text {
+      font-family: monospace;
+      font-size: 12px;
+      word-break: break-all;
+      background: #f1f5f9;
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: #475569;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--red);
+      color: white;
+      text-decoration: none;
+    }
+    .btn-download:hover {
+      background: var(--red-dark);
+      transform: translateY(-2px);
+    }
+    .btn-reset {
+      background: transparent;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+    }
+    .btn-reset:hover {
+      background: #f1f5f9;
+    }
+
+    .loading-spinner {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin: 30px 0;
+    }
+    .spinner-icon {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(179, 0, 10, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--red);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-  <main class="page">
-    <h1>Verificación por QR</h1>
-    <p>Aquí se mostrará el certificado validado desde el enlace QR.</p>
+
+  <!-- Site Header (Reuse same as home) -->
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo" onclick="window.location.href='/'" style="cursor: pointer;">
+        <img class="logo-img" src="/img/logo_teamhsec.webp" alt="TEAM HSEC" onerror="this.src='/public/img/logo_teamhsec.webp'">
+        <div class="logo-text">
+          <h2>TEAM HSEC</h2>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="/">Inicio</a>
+        <a href="/#nosotros">Nosotros</a>
+        <a href="/#cursos">Cursos</a>
+        <a class="active" href="/certificados.html">Certificados</a>
+        <a href="/#contacto">Contacto</a>
+      </nav>
+      <div class="nav-actions"></div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="verification-card">
+      <div class="logo-header">
+        <img src="/img/logo_teamhsec.webp" alt="TEAM HSEC" onerror="this.src='/public/img/logo_teamhsec.webp'">
+        <h1>TEAM <span>HSEC</span></h1>
+      </div>
+
+      <!-- Spinner -->
+      <div class="loading-spinner" id="loading-spinner">
+        <div class="spinner-icon"></div>
+        <p>Consultando validez del certificado...</p>
+      </div>
+
+      <!-- FORM SECTION (visible when not direct QR link) -->
+      <div id="search-section">
+        <h2 class="section-title">Validación Manual de Certificados</h2>
+        <form id="verify-form">
+          <div class="form-group">
+            <label for="verify-code">Código del Certificado</label>
+            <input type="text" id="verify-code" class="form-control" placeholder="ej: PE-0001-26" required>
+          </div>
+          <div class="form-group">
+            <label for="verify-dni">DNI / Documento de Identidad del Alumno</label>
+            <input type="text" id="verify-dni" class="form-control" placeholder="ej: 70123456" required>
+          </div>
+          <button type="submit" class="button primary submit-btn">Validar Certificado</button>
+        </form>
+      </div>
+
+      <!-- RESULTS SECTION (hidden initially) -->
+      <div class="result-section" id="result-section">
+        
+        <div style="text-align: center;">
+          <div class="status-badge" id="status-badge">
+            <i class="fa-solid fa-circle-check"></i> <span>Válido</span>
+          </div>
+        </div>
+
+        <table class="detail-table">
+          <tbody>
+            <tr>
+              <td class="detail-label">Alumno</td>
+              <td class="detail-value" id="res-student">Juan Pérez</td>
+            </tr>
+            <tr>
+              <td class="detail-label">DNI</td>
+              <td class="detail-value" id="res-dni">70123456</td>
+            </tr>
+            <tr>
+              <td class="detail-label">Curso</td>
+              <td class="detail-value" id="res-course">Respuesta a Emergencias</td>
+            </tr>
+            <tr>
+              <td class="detail-label">Duración</td>
+              <td class="detail-value" id="res-duration">2 horas</td>
+            </tr>
+            <tr>
+              <td class="detail-label">Entrenador</td>
+              <td class="detail-value" id="res-trainer">Ing. Gregorio Escajadillo</td>
+            </tr>
+            <tr>
+              <td class="detail-label">Fecha Emisión</td>
+              <td class="detail-value" id="res-issued">12/06/2026</td>
+            </tr>
+            <tr>
+              <td class="detail-label">Fecha Vencimiento</td>
+              <td class="detail-value" id="res-expired">12/06/2027</td>
+            </tr>
+            <tr>
+              <td class="detail-label">Código Oficial</td>
+              <td class="detail-value" id="res-code" style="font-weight: 700; color: var(--red);">PE-0001-26</td>
+            </tr>
+            <tr>
+              <td class="detail-label">Firma Emisor</td>
+              <td class="detail-value" id="res-signature">Registrado digitalmente</td>
+            </tr>
+            <tr>
+              <td class="detail-label">Firma HSEC</td>
+              <td class="detail-value" id="res-signature2">Registrado digitalmente</td>
+            </tr>
+            <tr>
+              <td class="detail-label">Hash SHA-256</td>
+              <td class="detail-value"><span class="hash-text" id="res-hash">abc123xyz...</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="action-buttons">
+          <a href="#" class="button primary btn-download" id="btn-pdf-download" target="_blank">
+            <i class="fa-solid fa-file-pdf"></i> Descargar Certificado (PDF)
+          </a>
+          <button class="button btn-reset" id="btn-search-again">Verificar Otro</button>
+        </div>
+
+      </div>
+
+      <!-- INVALID RESULT ERROR VIEW -->
+      <div id="error-section" style="display: none; animation: fadeIn 0.4s ease-out; margin-top: 20px;">
+        <div style="color: #ef4444; font-size: 54px; margin-bottom: 16px;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; color: #0f172a; margin-bottom: 10px;">Certificado No Válido</h3>
+        <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 24px;" id="error-msg">
+          El certificado buscado no existe en nuestros registros oficiales o los datos proporcionados no coinciden. 
+        </p>
+        <button class="button btn-reset" id="btn-error-retry">Intentar de Nuevo</button>
+      </div>
+
+    </div>
   </main>
+
+  <!-- Footer (Reuse same as home) -->
+  <footer class="footer" id="contacto">
+    <div class="container footer__content">
+      <div>
+        <h3>TEAM HSEC</h3>
+        <p>Formación profesional que impulsa tu carrera.</p>
+      </div>
+      <div>
+        <h3>Contacto</h3>
+        <p><i class="icon fa-regular fa-envelope"></i>contacto@teamhsec.com</p>
+        <p><i class="icon fa-brands fa-whatsapp"></i>+51 992 809 049</p>
+      </div>
+      <div>
+        <h3>Dirección</h3>
+        <p>Mza. C Lote. 21 Dpto. Lima Urbanización Haras de Huampani, Ate - Perú</p>
+      </div>
+    </div>
+  </footer>
+  <div class="footer-copy">
+    © 2026 TEAM HSEC E.I.R.L. Todos los derechos reservados.
+  </div>
+
+  <script src="/assets/js/verificar.js" defer></script>
 </body>
 </html>

@@ -1,2 +1,859 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard</title></head><body><main><h1>Dashboard</h1></main></body></html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEAM HSEC | Dashboard de Administración</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    /* Styling specialized for the dashboard, keeping main.css values intact */
+    body {
+      background: #f8fafc;
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+      color: #1e293b;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+    }
+    .sidebar-brand {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .sidebar-brand img {
+      width: 45px;
+      background: white;
+      border-radius: 8px;
+      padding: 3px;
+    }
+    .sidebar-brand h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      margin: 0;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+    .sidebar-brand h2 span {
+      color: var(--gold);
+    }
+    .sidebar-menu {
+      list-style: none;
+      padding: 20px 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+    }
+    .sidebar-menu li a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 24px;
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-menu li a:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.03);
+    }
+    .sidebar-menu li a.active {
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+      border-left-color: var(--gold);
+      font-weight: 600;
+    }
+    .sidebar-footer {
+      padding: 20px 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* Main Content */
+    .main-wrap {
+      margin-left: 260px;
+      flex-grow: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+    .topbar {
+      height: 70px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+    .topbar-title h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      margin: 0;
+      color: #0f172a;
+    }
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .topbar-user i {
+      color: var(--red);
+      font-size: 18px;
+    }
+    .content {
+      padding: 40px;
+      flex-grow: 1;
+    }
+
+    /* Tabs */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-bottom: 35px;
+    }
+    .stat-card {
+      background: #ffffff;
+      border-radius: var(--radius);
+      border: 1px solid #e2e8f0;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      transition: transform 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+    .stat-info h3 {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0 0 8px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .stat-info p {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0;
+      color: #0f172a;
+    }
+    .stat-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .stat-blue { background: #eff6ff; color: #3b82f6; }
+    .stat-red { background: #fef2f2; color: #ef4444; }
+    .stat-gold { background: #fefcbf; color: #d69e2e; }
+
+    /* Tables & Cards */
+    .panel-card {
+      background: #ffffff;
+      border-radius: var(--radius);
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      padding: 28px;
+      margin-bottom: 30px;
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .panel-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      margin: 0;
+      color: #0f172a;
+    }
+    
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      padding: 14px 16px;
+      font-weight: 600;
+      color: #64748b;
+      border-bottom: 1px solid #e2e8f0;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    tr:hover td {
+      background: #f8fafc;
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-active { background: #dcfce7; color: #166534; }
+    .badge-expired { background: #fee2e2; color: #991b1b; }
+
+    /* Actions */
+    .actions-cell {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-icon {
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0;
+    }
+    .btn-icon:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+      transform: none;
+      box-shadow: none;
+    }
+    .btn-icon.btn-delete:hover {
+      background: #fee2e2;
+      color: #ef4444;
+      border-color: #fca5a5;
+    }
+
+    /* Forms & Modals */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+    }
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      min-width: unset;
+      width: 100%;
+    }
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(215, 163, 7, 0.15);
+    }
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    /* Modal dialog overrides */
+    .modal-dashboard {
+      z-index: 150;
+    }
+    .modal-dashboard .modal__panel {
+      max-width: 600px;
+    }
+
+    /* Toast system */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 14px 20px;
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      animation: slideIn 0.3s ease-out;
+      border-left: 4px solid var(--gold);
+    }
+    .toast.success { border-left-color: #10b981; }
+    .toast.error { border-left-color: #ef4444; }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Filters row */
+    .filters-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filters-row input {
+      min-width: 200px;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .main-wrap {
+        margin-left: 0;
+      }
+      .topbar {
+        padding: 0 20px;
+      }
+      .content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="/img/logo_teamhsec.webp" alt="TEAM HSEC" onerror="this.src='/public/img/logo_teamhsec.webp'">
+      <h2>TEAM <span>HSEC</span></h2>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="#inicio" class="active" data-tab="inicio"><i class="fa-solid fa-chart-line"></i> Resumen</a></li>
+      <li><a href="#cursos" data-tab="cursos"><i class="fa-solid fa-graduation-cap"></i> Cursos</a></li>
+      <li><a href="#participantes" data-tab="participantes"><i class="fa-solid fa-users"></i> Alumnos</a></li>
+      <li><a href="#matriculas" data-tab="matriculas"><i class="fa-solid fa-id-card"></i> Matrículas</a></li>
+      <li><a href="#certificados" data-tab="certificados"><i class="fa-solid fa-award"></i> Certificados</a></li>
+      <li><a href="#firmas" data-tab="firmas"><i class="fa-solid fa-signature"></i> Firmas</a></li>
+    </ul>
+    <div style="padding: 10px 24px;">
+      <a href="#" id="logout-btn" style="color: #ef4444; font-size: 14px; display: flex; align-items: center; gap: 10px; font-weight: 600;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
+    </div>
+    <div class="sidebar-footer">
+      © 2026 TEAM HSEC
+    </div>
+  </aside>
+
+  <!-- Main Worktree -->
+  <div class="main-wrap">
+    
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1 id="page-title">Resumen del Sistema</h1>
+      </div>
+      <div class="topbar-user">
+        <i class="fa-solid fa-circle-user"></i>
+        <span id="user-display">Cargando...</span>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="content">
+
+      <!-- Toast container -->
+      <div class="toast-container" id="toast-container"></div>
+
+      <!-- TAB 1: RESUMEN / INICIO -->
+      <section class="tab-content active" id="tab-inicio">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <h3>Alumnos Registrados</h3>
+              <p id="stat-participantes">0</p>
+            </div>
+            <div class="stat-icon stat-blue">
+              <i class="fa-solid fa-users"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <h3>Cursos Activos</h3>
+              <p id="stat-cursos">0</p>
+            </div>
+            <div class="stat-icon stat-gold">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <h3>Certificados Emitidos</h3>
+              <p id="stat-certificados">0</p>
+            </div>
+            <div class="stat-icon stat-red">
+              <i class="fa-solid fa-award"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <h2>Últimos Certificados Emitidos</h2>
+          <div style="margin-top: 20px;" class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Alumno</th>
+                  <th>Curso</th>
+                  <th>F. Emisión</th>
+                  <th>Estado</th>
+                  <th>PDF</th>
+                </tr>
+              </thead>
+              <tbody id="recent-certs-list">
+                <tr>
+                  <td colspan="6" style="text-align: center; color: #64748b;">Cargando...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: CURSOS -->
+      <section class="tab-content" id="tab-cursos">
+        <div class="panel-card">
+          <div class="panel-header">
+            <h2>Gestión de Cursos</h2>
+            <button class="button primary" id="btn-new-course"><i class="fa-solid fa-plus"></i> Nuevo Curso</button>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código Interno</th>
+                  <th>Nombre del Curso</th>
+                  <th>Duración</th>
+                  <th>Categoría</th>
+                  <th>Entrenador</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="courses-list">
+                <tr>
+                  <td colspan="6" style="text-align: center; color: #64748b;">Cargando...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: PARTICIPANTES -->
+      <section class="tab-content" id="tab-participantes">
+        <div class="panel-card">
+          <div class="panel-header">
+            <h2>Gestión de Alumnos (Participantes)</h2>
+            <button class="button primary" id="btn-new-participant"><i class="fa-solid fa-plus"></i> Nuevo Alumno</button>
+          </div>
+          
+          <div class="filters-row">
+            <input type="text" id="search-participant-dni" class="form-control" placeholder="Buscar por DNI...">
+            <input type="text" id="search-participant-name" class="form-control" placeholder="Buscar por nombre...">
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>DNI / Identificación</th>
+                  <th>Nombre Completo</th>
+                  <th>Correo Electrónico</th>
+                  <th>Fecha Registro</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="participants-list">
+                <tr>
+                  <td colspan="5" style="text-align: center; color: #64748b;">Cargando...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: MATRÍCULAS -->
+      <section class="tab-content" id="tab-matriculas">
+        <div class="panel-card">
+          <div class="panel-header">
+            <h2>Gestión de Matrículas</h2>
+            <button class="button primary" id="btn-new-enrollment"><i class="fa-solid fa-link"></i> Registrar Matrícula</button>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Alumno (DNI)</th>
+                  <th>Curso</th>
+                  <th>Fecha de Registro</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="enrollments-list">
+                <tr>
+                  <td colspan="4" style="text-align: center; color: #64748b;">Cargando...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: CERTIFICADOS -->
+      <section class="tab-content" id="tab-certificados">
+        <div class="panel-card">
+          <div class="panel-header">
+            <h2>Historial de Certificados</h2>
+            <button class="button primary" id="btn-new-certificate"><i class="fa-solid fa-certificate"></i> Emitir Certificado</button>
+          </div>
+
+          <div class="filters-row">
+            <input type="text" id="search-cert-query" class="form-control" placeholder="Buscar por DNI o código...">
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Alumno</th>
+                  <th>Curso</th>
+                  <th>F. Emisión</th>
+                  <th>Vencimiento</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="certificates-list">
+                <tr>
+                  <td colspan="7" style="text-align: center; color: #64748b;">Cargando...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: FIRMAS -->
+      <section class="tab-content" id="tab-firmas">
+        <div class="panel-card">
+          <div class="panel-header">
+            <h2>Firmas Autorizadas</h2>
+            <button class="button primary" id="btn-new-signature"><i class="fa-solid fa-file-signature"></i> Nueva Firma</button>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre del Firmante</th>
+                  <th>Cargo</th>
+                  <th>Ruta/Vista previa</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="signatures-list">
+                <tr>
+                  <td colspan="5" style="text-align: center; color: #64748b;">Cargando...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: CREAR/EDITAR CURSO -->
+  <div class="modal modal-dashboard" id="modal-course" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true">
+      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal__header">
+        <h3 id="modal-course-title">Registrar Curso</h3>
+      </div>
+      <div class="modal__content">
+        <form id="form-course">
+          <input type="hidden" id="course-id">
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="course-code">Código Único (para slug/filtrado)</label>
+            <input type="text" id="course-code" placeholder="ej: respuesta-emergencias" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="course-name">Nombre del Curso</label>
+            <input type="text" id="course-name" placeholder="ej: Respuesta a Emergencias Mineras" required>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="course-duration">Duración</label>
+              <input type="text" id="course-duration" placeholder="ej: 3 horas" required>
+            </div>
+            <div class="form-group">
+              <label for="course-category">Categoría</label>
+              <input type="text" id="course-category" placeholder="ej: Seguridad" required>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top: 15px; margin-bottom: 15px;">
+            <label for="course-trainer">Entrenador / Ponente</label>
+            <input type="text" id="course-trainer" placeholder="ej: Ing. Gregorio A. Escajadillo Sarmiento" required>
+          </div>
+          <div class="form-actions">
+            <button class="button outline" type="button" data-modal-close>Cancelar</button>
+            <button class="button primary" type="submit">Guardar Curso</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CREAR/EDITAR PARTICIPANTE -->
+  <div class="modal modal-dashboard" id="modal-participant" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true">
+      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal__header">
+        <h3 id="modal-participant-title">Registrar Alumno</h3>
+      </div>
+      <div class="modal__content">
+        <form id="form-participant">
+          <input type="hidden" id="participant-id">
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="participant-dni">DNI / Documento de Identidad</label>
+            <input type="text" id="participant-dni" placeholder="ej: 70123456" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="participant-name">Nombre Completo</label>
+            <input type="text" id="participant-name" placeholder="ej: Juan Pérez Gómez" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="participant-email">Correo Electrónico (Opcional)</label>
+            <input type="email" id="participant-email" placeholder="ej: juan.perez@email.com">
+          </div>
+          <div class="form-actions">
+            <button class="button outline" type="button" data-modal-close>Cancelar</button>
+            <button class="button primary" type="submit">Guardar Alumno</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRAR MATRÍCULA -->
+  <div class="modal modal-dashboard" id="modal-enrollment" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true">
+      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal__header">
+        <h3>Matricular Alumno en Curso</h3>
+      </div>
+      <div class="modal__content">
+        <form id="form-enrollment">
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="enrollment-participant">Seleccionar Alumno (DNI)</label>
+            <select id="enrollment-participant" required>
+              <option value="">Cargando alumnos...</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="enrollment-course">Seleccionar Curso</label>
+            <select id="enrollment-course" required>
+              <option value="">Cargando cursos...</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button class="button outline" type="button" data-modal-close>Cancelar</button>
+            <button class="button primary" type="submit">Matricular</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EMITIR CERTIFICADO -->
+  <div class="modal modal-dashboard" id="modal-certificate" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true">
+      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal__header">
+        <h3>Emitir Certificado Oficial</h3>
+      </div>
+      <div class="modal__content">
+        <form id="form-certificate">
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="cert-matricula">Matrícula (Alumno - Curso)</label>
+            <select id="cert-matricula" required>
+              <option value="">Selecciona una matrícula activa...</option>
+            </select>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="cert-signature-1">Firma Principal (Instructor)</label>
+              <select id="cert-signature-1" required>
+                <option value="">Seleccionar firma...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cert-signature-2">Firma Secundaria (Opcional)</label>
+              <select id="cert-signature-2">
+                <option value="">Ninguna</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid" style="margin-top: 15px;">
+            <div class="form-group">
+              <label for="cert-issue-date">Fecha Emisión</label>
+              <input type="date" id="cert-issue-date" required>
+            </div>
+            <div class="form-group">
+              <label for="cert-expiry-years">Vigencia (Años)</label>
+              <select id="cert-expiry-years" required>
+                <option value="1" selected>1 año</option>
+                <option value="2">2 años</option>
+                <option value="3">3 años</option>
+                <option value="0">Sin vencimiento</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions" style="margin-top: 25px;">
+            <button class="button outline" type="button" data-modal-close>Cancelar</button>
+            <button class="button primary" type="submit">Generar y Emitir Certificado</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRAR FIRMA -->
+  <div class="modal modal-dashboard" id="modal-signature" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true">
+      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal__header">
+        <h3>Agregar Firma Autorizada</h3>
+      </div>
+      <div class="modal__content">
+        <form id="form-signature">
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="sig-name">Nombre del Firmante</label>
+            <input type="text" id="sig-name" placeholder="ej: Ing. Gregorio A. Escajadillo" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="sig-role">Cargo / Ocupación</label>
+            <input type="text" id="sig-role" placeholder="ej: Instructor HSEC" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label for="sig-url">Ruta de Firma (o URL)</label>
+            <input type="text" id="sig-url" placeholder="ej: /assets/img/firmas/firma_gregorio.png" required>
+          </div>
+          <div class="form-actions">
+            <button class="button outline" type="button" data-modal-close>Cancelar</button>
+            <button class="button primary" type="submit">Guardar Firma</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/admin.js" defer></script>
+</body>
+</html>

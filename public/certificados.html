@@ -38,36 +38,124 @@
   <main>
     <section class="section" id="certificados">
       <div class="container">
-        <div class="section__header">
-          <h2>Nuestros certificados</h2>
-          <div class="section__bar"></div>
+        
+        <!-- Header Section -->
+        <div class="section__header" style="max-width: 800px; margin: 0 auto 40px auto;">
+          <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--ink);">Nuestros Certificados</h2>
+          <div class="section__bar" style="margin-bottom: 24px;"></div>
+          <p style="font-size: 14.5px; color: var(--muted); line-height: 1.7; max-width: 680px; margin: 0 auto; text-align: center;">
+            En TEAM HSEC, reconocemos tu esfuerzo y dedicación. Al finalizar exitosamente nuestros cursos, obtendrás un certificado de participación y/o aprobación que avala tus nuevas habilidades y conocimientos. Estos certificados son un valioso añadido a tu perfil profesional.
+          </p>
         </div>
-        <div class="certs">
-          <div class="cert">
-            <h4>Certificado digital</h4>
-            <p>Accede a tu certificado en PDF listo para compartir.</p>
+
+        <!-- Info Cards Section -->
+        <div class="certs" id="info-cards-wrapper" style="margin-bottom: 40px;">
+          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid #f3ead0; background: #ffffff;">
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--ink); margin: 0; display: flex; align-items: center; gap: 8px;">
+              <span style="color: var(--red); font-size: 20px; font-weight: 900;">|</span> Certificado Digital
+            </h4>
+            <p style="font-size: 13.5px; color: var(--muted); line-height: 1.5; margin: 0;">
+              Accede a tu certificado en PDF, listo para compartir o imprimir en cualquier momento.
+            </p>
           </div>
-          <div class="cert">
-            <h4>Certificado fisico</h4>
-            <p>Documento impreso con acabados profesionales.</p>
+          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid #f3ead0; background: #ffffff;">
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--ink); margin: 0; display: flex; align-items: center; gap: 8px;">
+              <span style="color: var(--red); font-size: 20px; font-weight: 900;">|</span> Certificado Físico
+            </h4>
+            <p style="font-size: 13.5px; color: var(--muted); line-height: 1.5; margin: 0;">
+              Para ciertos cursos de la plataforma, ofrecemos certificación física impresa de alta calidad.
+            </p>
           </div>
-          <div class="cert">
-            <h4>Reconocimiento profesional</h4>
-            <p>Validacion respaldada por instructores expertos.</p>
+          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid #f3ead0; background: #ffffff;">
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--ink); margin: 0; display: flex; align-items: center; gap: 8px;">
+              <span style="color: var(--red); font-size: 20px; font-weight: 900;">|</span> Reconocimiento Profesional
+            </h4>
+            <p style="font-size: 13.5px; color: var(--muted); line-height: 1.5; margin: 0;">
+              Avalado por ponentes certificados e instructores líderes, relevante para el mercado laboral.
+            </p>
           </div>
         </div>
-        <form class="search" id="cert-search">
-          <h3>Buscar certificado</h3>
-          <p class="search__help">Filtra por curso y luego escribe el apellido para refinar resultados.</p>
-          <div class="search__fields">
-            <select id="course-filter" aria-label="Curso">
-              <option value="">Seleccionar curso</option>
-            </select>
-            <input id="lastname-filter" type="text" placeholder="Apellido">
-            <button class="button primary" type="submit">Buscar</button>
+
+        <!-- Toggle Search Form Button -->
+        <div class="toggle-search-container" id="toggle-btn-wrapper">
+          <button type="button" class="toggle-search-btn" id="btn-toggle-search">
+            <i class="fa-solid fa-eye-slash"></i>
+            <span id="toggle-search-text">Ocultar Buscador</span>
+          </button>
+        </div>
+
+        <!-- Search Form Panel -->
+        <div class="search-container" id="search-box-wrapper" style="margin-bottom: 30px;">
+          <form class="search" id="cert-search-form" style="max-width: 720px; margin: 0 auto; padding: 35px 24px; border-radius: var(--radius); border: 1px solid #f0e0b9; box-shadow: var(--shadow); background: #ffffff;">
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 20px; text-align: center;">Buscar Certificado</h3>
+            <div class="search__fields" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 0;">
+              <input id="search-code" type="text" placeholder="ID O CÓDIGO DE CERTIFICADO (ej: PE-0001-26)" style="flex-grow: 2; min-width: 260px; padding: 12px 20px; border-radius: 999px; border: 1px solid #f0e0b9;" required>
+              <input id="search-dni" type="text" placeholder="DNI (8 dígitos)" style="flex-grow: 1; min-width: 180px; padding: 12px 20px; border-radius: 999px; border: 1px solid #f0e0b9;" required>
+              <button class="button primary" type="submit" style="padding: 12px 30px; font-weight: 700; background: var(--red); color: white;">Buscar</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Split Screen Details View (Hidden by default) -->
+        <div class="split-verification" id="verification-result-wrapper" style="display: none;">
+          <!-- Left side: PDF viewer -->
+          <div class="pdf-visualizer">
+            <iframe id="pdf-frame" src="" title="Vista previa del Certificado"></iframe>
           </div>
-          <div class="results" id="cert-results"></div>
-        </form>
+
+          <!-- Right side: Sidebar Info -->
+          <div class="sidebar-info">
+            <div class="profile-header">
+              <div class="profile-pic">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <h4 class="student-name" id="cert-student-name">JUAN PEREZ GOMEZ</h4>
+              <div id="cert-status-badge">
+                <span class="badge-verified"><i class="fa-solid fa-circle-check"></i> Válido y Auténtico</span>
+              </div>
+            </div>
+            <div class="info-list">
+              <div class="info-item">
+                <span class="info-label">Curso Especializado</span>
+                <span class="info-value" id="cert-course-name">Respuesta a Emergencias</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Código Oficial</span>
+                <span class="info-value code" id="cert-official-code">PE-0001-26</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Fecha de Emisión</span>
+                <span class="info-value" id="cert-issue-date">12/06/2026</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Fecha de Vencimiento</span>
+                <span class="info-value" id="cert-expiry-date">12/06/2027</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Firma e ID Blockchain</span>
+                <span class="info-value hash" id="cert-blockchain-hash">09dc6203-47d5-4e83...</span>
+              </div>
+            </div>
+            <button type="button" class="button primary btn-action" id="btn-search-new" style="background: var(--red); color: white; padding: 12px 20px; font-weight: 700; border-radius: 999px;">
+              Buscar Nuevo Certificado
+            </button>
+          </div>
+        </div>
+
+        <!-- Error box when certificate is not found (Hidden by default) -->
+        <div class="search-error" id="search-error-box" style="display: none;">
+          <div style="color: #ef4444; font-size: 44px; margin-bottom: 8px;">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 8px;">Certificado No Encontrado</h3>
+          <p style="margin-bottom: 20px; font-weight: 500;">
+            El código del certificado o el DNI ingresado no coinciden con nuestros registros oficiales de verificación.
+          </p>
+          <button type="button" class="button" id="btn-error-retry" style="background: transparent; border: 1px solid #cbd5e1; color: #475569; padding: 10px 24px; font-weight: 600; border-radius: 999px;">
+            Intentar de Nuevo
+          </button>
+        </div>
+
       </div>
     </section>
   </main>
@@ -91,5 +179,6 @@
   </footer>
 
   <script src="/assets/js/app.js" defer></script>
+  <script src="/assets/js/certificados.js" defer></script>
 </body>
 </html>

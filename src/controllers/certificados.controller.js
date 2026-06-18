@@ -80,7 +80,7 @@ module.exports = {
   },
 
   create: async (req, res, next) => {
-    const { matricula_id, firma_id_1, firma_id_2, fecha_emision, vigencia_anos } = req.body;
+    const { matricula_id, firma_id_1, firma_id_2, fecha_emision, fecha_realizacion, vigencia_anos } = req.body;
 
     try {
       // 1. Validar matrícula y obtener datos del alumno y del curso en MySQL
@@ -156,6 +156,7 @@ module.exports = {
         alumno_dni: matData.alumno_dni,
         curso_nombre: matData.curso_nombre,
         curso_duracion: matData.curso_duracion,
+        fecha_realizacion: fecha_realizacion || formattedIssueDate,
         fecha_emision: formattedIssueDate,
         fecha_vencimiento: vigencia_anos === 0 ? null : formattedExpiryDate,
         firma_1: {
@@ -236,7 +237,7 @@ module.exports = {
         .map(c => parseInt(c.codigo.split('-')[1], 10))
         .sort((a,b) => b-a);
       const nextNum = yearCerts.length > 0 ? yearCerts[0] + 1 : 1;
-      const codigo = `PE-${String(nextNum).padStart(4, '0')}-${yearSuffix}`;
+      const codigo = `PE-${nextNum}-${yearSuffix}`;
 
       // Hash
       const hash = generarHash(`${codigo}-${alumno.dni}-${matricula_id}-${fecha_emision}-${Math.random()}`);
@@ -268,6 +269,7 @@ module.exports = {
           alumno_dni: alumno.dni,
           curso_nombre: curso.nombre,
           curso_duracion: curso.duracion,
+          fecha_realizacion: fecha_realizacion || formattedIssue,
           fecha_emision: formattedIssue,
           fecha_vencimiento: vigencia_anos === 0 ? null : formattedExpiry,
           firma_1: { nombre: f1.nombre, cargo: f1.cargo, firma_url: f1.firma_url },

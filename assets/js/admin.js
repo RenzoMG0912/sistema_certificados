@@ -561,6 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Default dates
     const today = new Date().toISOString().split('T')[0];
+    document.getElementById('cert-course-date').value = today;
     document.getElementById('cert-issue-date').value = today;
 
     matSelect.innerHTML = '<option value="">Cargando matrículas...</option>';
@@ -599,6 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
       matricula_id: parseInt(document.getElementById('cert-matricula').value),
       firma_id_1: parseInt(document.getElementById('cert-signature-1').value),
       firma_id_2: document.getElementById('cert-signature-2').value ? parseInt(document.getElementById('cert-signature-2').value) : null,
+      fecha_realizacion: document.getElementById('cert-course-date').value,
       fecha_emision: document.getElementById('cert-issue-date').value,
       vigencia_anos: parseInt(document.getElementById('cert-expiry-years').value)
     };

@@ -36,8 +36,7 @@ async function generarCodigoCertificado() {
     }
 
     // Formatear el número correlativo rellenando con ceros a la izquierda (4 dígitos)
-    const formattedNum = String(nextNum).padStart(4, '0');
-    return `PE-${formattedNum}-${yearSuffix}`;
+    return `PE-${nextNum}-${yearSuffix}`;
   } catch (error) {
     console.error('Error al generar el código correlativo:', error);
     throw new Error('No se pudo generar el código secuencial del certificado.');

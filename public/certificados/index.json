@@ -1,7 +1,7 @@
 {
   "courses": [
     {
-      "name": "AISLAMIENTO Y BLOQUEO",
+      "name": "aislamiento-bloqueo",
       "files": [
         "ALEX TRINIDAD SOLIS.pdf",
         "ARIAS ROSALES JUAN CARLOS.pdf",
@@ -21,7 +21,7 @@
       ]
     },
     {
-      "name": "ELEVACION IZAJE DE CARGA",
+      "name": "elevacion-izaje",
       "files": [
         "ALEX TRINIDAD SOLIS.pdf",
         "ARIAS ROSALES JUAN CARLOS.pdf",
@@ -41,7 +41,7 @@
       ]
     },
     {
-      "name": "EQUIPOS MOVILES Y MANEJO DE LLANTAS",
+      "name": "equipos-moviles",
       "files": [
         "ALEX TRINIDAD SOLIS.pdf",
         "ARIAS ROSALES JUAN CARLOS.pdf",
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "name": "HERRAMIENTAS MANUALES Y DE PODER",
+      "name": "herramientas-manuales",
       "files": [
         "ALEX TRINIDAD SOLIS.pdf",
         "ARIAS ROSALES JUAN CARLOS.pdf",
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "name": "INCENDIO Y EXPLOSION",
+      "name": "incendio-explosion",
       "files": [
         "ALEX TRINIDAD SOLIS.pdf",
         "ARIAS ROSALES JUAN CARLOS.pdf",
@@ -101,7 +101,28 @@
       ]
     },
     {
-      "name": "RESPUESTA A EMERGENCIA",
+      "name": "respuesta-emergencias",
+      "files": [
+        "00000000_PE-0001-26.pdf",
+        "ALEX TRINIDAD SOLIS.pdf",
+        "ARIAS ROSALES JUAN CARLOS.pdf",
+        "BERROSPI AGUILAR SERGIO ENRIQUE.pdf",
+        "CAJAHUANCA ORONCOY FERNANDO MIGUEL.pdf",
+        "CALLUPE ALMERCO ROY MIGUEL.pdf",
+        "EDWIN C REFULIO VALLADARES.pdf",
+        "GOMEZ VERGARA MANUEL ANGEL.pdf",
+        "ILDEFONSO SAAVEDRA MAYCOL.pdf",
+        "JAVIER BALDEON LUIS JHONATAN.pdf",
+        "JUAN YALICO GONZALES.pdf",
+        "LUCAS QUISPE KEVIN RUDY.pdf",
+        "MENDOZA ORTEGA JERSON JUNIOR.pdf",
+        "PUERTAS UBALDO CRISTHIAN YORDI.pdf",
+        "ROBERTO CESPEDES LOAYZA.pdf",
+        "SOLANO BASILIO LELIS DANIEL.pdf"
+      ]
+    },
+    {
+      "name": "seguridad-electrica",
       "files": [
         "ALEX TRINIDAD SOLIS.pdf",
         "ARIAS ROSALES JUAN CARLOS.pdf",
@@ -121,7 +142,7 @@
       ]
     },
     {
-      "name": "SEGURIDAD ELECTRICA",
+      "name": "sustancias-quimicas",
       "files": [
         "ALEX TRINIDAD SOLIS.pdf",
         "ARIAS ROSALES JUAN CARLOS.pdf",
@@ -141,27 +162,7 @@
       ]
     },
     {
-      "name": "SUSTANCIAS QUIMICAS",
-      "files": [
-        "ALEX TRINIDAD SOLIS.pdf",
-        "ARIAS ROSALES JUAN CARLOS.pdf",
-        "BERROSPI AGUILAR SERGIO ENRIQUE.pdf",
-        "CAJAHUANCA ORONCOY FERNANDO MIGUEL.pdf",
-        "CALLUPE ALMERCO ROY MIGUEL.pdf",
-        "EDWIN C REFULIO VALLADARES.pdf",
-        "GOMEZ VERGARA MANUEL ANGEL.pdf",
-        "ILDEFONSO SAAVEDRA MAYCOL.pdf",
-        "JAVIER BALDEON LUIS JHONATAN.pdf",
-        "JUAN YALICO GONZALES.pdf",
-        "LUCAS QUISPE KEVIN RUDY.pdf",
-        "MENDOZA ORTEGA JERSON JUNIOR.pdf",
-        "PUERTAS UBALDO CRISTHIAN YORDI.pdf",
-        "ROBERTO CESPEDES LOAYZA.pdf",
-        "SOLANO BASILIO LELIS DANIEL.pdf"
-      ]
-    },
-    {
-      "name": "TRABAJO EN ALTURA Y PLATAFORMA ELEVADA",
+      "name": "trabajo-altura",
       "files": [
         "ALEX TRINIDAD SOLIS.pdf",
         "ARIAS ROSALES JUAN CARLOS.pdf",

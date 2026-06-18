@@ -14,18 +14,18 @@ async function generarCodigoCertificado() {
   const query = `
     SELECT codigo 
     FROM certificados 
-    WHERE codigo LIKE $1 
+    WHERE codigo LIKE ? 
     ORDER BY id DESC 
     LIMIT 1
   `;
   const pattern = `PE-%-${yearSuffix}`;
 
   try {
-    const result = await db.query(query, [pattern]);
+    const [rows] = await db.query(query, [pattern]);
     let nextNum = 1;
 
-    if (result.rows.length > 0) {
-      const lastCode = result.rows[0].codigo; // ej: "PE-0005-26"
+    if (rows && rows.length > 0) {
+      const lastCode = rows[0].codigo; // ej: "PE-0005-26"
       const parts = lastCode.split('-');
       if (parts.length === 3) {
         const lastNum = parseInt(parts[1], 10);

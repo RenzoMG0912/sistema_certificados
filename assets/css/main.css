@@ -22,12 +22,11 @@ body {
 	opacity: 1;
 	transition: opacity 0.35s ease;
 }
-body.js-enabled {
-	opacity: 0;
-	animation: pageFadeIn 0.45s ease forwards;
+body.js-loading {
+	opacity: 0 !important;
 }
 body.page-exit {
-	opacity: 0;
+	opacity: 0 !important;
 }
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }

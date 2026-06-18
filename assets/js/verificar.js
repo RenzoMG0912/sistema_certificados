@@ -2,6 +2,7 @@
 // Lógica frontend para la página de verificación pública de TEAM HSEC
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.remove('js-loading');
   const spinner = document.getElementById('loading-spinner');
   const searchSection = document.getElementById('search-section');
   const resultSection = document.getElementById('result-section');
@@ -138,4 +139,35 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     showSection('search');
   }
+
+  // Interceptar todos los clics en enlaces internos para transiciones suaves de salida
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a');
+    if (!link) return;
+
+    const href = link.getAttribute('href');
+    if (!href || link.getAttribute('target') === '_blank') return;
+
+    if (href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+
+    let url;
+    try {
+      url = new URL(href, window.location.href);
+    } catch (e) {
+      return;
+    }
+
+    if (url.origin !== window.location.origin) return;
+
+    const samePage = url.pathname === window.location.pathname;
+    const isHashTarget = (href.startsWith('#') && href.length > 1) || (samePage && url.hash);
+
+    if (isHashTarget) return;
+
+    event.preventDefault();
+    document.body.classList.add('page-exit');
+    window.setTimeout(() => {
+      window.location.href = url.toString();
+    }, 350);
+  });
 });

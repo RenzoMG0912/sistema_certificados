@@ -4,142 +4,70 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TEAM HSEC | Dashboard de Administración</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Fonts: Plus Jakarta Sans & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Google Material Symbols & FontAwesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#e60000",
+            "primary-dark": "#b3000a",
+            "secondary": "#d5b874",
+            "on-primary": "#ffffff",
+            "background": "#fcfcfc",
+            "surface": "#ffffff",
+            "surface-container-low": "#fafafa",
+            "surface-container": "#f8f9fa",
+            "surface-container-high": "#f0f1f3",
+            "outline-variant": "#f0f1f3",
+            "outline": "#d1d5db",
+            "on-surface": "#111827",
+            "on-surface-variant": "#6b7280",
+            "primary-container": "#fef2f2",
+            "on-primary-container": "#991b1b",
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "2xl": "1.25rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "title": ["Plus Jakarta Sans", "sans-serif"],
+            "body": ["Inter", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    /* Styling specialized for the dashboard, keeping main.css values intact */
     body {
-      background: #f8fafc;
-      font-family: 'Montserrat', sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      min-height: 100vh;
-      color: #1e293b;
+      background-color: #fcfcfc;
+      color: #111827;
+      -webkit-font-smoothing: antialiased;
     }
     
-    /* Sidebar */
-    .sidebar {
-      width: 260px;
-      background: #0f172a;
-      color: #f8fafc;
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 100;
-      transition: all 0.3s ease;
-      box-shadow: 4px 0 20px rgba(0,0,0,0.1);
-    }
-    .sidebar-brand {
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .sidebar-brand img {
-      width: 45px;
-      background: white;
-      border-radius: 8px;
-      padding: 3px;
-    }
-    .sidebar-brand h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      margin: 0;
-      letter-spacing: 0.5px;
-      color: #fff;
-    }
-    .sidebar-brand h2 span {
-      color: var(--gold);
-    }
-    .sidebar-menu {
-      list-style: none;
-      padding: 20px 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex-grow: 1;
-    }
-    .sidebar-menu li a {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 24px;
-      color: #94a3b8;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.25s ease;
-      border-left: 3px solid transparent;
-    }
-    .sidebar-menu li a:hover {
-      color: #fff;
-      background: rgba(255,255,255,0.03);
-    }
-    .sidebar-menu li a.active {
-      color: #fff;
-      background: rgba(255,255,255,0.05);
-      border-left-color: var(--gold);
-      font-weight: 600;
-    }
-    .sidebar-footer {
-      padding: 20px 24px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      font-size: 12px;
-      color: #64748b;
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
     }
 
-    /* Main Content */
-    .main-wrap {
-      margin-left: 260px;
-      flex-grow: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      transition: all 0.3s ease;
-    }
-    .topbar {
-      height: 70px;
-      background: #ffffff;
-      border-bottom: 1px solid #e2e8f0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      position: sticky;
-      top: 0;
-      z-index: 90;
-    }
-    .topbar-title h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-      margin: 0;
-      color: #0f172a;
-    }
-    .topbar-user {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .topbar-user i {
-      color: var(--red);
-      font-size: 18px;
-    }
-    .content {
-      padding: 40px;
-      flex-grow: 1;
-    }
-
-    /* Tabs */
+    /* Tab switcher handling */
     .tab-content {
       display: none;
       animation: fadeIn 0.4s ease-out;
@@ -148,198 +76,67 @@
       display: block;
     }
 
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 24px;
-      margin-bottom: 35px;
-    }
-    .stat-card {
-      background: #ffffff;
-      border-radius: var(--radius);
-      border: 1px solid #e2e8f0;
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-      transition: transform 0.3s ease;
-    }
-    .stat-card:hover {
-      transform: translateY(-4px);
-    }
-    .stat-info h3 {
-      font-size: 13px;
-      color: #64748b;
-      margin: 0 0 8px 0;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .stat-info p {
-      font-size: 32px;
-      font-weight: 700;
-      margin: 0;
-      color: #0f172a;
-    }
-    .stat-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
-    .stat-blue { background: #eff6ff; color: #3b82f6; }
-    .stat-red { background: #fef2f2; color: #ef4444; }
-    .stat-gold { background: #fefcbf; color: #d69e2e; }
-
-    /* Tables & Cards */
-    .panel-card {
-      background: #ffffff;
-      border-radius: var(--radius);
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-      padding: 28px;
-      margin-bottom: 30px;
-    }
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .panel-header h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      margin: 0;
-      color: #0f172a;
-    }
-    
-    .table-responsive {
-      overflow-x: auto;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      text-align: left;
-    }
-    th {
-      background: #f8fafc;
-      padding: 14px 16px;
-      font-weight: 600;
-      color: #64748b;
-      border-bottom: 1px solid #e2e8f0;
-      text-transform: uppercase;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-    }
-    td {
-      padding: 14px 16px;
-      border-bottom: 1px solid #f1f5f9;
-      color: #334155;
-    }
-    tr:hover td {
-      background: #f8fafc;
-    }
-
-    .badge-status {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
+    /* Sidebar active state */
+    .sidebar-menu li a.active {
+      background-color: #fef2f2; /* primary-container */
+      color: #e60000; /* primary */
       font-weight: 600;
     }
-    .badge-active { background: #dcfce7; color: #166534; }
-    .badge-expired { background: #fee2e2; color: #991b1b; }
-
-    /* Actions */
-    .actions-cell {
-      display: flex;
-      gap: 8px;
-    }
-    .btn-icon {
-      border: 1px solid #e2e8f0;
-      background: #ffffff;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      color: #64748b;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      padding: 0;
-    }
-    .btn-icon:hover {
-      background: #f1f5f9;
-      color: #0f172a;
-      transform: none;
-      box-shadow: none;
-    }
-    .btn-icon.btn-delete:hover {
-      background: #fee2e2;
-      color: #ef4444;
-      border-color: #fca5a5;
+    .sidebar-menu li a.active span {
+      color: #e60000; /* primary */
+      font-variation-settings: 'FILL' 1;
     }
 
-    /* Forms & Modals */
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .form-group label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #475569;
-    }
-    .form-group input, 
-    .form-group select, 
-    .form-group textarea {
-      padding: 10px 14px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 14px;
-      outline: none;
-      min-width: unset;
-      width: 100%;
-    }
-    .form-group input:focus, 
-    .form-group select:focus, 
-    .form-group textarea:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 2px rgba(215, 163, 7, 0.15);
-    }
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 24px;
-    }
-
-    /* Modal dialog overrides */
-    .modal-dashboard {
+    /* Modern Modals styling */
+    .modal {
+      position: fixed;
+      inset: 0;
       z-index: 150;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
     }
-    .modal-dashboard .modal__panel {
+    .modal.is-open {
+      display: flex;
+    }
+    .modal__backdrop {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(4px);
+    }
+    .modal__panel {
+      position: relative;
+      background-color: #ffffff;
+      border-radius: 1.25rem;
+      border: 1px solid #f0f1f3;
+      width: 100%;
       max-width: 600px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      z-index: 10;
+      overflow: hidden;
+      animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* Toast system */
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #e5e7eb;
+      border-radius: 10px;
+    }
+
+    /* Toast styling */
     .toast-container {
       position: fixed;
       bottom: 24px;
@@ -350,21 +147,21 @@
       gap: 10px;
     }
     .toast {
-      background: #0f172a;
+      background-color: #111827;
       color: #ffffff;
       padding: 14px 20px;
-      border-radius: 8px;
+      border-radius: 0.75rem;
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
       display: flex;
       align-items: center;
       gap: 12px;
       font-size: 14px;
-      animation: slideIn 0.3s ease-out;
-      border-left: 4px solid var(--gold);
+      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      border-left: 4px solid #d5b874;
+      transition: opacity 0.3s ease;
     }
     .toast.success { border-left-color: #10b981; }
     .toast.error { border-left-color: #ef4444; }
-
     @keyframes slideIn {
       from { transform: translateX(100%); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }
@@ -374,133 +171,211 @@
       to { opacity: 1; }
     }
 
-    /* Filters row */
-    .filters-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+    /* Badges status */
+    .badge-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
-    .filters-row input {
-      min-width: 200px;
-      border-radius: 8px;
-      padding: 8px 12px;
-    }
+    .badge-active { background-color: #dcfce7; color: #15803d; }
+    .badge-expired { background-color: #fee2e2; color: #b91c1c; }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .sidebar {
-        transform: translateX(-100%);
-      }
-      .sidebar.open {
-        transform: translateX(0);
-      }
-      .main-wrap {
-        margin-left: 0;
-      }
-      .topbar {
-        padding: 0 20px;
-      }
-      .content {
-        padding: 20px;
-      }
+    /* Action icons buttons */
+    .btn-icon {
+      border: 1px solid #e2e8f0;
+      background-color: #ffffff;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0;
+    }
+    .btn-icon:hover {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    .btn-icon.btn-delete:hover {
+      background-color: #fee2e2;
+      color: #ef4444;
+      border-color: #fca5a5;
     }
   </style>
 </head>
-<body>
+<body class="font-body text-sm text-on-surface">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <img src="/img/logo_teamhsec.webp" alt="TEAM HSEC" onerror="this.src='/public/img/logo_teamhsec.webp'">
-      <h2>TEAM <span>HSEC</span></h2>
+  <!-- SideNavBar -->
+  <aside class="h-screen w-72 fixed left-0 top-0 flex flex-col py-8 px-6 bg-white border-r border-outline-variant z-50">
+    <div class="mb-10 px-2 mt-2">
+      <div class="flex items-center gap-3">
+        <img src="/public/img/logo_teamhsec.webp" alt="TEAM HSEC" class="w-10 h-10 object-contain" onerror="this.src='/img/logo_teamhsec.webp'">
+        <div>
+          <h1 class="font-title text-xl font-bold text-primary tracking-tight leading-none">TeamHSEC <span class="text-on-surface">Admin</span></h1>
+          <p class="font-body text-[10px] text-on-surface-variant uppercase tracking-[0.2em] mt-1 opacity-60">Control de Certificados</p>
+        </div>
+      </div>
     </div>
-    <ul class="sidebar-menu">
-      <li><a href="#inicio" class="active" data-tab="inicio"><i class="fa-solid fa-chart-line"></i> Resumen</a></li>
-      <li><a href="#cursos" data-tab="cursos"><i class="fa-solid fa-graduation-cap"></i> Cursos</a></li>
-      <li><a href="#participantes" data-tab="participantes"><i class="fa-solid fa-users"></i> Alumnos</a></li>
-      <li><a href="#matriculas" data-tab="matriculas"><i class="fa-solid fa-id-card"></i> Matrículas</a></li>
-      <li><a href="#certificados" data-tab="certificados"><i class="fa-solid fa-award"></i> Certificados</a></li>
-      <li><a href="#firmas" data-tab="firmas"><i class="fa-solid fa-signature"></i> Firmas</a></li>
-    </ul>
-    <div style="padding: 10px 24px;">
-      <a href="#" id="logout-btn" style="color: #ef4444; font-size: 14px; display: flex; align-items: center; gap: 10px; font-weight: 600;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</a>
-    </div>
-    <div class="sidebar-footer">
-      © 2026 TEAM HSEC
+    
+    <nav class="flex-1">
+      <ul class="sidebar-menu space-y-2">
+        <li>
+          <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all duration-200 group active" href="#inicio" data-tab="inicio">
+            <span class="material-symbols-outlined group-hover:text-primary">dashboard</span>
+            <span class="font-medium">Resumen</span>
+          </a>
+        </li>
+        <li>
+          <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all duration-200 group" href="#cursos" data-tab="cursos">
+            <span class="material-symbols-outlined group-hover:text-primary">menu_book</span>
+            <span class="font-medium">Cursos</span>
+          </a>
+        </li>
+        <li>
+          <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all duration-200 group" href="#participantes" data-tab="participantes">
+            <span class="material-symbols-outlined group-hover:text-primary">group</span>
+            <span class="font-medium">Alumnos</span>
+          </a>
+        </li>
+        <li>
+          <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all duration-200 group" href="#matriculas" data-tab="matriculas">
+            <span class="material-symbols-outlined group-hover:text-primary">assignment_ind</span>
+            <span class="font-medium">Matrículas</span>
+          </a>
+        </li>
+        <li>
+          <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all duration-200 group" href="#certificados" data-tab="certificados">
+            <span class="material-symbols-outlined group-hover:text-primary">verified_user</span>
+            <span class="font-medium">Certificados</span>
+          </a>
+        </li>
+        <li>
+          <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all duration-200 group" href="#firmas" data-tab="firmas">
+            <span class="material-symbols-outlined group-hover:text-primary">draw</span>
+            <span class="font-medium">Firmas</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="mt-auto pt-4 space-y-4 border-t border-outline-variant">
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 hover:text-red-700 transition-all font-semibold" href="#" id="logout-btn">
+        <span class="material-symbols-outlined text-red-600">logout</span>
+        <span class="font-medium">Cerrar Sesión</span>
+      </a>
+      
+      <div class="flex items-center gap-3 px-2 pt-2 border-t border-outline-variant mt-2">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+          <span class="material-symbols-outlined">account_circle</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-semibold text-on-surface text-sm leading-tight" id="user-display">Cargando...</span>
+          <span class="text-[10px] text-secondary font-bold uppercase tracking-wider">Administrador</span>
+        </div>
+      </div>
     </div>
   </aside>
 
   <!-- Main Worktree -->
-  <div class="main-wrap">
+  <div class="ml-72 min-h-screen flex flex-col bg-[#fcfcfc]">
     
     <!-- Topbar -->
-    <header class="topbar">
-      <div class="topbar-title">
-        <h1 id="page-title">Resumen del Sistema</h1>
+    <header class="h-20 bg-white border-b border-outline-variant flex items-center justify-between px-10 sticky top-0 z-40">
+      <div>
+        <nav class="flex items-center text-on-surface-variant font-medium text-[11px] gap-2 uppercase tracking-widest mb-1">
+          <span>Admin Portal</span>
+          <span class="opacity-30">/</span>
+          <span class="text-primary font-bold">Panel</span>
+        </nav>
+        <h1 class="font-title text-xl font-bold text-on-surface" id="page-title">Resumen del Sistema</h1>
       </div>
-      <div class="topbar-user">
-        <i class="fa-solid fa-circle-user"></i>
-        <span id="user-display">Cargando...</span>
+      <div class="flex items-center gap-3">
+        <div class="text-right">
+          <p class="text-xs font-semibold text-on-surface">TEAM HSEC</p>
+          <p class="text-[10px] text-on-surface-variant">Portal de Control</p>
+        </div>
       </div>
     </header>
 
     <!-- Main Content Area -->
-    <main class="content">
-
-      <!-- Toast container -->
+    <main class="flex-grow p-10 max-w-7xl w-full mx-auto">
+      
+      <!-- Toast container (controlled by JS) -->
       <div class="toast-container" id="toast-container"></div>
 
       <!-- TAB 1: RESUMEN / INICIO -->
       <section class="tab-content active" id="tab-inicio">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-info">
-              <h3>Alumnos Registrados</h3>
-              <p id="stat-participantes">0</p>
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div class="bg-white rounded-2xl border border-outline-variant p-6 shadow-sm hover:shadow-md transition-shadow">
+            <span class="font-title text-on-surface-variant uppercase tracking-[0.15em] text-[10px] font-bold">Alumnos Registrados</span>
+            <div class="flex items-center justify-between mt-3">
+              <span class="text-3xl font-bold text-on-surface tracking-tight" id="stat-participantes">0</span>
+              <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[24px]">group</span>
+              </div>
             </div>
-            <div class="stat-icon stat-blue">
-              <i class="fa-solid fa-users"></i>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-info">
-              <h3>Cursos Activos</h3>
-              <p id="stat-cursos">0</p>
-            </div>
-            <div class="stat-icon stat-gold">
-              <i class="fa-solid fa-graduation-cap"></i>
+            <div class="w-full bg-slate-100 h-1.5 mt-6 rounded-full overflow-hidden">
+              <div class="bg-blue-600 h-full w-[70%] rounded-full opacity-80"></div>
             </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-info">
-              <h3>Certificados Emitidos</h3>
-              <p id="stat-certificados">0</p>
+          
+          <div class="bg-white rounded-2xl border border-outline-variant p-6 shadow-sm hover:shadow-md transition-shadow">
+            <span class="font-title text-on-surface-variant uppercase tracking-[0.15em] text-[10px] font-bold">Cursos Activos</span>
+            <div class="flex items-center justify-between mt-3">
+              <span class="text-3xl font-bold text-on-surface tracking-tight" id="stat-cursos">0</span>
+              <div class="w-12 h-12 rounded-xl bg-amber-50 text-secondary flex items-center justify-center">
+                <span class="material-symbols-outlined text-[24px]">menu_book</span>
+              </div>
             </div>
-            <div class="stat-icon stat-red">
-              <i class="fa-solid fa-award"></i>
+            <div class="w-full bg-slate-100 h-1.5 mt-6 rounded-full overflow-hidden">
+              <div class="bg-secondary h-full w-[85%] rounded-full"></div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-2xl border border-outline-variant p-6 shadow-sm hover:shadow-md transition-shadow">
+            <span class="font-title text-on-surface-variant uppercase tracking-[0.15em] text-[10px] font-bold">Certificados Emitidos</span>
+            <div class="flex items-center justify-between mt-3">
+              <span class="text-3xl font-bold text-on-surface tracking-tight" id="stat-certificados">0</span>
+              <div class="w-12 h-12 rounded-xl bg-red-50 text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined text-[24px]">verified_user</span>
+              </div>
+            </div>
+            <div class="w-full bg-slate-100 h-1.5 mt-6 rounded-full overflow-hidden">
+              <div class="bg-primary h-full w-[90%] rounded-full opacity-80"></div>
             </div>
           </div>
         </div>
 
-        <div class="panel-card">
-          <h2>Últimos Certificados Emitidos</h2>
-          <div style="margin-top: 20px;" class="table-responsive">
-            <table>
+        <!-- Recent Certificates Panel -->
+        <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+          <div class="p-6 border-b border-outline-variant">
+            <h2 class="font-title text-lg font-bold text-on-surface">Últimos Certificados Emitidos</h2>
+            <p class="text-sm text-on-surface-variant mt-1">Historial simplificado de credenciales académicas generadas recientemente.</p>
+          </div>
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse">
               <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Alumno</th>
-                  <th>Curso</th>
-                  <th>F. Emisión</th>
-                  <th>Estado</th>
-                  <th>PDF</th>
+                <tr class="bg-surface-container text-on-surface-variant">
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Código</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Alumno</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Curso</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">F. Emisión</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Estado</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">PDF</th>
                 </tr>
               </thead>
-              <tbody id="recent-certs-list">
+              <tbody id="recent-certs-list" class="divide-y divide-outline-variant/60">
                 <tr>
-                  <td colspan="6" style="text-align: center; color: #64748b;">Cargando...</td>
+                  <td colspan="6" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td>
                 </tr>
               </tbody>
             </table>
@@ -510,26 +385,32 @@
 
       <!-- TAB 2: CURSOS -->
       <section class="tab-content" id="tab-cursos">
-        <div class="panel-card">
-          <div class="panel-header">
-            <h2>Gestión de Cursos</h2>
-            <button class="button primary" id="btn-new-course"><i class="fa-solid fa-plus"></i> Nuevo Curso</button>
+        <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+          <div class="p-6 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
+            <div>
+              <h2 class="font-title text-lg font-bold text-on-surface">Gestión de Cursos</h2>
+              <p class="text-sm text-on-surface-variant mt-1">Catálogo oficial de capacitaciones y entrenamientos registrados en el sistema.</p>
+            </div>
+            <button class="bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-course">
+              <span class="material-symbols-outlined">add</span>
+              <span>Nuevo Curso</span>
+            </button>
           </div>
-          <div class="table-responsive">
-            <table>
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse">
               <thead>
-                <tr>
-                  <th>Código Interno</th>
-                  <th>Nombre del Curso</th>
-                  <th>Duración</th>
-                  <th>Categoría</th>
-                  <th>Entrenador</th>
-                  <th>Acciones</th>
+                <tr class="bg-surface-container text-on-surface-variant">
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Código Interno</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Nombre del Curso</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Duración</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Categoría</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Entrenador</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="courses-list">
+              <tbody id="courses-list" class="divide-y divide-outline-variant/60">
                 <tr>
-                  <td colspan="6" style="text-align: center; color: #64748b;">Cargando...</td>
+                  <td colspan="6" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td>
                 </tr>
               </tbody>
             </table>
@@ -539,31 +420,44 @@
 
       <!-- TAB 3: PARTICIPANTES -->
       <section class="tab-content" id="tab-participantes">
-        <div class="panel-card">
-          <div class="panel-header">
-            <h2>Gestión de Alumnos (Participantes)</h2>
-            <button class="button primary" id="btn-new-participant"><i class="fa-solid fa-plus"></i> Nuevo Alumno</button>
+        <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+          <div class="p-6 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
+            <div>
+              <h2 class="font-title text-lg font-bold text-on-surface">Gestión de Alumnos (Participantes)</h2>
+              <p class="text-sm text-on-surface-variant mt-1">Registros de alumnos inscritos y capacitados en las asignaturas de TEAM HSEC.</p>
+            </div>
+            <button class="bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-participant">
+              <span class="material-symbols-outlined">add</span>
+              <span>Nuevo Alumno</span>
+            </button>
           </div>
           
-          <div class="filters-row">
-            <input type="text" id="search-participant-dni" class="form-control" placeholder="Buscar por DNI...">
-            <input type="text" id="search-participant-name" class="form-control" placeholder="Buscar por nombre...">
+          <!-- Filters row -->
+          <div class="p-6 bg-slate-50/50 border-b border-outline-variant flex flex-wrap gap-4 items-center">
+            <div class="relative flex-1 max-w-xs">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+              <input type="text" id="search-participant-dni" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Buscar por DNI...">
+            </div>
+            <div class="relative flex-1 max-w-xs">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+              <input type="text" id="search-participant-name" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Buscar por nombre...">
+            </div>
           </div>
 
-          <div class="table-responsive">
-            <table>
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse">
               <thead>
-                <tr>
-                  <th>DNI / Identificación</th>
-                  <th>Nombre Completo</th>
-                  <th>Correo Electrónico</th>
-                  <th>Fecha Registro</th>
-                  <th>Acciones</th>
+                <tr class="bg-surface-container text-on-surface-variant">
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">DNI / Identificación</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Nombre Completo</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Correo Electrónico</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Fecha Registro</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="participants-list">
+              <tbody id="participants-list" class="divide-y divide-outline-variant/60">
                 <tr>
-                  <td colspan="5" style="text-align: center; color: #64748b;">Cargando...</td>
+                  <td colspan="5" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td>
                 </tr>
               </tbody>
             </table>
@@ -573,24 +467,30 @@
 
       <!-- TAB 4: MATRÍCULAS -->
       <section class="tab-content" id="tab-matriculas">
-        <div class="panel-card">
-          <div class="panel-header">
-            <h2>Gestión de Matrículas</h2>
-            <button class="button primary" id="btn-new-enrollment"><i class="fa-solid fa-link"></i> Registrar Matrícula</button>
+        <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+          <div class="p-6 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
+            <div>
+              <h2 class="font-title text-lg font-bold text-on-surface">Gestión de Matrículas</h2>
+              <p class="text-sm text-on-surface-variant mt-1">Registros oficiales de inscripción de alumnos activos en los cursos.</p>
+            </div>
+            <button class="bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-enrollment">
+              <span class="material-symbols-outlined">link</span>
+              <span>Registrar Matrícula</span>
+            </button>
           </div>
-          <div class="table-responsive">
-            <table>
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse">
               <thead>
-                <tr>
-                  <th>Alumno (DNI)</th>
-                  <th>Curso</th>
-                  <th>Fecha de Registro</th>
-                  <th>Acciones</th>
+                <tr class="bg-surface-container text-on-surface-variant">
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Alumno (DNI)</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Curso</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Fecha de Registro</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="enrollments-list">
+              <tbody id="enrollments-list" class="divide-y divide-outline-variant/60">
                 <tr>
-                  <td colspan="4" style="text-align: center; color: #64748b;">Cargando...</td>
+                  <td colspan="4" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td>
                 </tr>
               </tbody>
             </table>
@@ -600,32 +500,42 @@
 
       <!-- TAB 5: CERTIFICADOS -->
       <section class="tab-content" id="tab-certificados">
-        <div class="panel-card">
-          <div class="panel-header">
-            <h2>Historial de Certificados</h2>
-            <button class="button primary" id="btn-new-certificate"><i class="fa-solid fa-certificate"></i> Emitir Certificado</button>
+        <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+          <div class="p-6 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
+            <div>
+              <h2 class="font-title text-lg font-bold text-on-surface">Historial de Certificados</h2>
+              <p class="text-sm text-on-surface-variant mt-1">Listado histórico y herramientas de administración para certificados emitidos.</p>
+            </div>
+            <button class="bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-certificate">
+              <span class="material-symbols-outlined">workspace_premium</span>
+              <span>Emitir Certificado</span>
+            </button>
           </div>
 
-          <div class="filters-row">
-            <input type="text" id="search-cert-query" class="form-control" placeholder="Buscar por DNI o código...">
+          <!-- Filters row -->
+          <div class="p-6 bg-slate-50/50 border-b border-outline-variant flex flex-wrap gap-4 items-center">
+            <div class="relative flex-1 max-w-xs">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+              <input type="text" id="search-cert-query" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Buscar por DNI o código...">
+            </div>
           </div>
 
-          <div class="table-responsive">
-            <table>
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse">
               <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Alumno</th>
-                  <th>Curso</th>
-                  <th>F. Emisión</th>
-                  <th>Vencimiento</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
+                <tr class="bg-surface-container text-on-surface-variant">
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Código</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Alumno</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Curso</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">F. Emisión</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Vencimiento</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Estado</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="certificates-list">
+              <tbody id="certificates-list" class="divide-y divide-outline-variant/60">
                 <tr>
-                  <td colspan="7" style="text-align: center; color: #64748b;">Cargando...</td>
+                  <td colspan="7" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td>
                 </tr>
               </tbody>
             </table>
@@ -635,25 +545,31 @@
 
       <!-- TAB 6: FIRMAS -->
       <section class="tab-content" id="tab-firmas">
-        <div class="panel-card">
-          <div class="panel-header">
-            <h2>Firmas Autorizadas</h2>
-            <button class="button primary" id="btn-new-signature"><i class="fa-solid fa-file-signature"></i> Nueva Firma</button>
+        <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+          <div class="p-6 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
+            <div>
+              <h2 class="font-title text-lg font-bold text-on-surface">Firmas Autorizadas</h2>
+              <p class="text-sm text-on-surface-variant mt-1">Firmas digitales de los instructores registradas para el diseño del PDF.</p>
+            </div>
+            <button class="bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-signature">
+              <span class="material-symbols-outlined">edit_document</span>
+              <span>Nueva Firma</span>
+            </button>
           </div>
-          <div class="table-responsive">
-            <table>
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse">
               <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nombre del Firmante</th>
-                  <th>Cargo</th>
-                  <th>Ruta/Vista previa</th>
-                  <th>Acciones</th>
+                <tr class="bg-surface-container text-on-surface-variant">
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">ID</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Nombre del Firmante</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Cargo</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Ruta / Vista previa</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="signatures-list">
+              <tbody id="signatures-list" class="divide-y divide-outline-variant/60">
                 <tr>
-                  <td colspan="5" style="text-align: center; color: #64748b;">Cargando...</td>
+                  <td colspan="5" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td>
                 </tr>
               </tbody>
             </table>
@@ -662,44 +578,65 @@
       </section>
 
     </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-8 border-t border-outline-variant bg-white flex flex-col md:flex-row justify-between items-center px-10 text-on-surface-variant font-medium text-xs">
+      <div class="mb-4 md:mb-0 flex items-center gap-2">
+        <span class="font-bold text-primary">TeamHSEC</span>
+        <span class="opacity-50">|</span>
+        <span>© 2026 TeamHSEC Academic Management.</span>
+      </div>
+      <div class="flex gap-6">
+        <a class="hover:text-primary transition-colors uppercase tracking-wider font-semibold" href="#">Política de Privacidad</a>
+        <a class="hover:text-primary transition-colors uppercase tracking-wider font-semibold" href="#">Términos</a>
+        <a class="hover:text-primary transition-colors uppercase tracking-wider font-semibold" href="#">Soporte</a>
+      </div>
+    </footer>
   </div>
 
   <!-- MODAL: CREAR/EDITAR CURSO -->
   <div class="modal modal-dashboard" id="modal-course" aria-hidden="true">
     <div class="modal__backdrop" data-modal-close></div>
-    <div class="modal__panel" role="dialog" aria-modal="true">
-      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close><i class="fa-solid fa-xmark"></i></button>
-      <div class="modal__header">
-        <h3 id="modal-course-title">Registrar Curso</h3>
+    <div class="modal__panel">
+      <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+      <div class="p-6 border-b border-slate-100">
+        <h3 class="font-title text-base font-bold text-on-surface" id="modal-course-title">Registrar Curso</h3>
       </div>
-      <div class="modal__content">
-        <form id="form-course">
+      <div class="p-6">
+        <form id="form-course" class="space-y-4">
           <input type="hidden" id="course-id">
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="course-code">Código Único (para slug/filtrado)</label>
-            <input type="text" id="course-code" placeholder="ej: respuesta-emergencias" required>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="course-code" class="text-xs font-semibold text-slate-700 font-title">Código Único (para slug/filtrado)</label>
+            <input type="text" id="course-code" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: respuesta-emergencias" required>
           </div>
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="course-name">Nombre del Curso</label>
-            <input type="text" id="course-name" placeholder="ej: Respuesta a Emergencias Mineras" required>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="course-name" class="text-xs font-semibold text-slate-700 font-title">Nombre del Curso</label>
+            <input type="text" id="course-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: Respuesta a Emergencias Mineras" required>
           </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="course-duration">Duración</label>
-              <input type="text" id="course-duration" placeholder="ej: 3 horas" required>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label for="course-duration" class="text-xs font-semibold text-slate-700 font-title">Duración</label>
+              <input type="text" id="course-duration" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: 3 horas" required>
             </div>
-            <div class="form-group">
-              <label for="course-category">Categoría</label>
-              <input type="text" id="course-category" placeholder="ej: Seguridad" required>
+            <div class="flex flex-col gap-1.5">
+              <label for="course-category" class="text-xs font-semibold text-slate-700 font-title">Categoría</label>
+              <input type="text" id="course-category" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: Seguridad" required>
             </div>
           </div>
-          <div class="form-group" style="margin-top: 15px; margin-bottom: 15px;">
-            <label for="course-trainer">Entrenador / Ponente</label>
-            <input type="text" id="course-trainer" placeholder="ej: Ing. Gregorio A. Escajadillo Sarmiento" required>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="course-trainer" class="text-xs font-semibold text-slate-700 font-title">Entrenador / Ponente</label>
+            <input type="text" id="course-trainer" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: Ing. Gregorio A. Escajadillo Sarmiento" required>
           </div>
-          <div class="form-actions">
-            <button class="button outline" type="button" data-modal-close>Cancelar</button>
-            <button class="button primary" type="submit">Guardar Curso</button>
+          
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cancelar</button>
+            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="submit">Guardar Curso</button>
           </div>
         </form>
       </div>
@@ -709,29 +646,35 @@
   <!-- MODAL: CREAR/EDITAR PARTICIPANTE -->
   <div class="modal modal-dashboard" id="modal-participant" aria-hidden="true">
     <div class="modal__backdrop" data-modal-close></div>
-    <div class="modal__panel" role="dialog" aria-modal="true">
-      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close><i class="fa-solid fa-xmark"></i></button>
-      <div class="modal__header">
-        <h3 id="modal-participant-title">Registrar Alumno</h3>
+    <div class="modal__panel">
+      <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+      <div class="p-6 border-b border-slate-100">
+        <h3 class="font-title text-base font-bold text-on-surface" id="modal-participant-title">Registrar Alumno</h3>
       </div>
-      <div class="modal__content">
-        <form id="form-participant">
+      <div class="p-6">
+        <form id="form-participant" class="space-y-4">
           <input type="hidden" id="participant-id">
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="participant-dni">DNI / Documento de Identidad</label>
-            <input type="text" id="participant-dni" placeholder="ej: 70123456" required>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="participant-dni" class="text-xs font-semibold text-slate-700 font-title">DNI / Documento de Identidad</label>
+            <input type="text" id="participant-dni" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: 70123456" required>
           </div>
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="participant-name">Nombre Completo</label>
-            <input type="text" id="participant-name" placeholder="ej: Juan Pérez Gómez" required>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="participant-name" class="text-xs font-semibold text-slate-700 font-title">Nombre Completo</label>
+            <input type="text" id="participant-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: Juan Pérez Gómez" required>
           </div>
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="participant-email">Correo Electrónico (Opcional)</label>
-            <input type="email" id="participant-email" placeholder="ej: juan.perez@email.com">
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="participant-email" class="text-xs font-semibold text-slate-700 font-title">Correo Electrónico (Opcional)</label>
+            <input type="email" id="participant-email" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: juan.perez@email.com">
           </div>
-          <div class="form-actions">
-            <button class="button outline" type="button" data-modal-close>Cancelar</button>
-            <button class="button primary" type="submit">Guardar Alumno</button>
+          
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cancelar</button>
+            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="submit">Guardar Alumno</button>
           </div>
         </form>
       </div>
@@ -741,28 +684,33 @@
   <!-- MODAL: REGISTRAR MATRÍCULA -->
   <div class="modal modal-dashboard" id="modal-enrollment" aria-hidden="true">
     <div class="modal__backdrop" data-modal-close></div>
-    <div class="modal__panel" role="dialog" aria-modal="true">
-      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close><i class="fa-solid fa-xmark"></i></button>
-      <div class="modal__header">
-        <h3>Matricular Alumno en Curso</h3>
+    <div class="modal__panel">
+      <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+      <div class="p-6 border-b border-slate-100">
+        <h3 class="font-title text-base font-bold text-on-surface">Matricular Alumno en Curso</h3>
       </div>
-      <div class="modal__content">
-        <form id="form-enrollment">
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="enrollment-participant">Seleccionar Alumno (DNI)</label>
-            <select id="enrollment-participant" required>
+      <div class="p-6">
+        <form id="form-enrollment" class="space-y-4">
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="enrollment-participant" class="text-xs font-semibold text-slate-700 font-title">Seleccionar Alumno (DNI)</label>
+            <select id="enrollment-participant" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
               <option value="">Cargando alumnos...</option>
             </select>
           </div>
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="enrollment-course">Seleccionar Curso</label>
-            <select id="enrollment-course" required>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="enrollment-course" class="text-xs font-semibold text-slate-700 font-title">Seleccionar Curso</label>
+            <select id="enrollment-course" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
               <option value="">Cargando cursos...</option>
             </select>
           </div>
-          <div class="form-actions">
-            <button class="button outline" type="button" data-modal-close>Cancelar</button>
-            <button class="button primary" type="submit">Matricular</button>
+          
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cancelar</button>
+            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="submit">Matricular</button>
           </div>
         </form>
       </div>
@@ -772,41 +720,46 @@
   <!-- MODAL: EMITIR CERTIFICADO -->
   <div class="modal modal-dashboard" id="modal-certificate" aria-hidden="true">
     <div class="modal__backdrop" data-modal-close></div>
-    <div class="modal__panel" role="dialog" aria-modal="true">
-      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close><i class="fa-solid fa-xmark"></i></button>
-      <div class="modal__header">
-        <h3>Emitir Certificado Oficial</h3>
+    <div class="modal__panel">
+      <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+      <div class="p-6 border-b border-slate-100">
+        <h3 class="font-title text-base font-bold text-on-surface">Emitir Certificado Oficial</h3>
       </div>
-      <div class="modal__content">
-        <form id="form-certificate">
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="cert-matricula">Matrícula (Alumno - Curso)</label>
-            <select id="cert-matricula" required>
+      <div class="p-6">
+        <form id="form-certificate" class="space-y-4">
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="cert-matricula" class="text-xs font-semibold text-slate-700 font-title">Matrícula (Alumno - Curso)</label>
+            <select id="cert-matricula" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
               <option value="">Selecciona una matrícula activa...</option>
             </select>
           </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="cert-signature-1">Firma Principal (Instructor)</label>
-              <select id="cert-signature-1" required>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label for="cert-signature-1" class="text-xs font-semibold text-slate-700 font-title">Firma Principal (Instructor)</label>
+              <select id="cert-signature-1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
                 <option value="">Seleccionar firma...</option>
               </select>
             </div>
-            <div class="form-group">
-              <label for="cert-signature-2">Firma Secundaria (Opcional)</label>
-              <select id="cert-signature-2">
+            <div class="flex flex-col gap-1.5">
+              <label for="cert-signature-2" class="text-xs font-semibold text-slate-700 font-title">Firma Secundaria (Opcional)</label>
+              <select id="cert-signature-2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all">
                 <option value="">Ninguna</option>
               </select>
             </div>
           </div>
-          <div class="form-grid" style="margin-top: 15px;">
-            <div class="form-group">
-              <label for="cert-issue-date">Fecha Emisión</label>
-              <input type="date" id="cert-issue-date" required>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label for="cert-issue-date" class="text-xs font-semibold text-slate-700 font-title">Fecha Emisión</label>
+              <input type="date" id="cert-issue-date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
             </div>
-            <div class="form-group">
-              <label for="cert-expiry-years">Vigencia (Años)</label>
-              <select id="cert-expiry-years" required>
+            <div class="flex flex-col gap-1.5">
+              <label for="cert-expiry-years" class="text-xs font-semibold text-slate-700 font-title">Vigencia (Años)</label>
+              <select id="cert-expiry-years" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
                 <option value="1" selected>1 año</option>
                 <option value="2">2 años</option>
                 <option value="3">3 años</option>
@@ -814,9 +767,10 @@
               </select>
             </div>
           </div>
-          <div class="form-actions" style="margin-top: 25px;">
-            <button class="button outline" type="button" data-modal-close>Cancelar</button>
-            <button class="button primary" type="submit">Generar y Emitir Certificado</button>
+          
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cancelar</button>
+            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="submit">Generar y Emitir Certificado</button>
           </div>
         </form>
       </div>
@@ -826,28 +780,34 @@
   <!-- MODAL: REGISTRAR FIRMA -->
   <div class="modal modal-dashboard" id="modal-signature" aria-hidden="true">
     <div class="modal__backdrop" data-modal-close></div>
-    <div class="modal__panel" role="dialog" aria-modal="true">
-      <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close><i class="fa-solid fa-xmark"></i></button>
-      <div class="modal__header">
-        <h3>Agregar Firma Autorizada</h3>
+    <div class="modal__panel">
+      <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+      <div class="p-6 border-b border-slate-100">
+        <h3 class="font-title text-base font-bold text-on-surface">Agregar Firma Autorizada</h3>
       </div>
-      <div class="modal__content">
-        <form id="form-signature">
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="sig-name">Nombre del Firmante</label>
-            <input type="text" id="sig-name" placeholder="ej: Ing. Gregorio A. Escajadillo" required>
+      <div class="p-6">
+        <form id="form-signature" class="space-y-4">
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="sig-name" class="text-xs font-semibold text-slate-700 font-title">Nombre del Firmante</label>
+            <input type="text" id="sig-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: Ing. Gregorio A. Escajadillo" required>
           </div>
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="sig-role">Cargo / Ocupación</label>
-            <input type="text" id="sig-role" placeholder="ej: Instructor HSEC" required>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="sig-role" class="text-xs font-semibold text-slate-700 font-title">Cargo / Ocupación</label>
+            <input type="text" id="sig-role" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: Instructor HSEC" required>
           </div>
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label for="sig-url">Ruta de Firma (o URL)</label>
-            <input type="text" id="sig-url" placeholder="ej: /assets/img/firmas/firma_gregorio.png" required>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="sig-url" class="text-xs font-semibold text-slate-700 font-title">Ruta de Firma (o URL)</label>
+            <input type="text" id="sig-url" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: /assets/img/firmas/firma_gregorio.png" required>
           </div>
-          <div class="form-actions">
-            <button class="button outline" type="button" data-modal-close>Cancelar</button>
-            <button class="button primary" type="submit">Guardar Firma</button>
+          
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cancelar</button>
+            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="submit">Guardar Firma</button>
           </div>
         </form>
       </div>

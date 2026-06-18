@@ -1,3 +1,4 @@
+document.body.classList.remove('js-loading');
 document.body.classList.add('js-enabled');
 
 const initPage = () => {
@@ -24,46 +25,54 @@ const initPage = () => {
     window.setTimeout(() => link.classList.remove('is-activating'), 460);
   };
 
-  navLinks.forEach((link) => {
-    link.addEventListener('click', (event) => {
-      const href = link.getAttribute('href') || '';
-      if (!href) {
+  // Interceptar todos los clics en enlaces internos para transiciones suaves
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a');
+    if (!link) return;
+
+    const href = link.getAttribute('href');
+    if (!href || link.getAttribute('target') === '_blank') return;
+
+    // Ignorar protocolos especiales
+    if (href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+
+    let url;
+    try {
+      url = new URL(href, window.location.href);
+    } catch (e) {
+      return;
+    }
+
+    // Comprobar si es un enlace de origen interno
+    if (url.origin !== window.location.origin) return;
+
+    const samePage = url.pathname === window.location.pathname;
+    const isHashTarget = (href.startsWith('#') && href.length > 1) || (samePage && url.hash);
+
+    if (isHashTarget) {
+      event.preventDefault();
+      const targetId = url.hash.replace('#', '');
+      const target = document.getElementById(targetId);
+      if (!target) {
+        window.location.href = url.toString();
         return;
       }
-
-      triggerNavFx(link);
-
-      let url;
-      try {
-        url = new URL(href, window.location.href);
-      } catch (error) {
-        return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      const navLink = link.closest('.nav-links') ? link : null;
+      if (navLink) {
+        triggerNavFx(navLink);
       }
+      setActive(targetId);
+      return;
+    }
 
-      const samePage = url.pathname === window.location.pathname;
-      const isHashTarget = (href.startsWith('#') && href.length > 1) || (samePage && url.hash);
-
-      if (isHashTarget) {
-        event.preventDefault();
-        const targetId = url.hash.replace('#', '');
-        const target = document.getElementById(targetId);
-        if (!target) {
-          window.location.href = url.toString();
-          return;
-        }
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setActive(targetId);
-        return;
-      }
-
-      if (url.origin === window.location.origin) {
-        event.preventDefault();
-        document.body.classList.add('page-exit');
-        window.setTimeout(() => {
-          window.location.href = url.toString();
-        }, 220);
-      }
-    });
+    // Efecto de salida (fade-out)
+    event.preventDefault();
+    document.body.classList.add('page-exit');
+    window.setTimeout(() => {
+      window.location.href = url.toString();
+    }, 350);
   });
 
   let ticking = false;

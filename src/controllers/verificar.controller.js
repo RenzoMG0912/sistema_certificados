@@ -18,6 +18,31 @@ async function registrarVerificacion(certId, req) {
   }
 }
 
+function normalizeSearchCodigo(codigo) {
+  if (!codigo) return '';
+  let clean = codigo.trim().toUpperCase();
+
+  if (clean.startsWith('HSEC-')) {
+    const parts = clean.split('-');
+    // HSEC-2026-0519-98626 (4 parts)
+    if (parts.length === 4) {
+      const lastPart = parts[3]; // e.g. "98626"
+      if (lastPart.length >= 3) {
+        const yrSuffix = lastPart.slice(-2); // "26"
+        const num = lastPart.slice(0, -2); // "986"
+        return `PE-${num}-${yrSuffix}`;
+      }
+    }
+    // HSEC-2026-0519-986-26 (5 parts)
+    if (parts.length === 5) {
+      const num = parts[3];
+      const yrSuffix = parts[4];
+      return `PE-${num}-${yrSuffix}`;
+    }
+  }
+  return clean;
+}
+
 module.exports = {
   verificarPorHash: async (req, res, next) => {
     const { hash } = req.params;
@@ -75,6 +100,28 @@ module.exports = {
     const { codigo, dni } = req.body;
 
     try {
+      const cleanCodigo = codigo.trim();
+      const normalized = normalizeSearchCodigo(cleanCodigo);
+      const codigos = [cleanCodigo];
+      if (normalized && normalized !== cleanCodigo) {
+        codigos.push(normalized);
+      }
+
+      for (const cod of [...codigos]) {
+        const parts = cod.split('-');
+        if (parts.length === 3) {
+          const prefix = parts[0];
+          const num = parseInt(parts[1], 10);
+          const yr = parts[2];
+          if (!isNaN(num)) {
+            codigos.push(`${prefix}-${num}-${yr}`);
+            codigos.push(`${prefix}-${String(num).padStart(4, '0')}-${yr}`);
+          }
+        }
+      }
+
+      const uniqueCodigos = [...new Set(codigos)];
+
       const query = `
         SELECT c.id, c.codigo, c.hash, c.fecha_emision, c.fecha_vencimiento, c.pdf_path,
                p.nombres AS alumno_nombre, p.dni AS alumno_dni,
@@ -87,9 +134,9 @@ module.exports = {
         JOIN cursos cur ON m.curso_id = cur.id
         LEFT JOIN firmas f1 ON c.firma_id_1 = f1.id
         LEFT JOIN firmas f2 ON c.firma_id_2 = f2.id
-        WHERE c.codigo = ? AND p.dni = ?
+        WHERE c.codigo IN (?) AND p.dni = ?
       `;
-      const [rows] = await db.query(query, [codigo.trim(), dni.trim()]);
+      const [rows] = await db.query(query, [uniqueCodigos, dni.trim()]);
 
       if (rows.length === 0) {
         return res.status(404).json({
@@ -109,7 +156,32 @@ module.exports = {
       });
     } catch (error) {
       console.warn('[Mock DB] Buscando certificado manual en la memoria temporal');
-      const cert = mockDb.certificados.find(c => c.codigo.trim() === codigo.trim() && c.alumno_dni.trim() === dni.trim());
+      const cleanCodigo = codigo.trim();
+      const normalized = normalizeSearchCodigo(cleanCodigo);
+      const codigos = [cleanCodigo];
+      if (normalized && normalized !== cleanCodigo) {
+        codigos.push(normalized);
+      }
+
+      for (const cod of [...codigos]) {
+        const parts = cod.split('-');
+        if (parts.length === 3) {
+          const prefix = parts[0];
+          const num = parseInt(parts[1], 10);
+          const yr = parts[2];
+          if (!isNaN(num)) {
+            codigos.push(`${prefix}-${num}-${yr}`);
+            codigos.push(`${prefix}-${String(num).padStart(4, '0')}-${yr}`);
+          }
+        }
+      }
+
+      const uniqueCodigos = [...new Set(codigos)];
+
+      const cert = mockDb.certificados.find(c => 
+        uniqueCodigos.includes(c.codigo.trim()) && c.alumno_dni.trim() === dni.trim()
+      );
+
       if (!cert) {
         return res.status(404).json({
           valid: false,

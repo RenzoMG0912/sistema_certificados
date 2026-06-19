@@ -160,29 +160,124 @@ function drawFallbackCip(doc, x, y, size) {
   doc.restore();
 }
 
-function drawFallbackRosette(doc, x, y, size, year) {
-  const centerX = x + size / 2;
-  const centerY = y + size / 2;
+function drawStar(doc, cx, cy, spikes, outerRadius, innerRadius, fill = '#5C4008') {
+  let rot = (Math.PI / 2) * 3;
+  let x = cx;
+  let y = cy;
+  const step = Math.PI / spikes;
 
   doc.save();
-  doc.polygon([x + size * 0.22, y + size * 0.55], [x + size * 0.43, y + size * 0.55], [x + size * 0.35, y + size * 1.65], [x + size * 0.1, y + size * 1.45]).fill(COLORS.red);
-  doc.polygon([x + size * 0.57, y + size * 0.55], [x + size * 0.78, y + size * 0.55], [x + size * 0.9, y + size * 1.45], [x + size * 0.65, y + size * 1.65]).fill(COLORS.redWine);
+  doc.fillColor(fill);
+  doc.moveTo(cx, cy - outerRadius);
+  for (let i = 0; i < spikes; i++) {
+    x = cx + Math.cos(rot) * outerRadius;
+    y = cy + Math.sin(rot) * outerRadius;
+    doc.lineTo(x, y);
+    rot += step;
 
-  for (let i = 0; i < 32; i += 1) {
-    const angle = (Math.PI * 2 * i) / 32;
-    const inner = size * 0.34;
-    const outer = i % 2 === 0 ? size * 0.47 : size * 0.41;
-    doc.moveTo(centerX + Math.cos(angle) * inner, centerY + Math.sin(angle) * inner)
-       .lineTo(centerX + Math.cos(angle + Math.PI / 32) * outer, centerY + Math.sin(angle + Math.PI / 32) * outer)
-       .lineTo(centerX + Math.cos(angle + Math.PI / 16) * inner, centerY + Math.sin(angle + Math.PI / 16) * inner)
-       .fill(COLORS.gold);
+    x = cx + Math.cos(rot) * innerRadius;
+    y = cy + Math.sin(rot) * innerRadius;
+    doc.lineTo(x, y);
+    rot += step;
   }
+  doc.lineTo(cx, cy - outerRadius);
+  doc.closePath();
+  doc.fill();
+  doc.restore();
+}
 
-  doc.circle(centerX, centerY, size * 0.27).fill('#ffffff');
-  doc.fillColor(COLORS.red)
-     .font('Helvetica-Bold')
-     .fontSize(size * 0.15)
-     .text(String(year), x, y + size * 0.43, { width: size, align: 'center' });
+function drawRibbonAndMedal(doc, x, y, width, height, year) {
+  const tailY = y + height;
+  const cutY = tailY - 15;
+  const midX = x + width / 2;
+
+  doc.save();
+
+  // 1. Draw ribbon shadow/backing border in gold
+  doc.fillColor(COLORS.gold);
+  doc.moveTo(x - 2, y)
+     .lineTo(x + width + 2, y)
+     .lineTo(x + width + 2, tailY + 1)
+     .lineTo(midX, cutY - 1)
+     .lineTo(x - 2, tailY + 1)
+     .closePath()
+     .fill();
+
+  // 2. Draw red ribbon body
+  doc.fillColor(COLORS.red);
+  doc.moveTo(x, y)
+     .lineTo(x + width, y)
+     .lineTo(x + width, tailY)
+     .lineTo(midX, cutY)
+     .lineTo(x, tailY)
+     .closePath()
+     .fill();
+
+  // 3. Shading overlay for 3D ribbon effect
+  doc.fillColor('#000000').opacity(0.12);
+  doc.moveTo(x, y)
+     .lineTo(midX, y)
+     .lineTo(midX, cutY)
+     .lineTo(x, tailY)
+     .closePath()
+     .fill();
+  doc.opacity(1.0);
+
+  // 4. Draw Gold Medal centered at midX, centerY
+  const centerY = y + 105;
+  const outerRadius = 38;
+  const innerRadius = 31;
+
+  // Scalloped outer edge (ruffle pattern)
+  doc.fillColor(COLORS.gold);
+  const points = 36;
+  for (let i = 0; i < points * 2; i++) {
+    const angle = (Math.PI * i) / points;
+    const r = i % 2 === 0 ? outerRadius : outerRadius - 3.5;
+    const px = midX + Math.cos(angle) * r;
+    const py = centerY + Math.sin(angle) * r;
+    if (i === 0) {
+      doc.moveTo(px, py);
+    } else {
+      doc.lineTo(px, py);
+    }
+  }
+  doc.closePath().fill();
+
+  // Outer gold ring stroke
+  doc.strokeColor('#A88010').lineWidth(1.2);
+  doc.circle(midX, centerY, innerRadius).stroke();
+
+  // Inner gold circle fill
+  doc.fillColor('#EBC864').circle(midX, centerY, innerRadius - 0.5).fill();
+
+  // Dotted/beaded ring
+  doc.save();
+  doc.strokeColor('#A88010').lineWidth(0.8).dash(1.5, { space: 1.5 });
+  doc.circle(midX, centerY, innerRadius - 4).stroke();
+  doc.restore();
+
+  // 3 stars arc above the year
+  const starY = centerY - 10;
+  drawStar(doc, midX, starY - 2, 5, 2.5, 1);
+  drawStar(doc, midX - 7, starY, 5, 2, 0.8);
+  drawStar(doc, midX + 7, starY, 5, 2, 0.8);
+
+  // Year text in center
+  doc.fillColor('#5C4008')
+     .font('Times-Bold')
+     .fontSize(13.5)
+     .text(String(year), midX - 25, centerY - 4, { width: 50, align: 'center' });
+
+  // Laurel wreath arc at the bottom
+  doc.save();
+  doc.strokeColor('#5C4008').lineWidth(1.0);
+  doc.arc(midX - 2, centerY + 2, 14, Math.PI * 0.4, Math.PI * 0.9, false);
+  doc.stroke();
+  doc.arc(midX + 2, centerY + 2, 14, Math.PI * 0.1, Math.PI * 0.6, false);
+  doc.stroke();
+  doc.restore();
+
   doc.restore();
 }
 
@@ -275,25 +370,47 @@ function drawBottomLeftDecoration(doc, width, height) {
   doc.restore();
 }
 
-async function drawHeader(doc, pageWidth) {
-  const logoRvPath = assetPath('public', 'img', 'logo_RV_azul.webp');
+async function drawHeader(doc, pageWidth, certificadoData) {
+  const logoTeamHsecPath = assetPath('public', 'img', 'logo_teamhsec.webp');
   const cipPath = assetPath('public', 'img', 'cip.webp');
-  const rosettePath = assetPath('public', 'img', 'escarapela_2026.webp');
 
-  // Cinta superior guinda central
+  // Cinta superior guinda central con extremos swallowtail
+  const pts = [
+    [220, 20],
+    [pageWidth - 220, 20],
+    [pageWidth - 240, 34],
+    [pageWidth - 220, 48],
+    [220, 48],
+    [240, 34]
+  ];
+
   doc.save();
   doc.fillColor(COLORS.red);
-  doc.polygon([220, 20], [pageWidth - 220, 20], [pageWidth - 240, 48], [240, 48]);
+  doc.polygon(...pts);
   doc.fill();
 
   doc.strokeColor(COLORS.gold).lineWidth(1.2);
-  doc.polygon([220, 20], [pageWidth - 220, 20], [pageWidth - 240, 48], [240, 48]);
+  doc.polygon(...pts);
   doc.stroke();
 
+  // Dibujar diamantes dorados flotantes externos en los extremos
+  drawGoldDiamond(doc, 205, 34, 3.5);
+  drawGoldDiamond(doc, pageWidth - 205, 34, 3.5);
+  doc.restore();
+
+  // Texto de la cinta superior
+  const headerText = 'TEAM HEALTH, SAFETY, ENVIRONMENT, AND COMMUNITY';
+  doc.save();
   doc.fillColor('#ffffff')
      .font('Helvetica-Bold')
-     .fontSize(9)
-     .text('◆ TEAM HEALTH, SAFETY, ENVIRONMENT, AND COMMUNITY ◆', 240, 29, { width: pageWidth - 480, align: 'center' });
+     .fontSize(8.5)
+     .text(headerText, 240, 29, { width: pageWidth - 480, align: 'center' });
+
+  // Calcular la posición exacta de los diamantes dorados alrededor del texto
+  const textWidth = doc.widthOfString(headerText);
+  const textStartX = pageWidth / 2 - textWidth / 2;
+  drawGoldDiamond(doc, textStartX - 10, 33, 4);
+  drawGoldDiamond(doc, textStartX + textWidth + 10, 33, 4);
   doc.restore();
 
   // Logos de encabezado
@@ -301,13 +418,14 @@ async function drawHeader(doc, pageWidth) {
     drawFallbackCip(doc, 55, 35, 75);
   }
 
-  if (!(await tryImage(doc, logoRvPath, pageWidth - 145, 35, { width: 75 }))) {
-    drawFallbackTeamLogo(doc, pageWidth - 145, 35, 75);
+  // Logo de TEAM HSEC (Rojo)
+  if (!(await tryImage(doc, logoTeamHsecPath, pageWidth - 150, 28, { width: 90 }))) {
+    drawFallbackTeamLogo(doc, pageWidth - 150, 28, 90);
   }
 
-  if (!(await tryImage(doc, rosettePath, pageWidth - 250, 0, { width: 75 }))) {
-    drawFallbackRosette(doc, pageWidth - 250, 15, 75, 2026);
-  }
+  // Dibujar Moño/Roseta y listón colgando a la derecha
+  const issueYear = certificadoData.fecha_emision ? new Date(certificadoData.fecha_emision + 'T00:00:00').getFullYear() : 2026;
+  drawRibbonAndMedal(doc, pageWidth - 98, 0, 54, 190, issueYear);
 }
 
 function drawGoldDiamond(doc, x, y, size = 6) {
@@ -363,31 +481,42 @@ function drawCertificateText(doc, certificadoData, pageWidth) {
   drawGoldDiamond(doc, pageWidth / 2, 315, 5);
   doc.restore();
 
-  // Texto descriptivo del curso
-  const paragraphX = 100;
-  const paragraphY = 335;
-  const paragraphWidth = pageWidth - 200;
+  // Texto descriptivo del curso (sin continued: true para evitar bug de alineación)
+  const paragraphY = 334;
+  
+  const part1 = 'Por haber participado y aprobado el curso de: ';
+  const part2 = `"${courseName}",`;
+  const part3 = `realizado el día ${courseDate}, con una duración de ${duration}.`;
 
-  doc.fillColor(COLORS.muted)
-     .font('Helvetica')
-     .fontSize(12.5)
-     .text('Por haber participado y aprobado el curso de: ', paragraphX, paragraphY, {
-       width: paragraphWidth,
-       align: 'center',
-       continued: true,
-     })
-     .font('Helvetica-Bold')
-     .fillColor(COLORS.red)
-     .text(`"${courseName}", `, { continued: true })
-     .font('Helvetica')
+  // Calcular anchos para centrado manual
+  doc.font('Helvetica').fontSize(12);
+  const w1 = doc.widthOfString(part1);
+  doc.font('Helvetica-Bold').fontSize(12);
+  const w2 = doc.widthOfString(part2);
+
+  const line1Width = w1 + w2;
+  const line1StartX = pageWidth / 2 - line1Width / 2;
+
+  // Dibujar Parte 1
+  doc.font('Helvetica')
      .fillColor(COLORS.muted)
-     .text(`realizado el día ${courseDate}, con una duración de ${duration}.`, { continued: false });
+     .text(part1, line1StartX, paragraphY, { lineBreak: false });
+
+  // Dibujar Parte 2 (Nombre del curso en negrita guinda)
+  doc.font('Helvetica-Bold')
+     .fillColor(COLORS.red)
+     .text(part2, line1StartX + w1, paragraphY, { lineBreak: false });
+
+  // Dibujar Línea 2
+  doc.font('Helvetica')
+     .fillColor(COLORS.muted)
+     .text(part3, 0, paragraphY + 18, { width: pageWidth, align: 'center' });
 
   // Divisor ornamental debajo de la descripción
   doc.save();
   doc.strokeColor(COLORS.gold).lineWidth(0.8);
-  doc.moveTo(360, 380).lineTo(pageWidth - 360, 380).stroke();
-  drawGoldDiamond(doc, pageWidth / 2, 380, 5);
+  doc.moveTo(360, 382).lineTo(pageWidth - 360, 382).stroke();
+  drawGoldDiamond(doc, pageWidth / 2, 382, 5);
   doc.restore();
 }
 
@@ -447,6 +576,42 @@ async function drawSignature(doc, firma, x, y, defaults = {}) {
   }
 }
 
+function drawGoldLeaf(doc, x, y, rotate) {
+  doc.save();
+  doc.translate(x, y);
+  doc.rotate(rotate);
+  doc.fillColor(COLORS.gold);
+  doc.moveTo(0, 0);
+  doc.quadraticCurveTo(4, -2.5, 8, 0);
+  doc.quadraticCurveTo(4, 2.5, 0, 0);
+  doc.closePath().fill();
+  doc.restore();
+}
+
+function drawGoldLaurel(doc, x, y, isRight = false) {
+  doc.save();
+  const dir = isRight ? -1 : 1;
+
+  // Dibujar el tallo de la rama
+  doc.strokeColor(COLORS.gold).lineWidth(0.8);
+  doc.moveTo(x, y);
+  doc.quadraticCurveTo(x + 12 * dir, y - 2, x + 24 * dir, y - 5);
+  doc.stroke();
+
+  // Hojas a lo largo del tallo
+  drawGoldLeaf(doc, x + 4 * dir, y - 1, (isRight ? 165 : 15));
+  drawGoldLeaf(doc, x + 10 * dir, y - 3, (isRight ? 155 : 25));
+  drawGoldLeaf(doc, x + 16 * dir, y - 4, (isRight ? 145 : 35));
+  drawGoldLeaf(doc, x + 22 * dir, y - 5, (isRight ? 135 : 45));
+
+  // Hojas al otro lado
+  drawGoldLeaf(doc, x + 4 * dir, y + 1, (isRight ? 195 : -15));
+  drawGoldLeaf(doc, x + 10 * dir, y + 3, (isRight ? 205 : -25));
+  drawGoldLeaf(doc, x + 16 * dir, y + 4, (isRight ? 215 : -35));
+
+  doc.restore();
+}
+
 function drawBottomRibbon(doc, pageWidth, pageHeight) {
   const x = 160;
   const y = pageHeight - 38;
@@ -462,10 +627,18 @@ function drawBottomRibbon(doc, pageWidth, pageHeight) {
   doc.polygon([x, y], [x + width, y], [x + width - 10, y + height], [x + 10, y + height]);
   doc.stroke();
 
+  const msg = 'VIGENCIA: 01 AÑO DESDE LA FECHA DE EMISIÓN.';
   doc.fillColor('#ffffff')
      .font('Helvetica-Bold')
      .fontSize(8.5)
-     .text('◆ VIGENCIA: 01 AÑO DESDE LA FECHA DE EMISIÓN. ◆', x, y + 6, { width: width, align: 'center' });
+     .text(msg, x, y + 6, { width: width, align: 'center' });
+
+  // Laurel dorado a los costados del texto
+  const msgWidth = doc.widthOfString(msg);
+  const textStartX = pageWidth / 2 - msgWidth / 2;
+  drawGoldLaurel(doc, textStartX - 32, y + 11, false);
+  drawGoldLaurel(doc, textStartX + msgWidth + 8, y + 11, true);
+
   doc.restore();
 }
 
@@ -489,11 +662,27 @@ async function drawQrSection(doc, certificadoData, pageWidth, pageHeight) {
     doc.font('Helvetica').fontSize(6).fillColor(COLORS.muted).text('QR no disponible', qrX, qrY + 20, { width: qrSize, align: 'center' });
   }
 
+  // Generar el ID en formato extendido: HSEC-YYYY-MMDD-NUMYY
+  let fullId = certificadoData.codigo;
+  if (certificadoData.codigo && !certificadoData.codigo.startsWith('HSEC-')) {
+    const parts = certificadoData.codigo.split('-');
+    if (parts.length === 3 && parts[0] === 'PE') {
+      const num = parts[1];
+      const yrSuffix = parts[2];
+      const date = new Date((certificadoData.fecha_realizacion || certificadoData.fecha_emision) + 'T00:00:00');
+      const year = date.getFullYear() || new Date().getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const numInt = parseInt(num, 10);
+      fullId = `HSEC-${year}-${month}${day}-${numInt}${yrSuffix}`;
+    }
+  }
+
   // ID del certificado debajo del QR
   doc.fillColor('#1A1A1A')
      .font('Helvetica-Bold')
-     .fontSize(8)
-     .text(`ID: ${certificadoData.codigo}`, qrX - 25, qrY + qrSize + 6, { width: qrSize + 50, align: 'center' });
+     .fontSize(7.5)
+     .text(`ID: ${fullId}`, qrX - 25, qrY + qrSize + 6, { width: qrSize + 50, align: 'center' });
 }
 
 /**
@@ -541,7 +730,7 @@ async function generarCertificadoPDF(certificadoData, savePath) {
       drawBorders(doc, width, height);
 
       // 5. Encabezado (cinta superior y logos)
-      await drawHeader(doc, width);
+      await drawHeader(doc, width, certificadoData);
 
       // 6. Texto del Certificado (Título, Nombre, Curso, Divisores)
       drawCertificateText(doc, certificadoData, width);
@@ -549,13 +738,13 @@ async function generarCertificadoPDF(certificadoData, savePath) {
       // 7. Fecha de Emisión (centrada)
       drawIssueDate(doc, certificadoData, width);
 
-      // 8. Bloque Central de Validación (Logo de RV y Código de Registro)
-      const smallLogoPath = assetPath('public', 'img', 'logo_RV_azul.webp');
-      const logoWidth = 32;
+      // 8. Bloque Central de Validación (Logo de HSEC y Código de Registro)
+      const smallLogoPath = assetPath('public', 'img', 'logo_teamhsec.webp');
+      const logoWidth = 36;
       const logoX = width / 2 - logoWidth / 2;
-      const logoY = 445;
+      const logoY = 443;
       if (!(await tryImage(doc, smallLogoPath, logoX, logoY, { width: logoWidth }))) {
-        doc.fillColor(COLORS.red).font('Helvetica-Bold').fontSize(14).text('RV', logoX, logoY, { width: logoWidth, align: 'center' });
+        doc.fillColor(COLORS.red).font('Helvetica-Bold').fontSize(12).text('HSEC', logoX, logoY, { width: logoWidth, align: 'center' });
       }
       doc.fillColor('#1A1A1A')
          .font('Helvetica-Bold')

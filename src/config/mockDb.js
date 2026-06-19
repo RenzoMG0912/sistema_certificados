@@ -18,8 +18,8 @@ const participantes = [
 ];
 
 const firmas = [
-  { id: 1, nombre: 'Ing. Gregorio A. Escajadillo Sarmiento', cargo: 'Instructor HSEC', firma_url: '/assets/img/firmas/firma_gregorio.png' },
-  { id: 2, nombre: 'Representante Legal', cargo: 'Gerente General', firma_url: '/assets/img/firmas/firma_gerente.png' }
+  { id: 1, nombre: 'Ing. Angel G. Baldeon Icochea', cargo: 'Gerente de Operaciones', firma_url: '/assets/img/firmas/firma_gerente.png', cip: '86277' },
+  { id: 2, nombre: 'Ing. Gregorio A. Escajadillo Sarmiento', cargo: 'Entrenador', firma_url: '/assets/img/firmas/firma_gregorio.png', cip: '050142' }
 ];
 
 const matriculas = [
@@ -42,10 +42,10 @@ const certificados = [
     curso_nombre: 'Respuesta a emergencias',
     curso_duracion: '2 horas',
     curso_entrenador: 'Ing. Gregorio A. Escajadillo Sarmiento',
-    firma_nombre_1: 'Ing. Gregorio A. Escajadillo Sarmiento',
-    firma_cargo_1: 'Instructor HSEC',
-    firma_nombre_2: 'Representante Legal',
-    firma_cargo_2: 'Gerente General',
+    firma_nombre_1: 'Ing. Angel G. Baldeon Icochea',
+    firma_cargo_1: 'Gerente de Operaciones',
+    firma_nombre_2: 'Ing. Gregorio A. Escajadillo Sarmiento',
+    firma_cargo_2: 'Entrenador',
     created_at: new Date().toISOString()
   }
 ];

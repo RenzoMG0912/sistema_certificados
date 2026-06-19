@@ -162,12 +162,14 @@ module.exports = {
         firma_1: {
           nombre: firma1.nombre,
           cargo: firma1.cargo,
-          firma_url: firma1.firma_url
+          firma_url: firma1.firma_url,
+          cip: firma1.cip
         },
         firma_2: firma2 ? {
           nombre: firma2.nombre,
           cargo: firma2.cargo,
-          firma_url: firma2.firma_url
+          firma_url: firma2.firma_url,
+          cip: firma2.cip
         } : null
       };
 
@@ -272,8 +274,8 @@ module.exports = {
           fecha_realizacion: fecha_realizacion || formattedIssue,
           fecha_emision: formattedIssue,
           fecha_vencimiento: vigencia_anos === 0 ? null : formattedExpiry,
-          firma_1: { nombre: f1.nombre, cargo: f1.cargo, firma_url: f1.firma_url },
-          firma_2: f2 ? { nombre: f2.nombre, cargo: f2.cargo, firma_url: f2.firma_url } : null
+          firma_1: { nombre: f1.nombre, cargo: f1.cargo, firma_url: f1.firma_url, cip: f1.cip },
+          firma_2: f2 ? { nombre: f2.nombre, cargo: f2.cargo, firma_url: f2.firma_url, cip: f2.cip } : null
         };
         await generarCertificadoPDF(pdfParams, absoluteSavePath);
       } catch (pdfErr) {

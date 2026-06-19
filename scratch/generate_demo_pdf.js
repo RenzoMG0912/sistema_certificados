@@ -2,11 +2,11 @@ const path = require('path');
 const { generarCertificadoPDF } = require('../src/services/pdf.service');
 
 const pdfParams = {
-  codigo: 'HSEC-2026-000125',
+  codigo: 'PE-986-26',
   hash: '98626f8d22f183955db37996c568fead6a5f78db',
   alumno_nombres: 'JAVIER BALDEÓN LUIS JHONATAN',
   alumno_dni: '99999999',
-  curso_nombre: 'ELEVACIÓN E IZAJE DE CARGA',
+  curso_nombre: 'ELEVACIÓN / IZAJE DE CARGA',
   curso_duracion: '2 horas',
   fecha_emision: '2026-05-21',
   fecha_realizacion: '2026-05-19',
@@ -15,7 +15,7 @@ const pdfParams = {
     nombre: 'Ing. Angel G. Baldeon Icochea',
     cargo: 'Gerente de Operaciones',
     cip: '86277',
-    firma_url: '/assets/img/firmas/firma_angel.png'
+    firma_url: '/assets/img/firmas/firma_gerente.png'
   },
   firma_2: {
     nombre: 'Ing. Gregorio A. Escajadillo Sarmiento',
@@ -26,7 +26,7 @@ const pdfParams = {
 };
 
 const absoluteSavePath = path.join(
-  'c:', 'Users', 'USER', 'Downloads', 'OFIMATICA', 'sistema_certificados', 'public', 'certificados', 'elevacion-izaje', '99999999_HSEC-2026-000125.pdf'
+  'c:', 'Users', 'USER', 'Downloads', 'OFIMATICA', 'sistema_certificados', 'public', 'certificados', 'elevacion-izaje', '99999999_PE-986-26.pdf'
 );
 
 generarCertificadoPDF(pdfParams, absoluteSavePath)

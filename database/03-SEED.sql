@@ -19,9 +19,9 @@ INSERT IGNORE INTO cursos (codigo_curso, nombre, duracion, categoria, entrenador
 ('sustancias-quimicas', 'Sustancias químicas', '2 horas', 'Salud Ocupacional', 'Ing. Gregorio A. Escajadillo Sarmiento');
 
 -- 3. Insertar Firmas Autorizadas de prueba
-INSERT IGNORE INTO firmas (nombre, cargo, firma_url) VALUES
-('Ing. Gregorio A. Escajadillo Sarmiento', 'Instructor HSEC', '/assets/img/firmas/firma_gregorio.png'),
-('Representante Legal', 'Gerente General', '/assets/img/firmas/firma_gerente.png');
+INSERT IGNORE INTO firmas (nombre, cargo, firma_url, cip) VALUES
+('Ing. Angel G. Baldeon Icochea', 'Gerente de Operaciones', '/assets/img/firmas/firma_gerente.png', '86277'),
+('Ing. Gregorio A. Escajadillo Sarmiento', 'Entrenador', '/assets/img/firmas/firma_gregorio.png', '050142');
 
 -- 4. Participante Demo
 INSERT IGNORE INTO participantes (nombres, dni, email) VALUES

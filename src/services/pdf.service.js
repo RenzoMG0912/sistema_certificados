@@ -6,10 +6,17 @@ const { generarQR } = require('./qr.service');
 
 const ROOT_DIR = path.join(__dirname, '..', '..');
 const TEMPLATE_PATH = path.join(ROOT_DIR, 'assets', 'img', 'Formato_fondo.png');
+const PDF_ASSET_CACHE_DIR = path.join(ROOT_DIR, '.cache', 'pdf-assets');
+let sharp = null;
+try {
+  sharp = require('sharp');
+} catch (error) {
+  sharp = null;
+}
 
 const PAGE = {
-  width: 1672,
-  height: 941,
+  width: 1491,
+  height: 1055,
 };
 
 const COLORS = {
@@ -41,12 +48,40 @@ function resolvePublicOrRootPath(urlPath) {
   if (fs.existsSync(underPublic)) return underPublic;
 
   const parsed = path.parse(direct);
-  for (const ext of ['.svg', '.png', '.jpg', '.jpeg']) {
+  for (const ext of ['.png', '.jpg', '.jpeg', '.webp', '.svg']) {
     const candidate = path.join(parsed.dir, `${parsed.name}${ext}`);
     if (fs.existsSync(candidate)) return candidate;
   }
 
   return direct;
+}
+
+async function resolvePdfImagePath(imagePath) {
+  if (!imagePath || !fs.existsSync(imagePath)) return null;
+
+  const ext = path.extname(imagePath).toLowerCase();
+  if (ext !== '.webp') return imagePath;
+  if (!sharp) return null;
+
+  const stat = fs.statSync(imagePath);
+  const cacheName = `${path.basename(imagePath, ext)}-${stat.size}-${Math.floor(stat.mtimeMs)}.png`;
+  const cachedPath = path.join(PDF_ASSET_CACHE_DIR, cacheName);
+  if (!fs.existsSync(cachedPath)) {
+    fs.mkdirSync(PDF_ASSET_CACHE_DIR, { recursive: true });
+    await sharp(imagePath).png().toFile(cachedPath);
+  }
+  return cachedPath;
+}
+
+async function tryImage(doc, imagePath, x, y, options) {
+  try {
+    const pdfImagePath = await resolvePdfImagePath(imagePath);
+    if (!pdfImagePath) return false;
+    doc.image(pdfImagePath, x, y, options);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 function getDateParts(value) {
@@ -136,50 +171,51 @@ function drawVariableText(doc, certificadoData) {
   const issueDate = formatIssueDate(certificadoData.fecha_emision);
   const duration = normalizeDuration(certificadoData.curso_duracion);
 
-  const nameSize = fitText(doc, studentName, 1060, 66, 42);
+  const nameSize = fitText(doc, studentName, 980, 58, 38);
   doc.font('Times-Bold')
      .fontSize(nameSize)
      .fillColor(COLORS.wine)
-     .text(studentName, 270, 462, { width: 1132, align: 'center' });
+     .text(studentName, 240, 488, { width: 1010, align: 'center' });
 
   drawCenteredLine(doc, [
     { text: 'Por haber participado y aprobado el curso de: ', font: 'Helvetica', color: COLORS.muted },
     { text: `"${courseName}",`, font: 'Helvetica-Bold', color: COLORS.red },
-  ], 580, 25);
-
-  doc.font('Helvetica')
-     .fontSize(25)
-     .fillColor(COLORS.muted)
-     .text(`realizado el d\u00eda ${courseDate}, con una duraci\u00f3n de ${duration}.`, 300, 622, {
-       width: 1072,
-       align: 'center',
-     });
+  ], 600, 22);
 
   doc.font('Helvetica')
      .fontSize(22)
      .fillColor(COLORS.muted)
-     .text(`Lima, ${issueDate}`, 0, 700, { width: PAGE.width, align: 'center' });
+     .text(`realizado el d\u00eda ${courseDate}, con una duraci\u00f3n de ${duration}.`, 260, 636, {
+       width: 970,
+       align: 'center',
+     });
+
+  doc.font('Helvetica')
+     .fontSize(19)
+     .fillColor(COLORS.muted)
+     .text(`Lima, ${issueDate}`, 0, 724, { width: PAGE.width, align: 'center' });
 }
 
 function drawSignatureText(doc, block) {
   doc.fillColor(COLORS.muted)
      .font('Helvetica')
-     .fontSize(22)
-     .text(block.name, block.x, 814, { width: block.width, align: 'center' });
+     .fontSize(18)
+     .text(block.name, block.x, 858, { width: block.width, align: 'center' });
 
   doc.fillColor(COLORS.red)
      .font('Helvetica-Bold')
-     .fontSize(20)
-     .text(`CIP - ${block.cip}`, block.x, 846, { width: block.width, align: 'center' });
+     .fontSize(17)
+     .text(`CIP - ${block.cip}`, block.x, 884, { width: block.width, align: 'center' });
 
   doc.fillColor(COLORS.muted)
      .font('Helvetica')
-     .fontSize(20)
-     .text(block.role, block.x, 878, { width: block.width, align: 'center' });
+     .fontSize(17)
+     .text(block.role, block.x, 910, { width: block.width, align: 'center' });
 }
 
-function drawSignatureImage(doc, firmaUrl, x, y, width, height) {
+async function drawSignatureImage(doc, firmaUrl, x, y, width, height) {
   const signaturePath = resolvePublicOrRootPath(firmaUrl);
+  if (await tryImage(doc, signaturePath, x, y, { width, height })) return;
   if (trySvgPath(doc, signaturePath, x, y, width, height, COLORS.red)) return;
 
   doc.fillColor(COLORS.red)
@@ -188,20 +224,20 @@ function drawSignatureImage(doc, firmaUrl, x, y, width, height) {
      .text('Firma', x, y + 22, { width, align: 'center' });
 }
 
-function drawSignatures(doc) {
-  drawSignatureImage(doc, '/assets/img/firmas/firma_gerente.svg', 430, 710, 230, 70);
-  drawSignatureImage(doc, '/assets/img/firmas/firma_gregorio.svg', 976, 710, 230, 70);
+async function drawSignatures(doc) {
+  await drawSignatureImage(doc, '/assets/img/firmas/firma_gerente.png', 420, 758, 220, 62);
+  await drawSignatureImage(doc, '/assets/img/firmas/firma_gregorio.png', 932, 758, 220, 62);
 
   drawSignatureText(doc, {
-    x: 365,
-    width: 360,
+    x: 345,
+    width: 330,
     name: 'Ing. Angel G. Baldeon Icochea',
     cip: '86277',
     role: 'Gerente de Operaciones',
   });
 
   drawSignatureText(doc, {
-    x: 900,
+    x: 810,
     width: 420,
     name: 'Ing. Gregorio A. Escajadillo Sarmiento',
     cip: '050142',
@@ -209,16 +245,29 @@ function drawSignatures(doc) {
   });
 }
 
-function drawCertificateCode(doc, certificadoData) {
-  doc.fillColor(COLORS.red)
-     .font('Helvetica-Bold')
-     .fontSize(54)
-     .text('RV', 780, 786, { width: 110, align: 'center' });
+async function drawCertificateCode(doc, certificadoData) {
+  const logoPath = assetPath('public', 'img', 'logo_RV_azul.webp');
+  if (!(await tryImage(doc, logoPath, 704, 765, { width: 84 }))) {
+    doc.fillColor('#4b8fba')
+       .font('Helvetica-Bold')
+       .fontSize(48)
+       .text('RV', 698, 772, { width: 96, align: 'center' });
+  }
 
   doc.fillColor('#111111')
      .font('Helvetica-Bold')
-     .fontSize(23)
-     .text(certificadoData.codigo, 742, 843, { width: 185, align: 'center' });
+     .fontSize(24)
+     .text(certificadoData.codigo, 654, 842, { width: 184, align: 'center' });
+
+  doc.fillColor('#555555')
+     .font('Helvetica-Bold')
+     .fontSize(16)
+     .text('TEAM HSEC E.I.R.L.', 632, 894, { width: 230, align: 'center' });
+
+  doc.fillColor('#666666')
+     .font('Helvetica')
+     .fontSize(16)
+     .text('RUC: 20615517721', 632, 918, { width: 230, align: 'center' });
 }
 
 function buildCertificateId(certificadoData) {
@@ -236,27 +285,21 @@ function buildCertificateId(certificadoData) {
 }
 
 async function drawQrSection(doc, certificadoData) {
-  doc.fillColor(COLORS.muted)
-     .font('Helvetica')
-     .fontSize(16)
-     .text('Verifica la autenticidad', 1300, 695, { width: 250, align: 'center' })
-     .text('escaneando el QR', 1300, 724, { width: 250, align: 'center' });
-
   try {
     const qrDataUrl = await generarQR(certificadoData.hash);
     const qrBuffer = Buffer.from(qrDataUrl.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-    doc.image(qrBuffer, 1328, 756, { width: 132, height: 132 });
+    doc.image(qrBuffer, 1250, 807, { width: 112, height: 112 });
   } catch (error) {
     doc.font('Helvetica')
        .fontSize(13)
        .fillColor(COLORS.muted)
-       .text('QR no disponible', 1326, 812, { width: 136, align: 'center' });
+       .text('QR no disponible', 1238, 850, { width: 135, align: 'center' });
   }
 
   doc.fillColor('#111111')
      .font('Helvetica')
-     .fontSize(17)
-     .text(`ID: ${buildCertificateId(certificadoData)}`, 1262, 906, { width: 310, align: 'center' });
+     .fontSize(14)
+     .text(`ID: ${buildCertificateId(certificadoData)}`, 1198, 940, { width: 300, align: 'center' });
 }
 
 /**
@@ -276,6 +319,8 @@ async function generarCertificadoPDF(certificadoData, savePath) {
   }
 
   const templateSize = readPngSize(TEMPLATE_PATH);
+  PAGE.width = templateSize.width;
+  PAGE.height = templateSize.height;
   const pageSize = [templateSize.width, templateSize.height];
 
   return new Promise(async (resolve, reject) => {
@@ -298,8 +343,8 @@ async function generarCertificadoPDF(certificadoData, savePath) {
       doc.image(TEMPLATE_PATH, 0, 0, { width: templateSize.width, height: templateSize.height });
 
       drawVariableText(doc, certificadoData);
-      drawSignatures(doc);
-      drawCertificateCode(doc, certificadoData);
+      await drawSignatures(doc);
+      await drawCertificateCode(doc, certificadoData);
       await drawQrSection(doc, certificadoData);
 
       doc.end();

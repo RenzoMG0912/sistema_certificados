@@ -175,7 +175,7 @@ function drawVariableText(doc, certificadoData) {
   const nameSize = fitText(doc, studentName, 1080, 58, 38);
   doc.font('Times-Bold')
     .fontSize(nameSize)
-    .fillColor(COLORS.black)
+    .fillColor(COLORS.wine)
     .text(studentName, 200, 425, { width: 1136, align: 'center' });
 
   drawCenteredLine(doc, [

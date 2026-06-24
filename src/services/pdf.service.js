@@ -24,6 +24,7 @@ const COLORS = {
   red: '#690010',
   muted: '#222222',
   gold: '#b78622',
+  black: '#000000',
 };
 
 function assetPath(...parts) {
@@ -174,7 +175,7 @@ function drawVariableText(doc, certificadoData) {
   const nameSize = fitText(doc, studentName, 1080, 58, 38);
   doc.font('Times-Bold')
     .fontSize(nameSize)
-    .fillColor(COLORS.muted)
+    .fillColor(COLORS.black)
     .text(studentName, 200, 425, { width: 1136, align: 'center' });
 
   drawCenteredLine(doc, [

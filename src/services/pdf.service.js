@@ -20,7 +20,7 @@ const PAGE = {
 };
 
 const COLORS = {
-  wine: '#150205ff',
+  wine: '#3d0008',
   red: '#690010',
   muted: '#222222',
   gold: '#b78622',

@@ -20,7 +20,7 @@ const PAGE = {
 };
 
 const COLORS = {
-  wine: '#3d0008',
+  black: '#000000ff',
   red: '#690010',
   muted: '#222222',
   gold: '#b78622',
@@ -157,9 +157,9 @@ function drawCenteredLine(doc, segments, y, fontSize) {
   let x = PAGE.width / 2 - totalWidth / 2;
   for (const segment of segments) {
     doc.font(segment.font)
-       .fontSize(fontSize)
-       .fillColor(segment.color)
-       .text(segment.text, x, y, { lineBreak: false });
+      .fontSize(fontSize)
+      .fillColor(segment.color)
+      .text(segment.text, x, y, { lineBreak: false });
     x += doc.widthOfString(segment.text);
   }
 }
@@ -173,9 +173,9 @@ function drawVariableText(doc, certificadoData) {
 
   const nameSize = fitText(doc, studentName, 1080, 58, 38);
   doc.font('Times-Bold')
-     .fontSize(nameSize)
-     .fillColor(COLORS.wine)
-     .text(studentName, 200, 425, { width: 1136, align: 'center' });
+    .fontSize(nameSize)
+    .fillColor(COLORS.black)
+    .text(studentName, 200, 425, { width: 1136, align: 'center' });
 
   drawCenteredLine(doc, [
     { text: 'Por haber participado y aprobado el curso de: ', font: 'Helvetica', color: COLORS.muted },
@@ -183,34 +183,34 @@ function drawVariableText(doc, certificadoData) {
   ], 600, 22);
 
   doc.font('Helvetica')
-     .fontSize(22)
-     .fillColor(COLORS.muted)
-     .text(`realizado el d\u00eda ${courseDate}, con una duraci\u00f3n de ${duration}.`, 260, 636, {
-       width: 970,
-       align: 'center',
-     });
+    .fontSize(22)
+    .fillColor(COLORS.muted)
+    .text(`realizado el d\u00eda ${courseDate}, con una duraci\u00f3n de ${duration}.`, 260, 636, {
+      width: 970,
+      align: 'center',
+    });
 
   doc.font('Helvetica')
-     .fontSize(19)
-     .fillColor(COLORS.muted)
-     .text(`Lima, ${issueDate}`, 0, 724, { width: PAGE.width, align: 'center' });
+    .fontSize(19)
+    .fillColor(COLORS.muted)
+    .text(`Lima, ${issueDate}`, 0, 724, { width: PAGE.width, align: 'center' });
 }
 
 function drawSignatureText(doc, block) {
   doc.fillColor(COLORS.muted)
-     .font('Helvetica')
-     .fontSize(18)
-     .text(block.name, block.x, 830, { width: block.width, align: 'center' });
+    .font('Helvetica')
+    .fontSize(18)
+    .text(block.name, block.x, 830, { width: block.width, align: 'center' });
 
   doc.fillColor(COLORS.red)
-     .font('Helvetica-Bold')
-     .fontSize(17)
-     .text(`CIP - ${block.cip}`, block.x, 856, { width: block.width, align: 'center' });
+    .font('Helvetica-Bold')
+    .fontSize(17)
+    .text(`CIP - ${block.cip}`, block.x, 856, { width: block.width, align: 'center' });
 
   doc.fillColor(COLORS.muted)
-     .font('Helvetica')
-     .fontSize(17)
-     .text(block.role, block.x, 882, { width: block.width, align: 'center' });
+    .font('Helvetica')
+    .fontSize(17)
+    .text(block.role, block.x, 882, { width: block.width, align: 'center' });
 }
 
 async function drawSignatureImage(doc, firmaUrl, x, y, width, height) {
@@ -219,9 +219,9 @@ async function drawSignatureImage(doc, firmaUrl, x, y, width, height) {
   if (trySvgPath(doc, signaturePath, x, y, width, height, COLORS.red)) return;
 
   doc.fillColor(COLORS.red)
-     .font('Times-Italic')
-     .fontSize(34)
-     .text('Firma', x, y + 22, { width, align: 'center' });
+    .font('Times-Italic')
+    .fontSize(34)
+    .text('Firma', x, y + 22, { width, align: 'center' });
 }
 
 async function drawSignatures(doc) {
@@ -270,20 +270,20 @@ async function drawQrSection(doc, certificadoData) {
     doc.image(qrBuffer, 1267, 767, { width: 116, height: 116 });
   } catch (error) {
     doc.font('Helvetica')
-       .fontSize(13)
-       .fillColor(COLORS.muted)
-       .text('QR no disponible', 1260, 815, { width: 130, align: 'center' });
+      .fontSize(13)
+      .fillColor(COLORS.muted)
+      .text('QR no disponible', 1260, 815, { width: 130, align: 'center' });
   }
 
   doc.fillColor('#111111')
-     .font('Helvetica')
-     .fontSize(14)
-     .text(`ID: ${buildCertificateId(certificadoData)}`, 1175, 902, { width: 300, align: 'center' });
+    .font('Helvetica')
+    .fontSize(14)
+    .text(`ID: ${buildCertificateId(certificadoData)}`, 1175, 902, { width: 300, align: 'center' });
 
   doc.fillColor('#111111')
-     .font('Helvetica-Bold')
-     .fontSize(16)
-     .text(certificadoData.codigo, 1175, 926, { width: 300, align: 'center' });
+    .font('Helvetica-Bold')
+    .fontSize(16)
+    .text(certificadoData.codigo, 1175, 926, { width: 300, align: 'center' });
 }
 
 /**

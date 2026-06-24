@@ -72,6 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
     verificationResultWrapper.style.display = 'none';
     searchErrorBox.style.display = 'none';
     pdfFrame.src = '';
+    const pdfBtn = document.getElementById('btn-pdf-download');
+    if (pdfBtn) {
+      pdfBtn.href = '#';
+      pdfBtn.removeAttribute('download');
+      pdfBtn.style.display = 'none';
+    }
   };
 
   // Helper to show results view (Split Screen)
@@ -110,10 +116,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Set PDF path into iframe
+    const pdfBtn = document.getElementById('btn-pdf-download');
     if (cert.pdf_path) {
       pdfFrame.src = cert.pdf_path;
+      if (pdfBtn) {
+        pdfBtn.href = cert.pdf_path;
+        pdfBtn.setAttribute('download', `Certificado_${cert.codigo}.pdf`);
+        pdfBtn.style.display = 'inline-flex';
+      }
     } else {
       pdfFrame.src = '';
+      if (pdfBtn) pdfBtn.style.display = 'none';
     }
     
     // Display result wrapper

@@ -171,11 +171,11 @@ function drawVariableText(doc, certificadoData) {
   const issueDate = formatIssueDate(certificadoData.fecha_emision);
   const duration = normalizeDuration(certificadoData.curso_duracion);
 
-  const nameSize = fitText(doc, studentName, 980, 58, 38);
+  const nameSize = fitText(doc, studentName, 1080, 58, 38);
   doc.font('Times-Bold')
      .fontSize(nameSize)
      .fillColor(COLORS.wine)
-     .text(studentName, 240, 488, { width: 1010, align: 'center' });
+     .text(studentName, 200, 425, { width: 1136, align: 'center' });
 
   drawCenteredLine(doc, [
     { text: 'Por haber participado y aprobado el curso de: ', font: 'Helvetica', color: COLORS.muted },
@@ -200,17 +200,17 @@ function drawSignatureText(doc, block) {
   doc.fillColor(COLORS.muted)
      .font('Helvetica')
      .fontSize(18)
-     .text(block.name, block.x, 858, { width: block.width, align: 'center' });
+     .text(block.name, block.x, 830, { width: block.width, align: 'center' });
 
   doc.fillColor(COLORS.red)
      .font('Helvetica-Bold')
      .fontSize(17)
-     .text(`CIP - ${block.cip}`, block.x, 884, { width: block.width, align: 'center' });
+     .text(`CIP - ${block.cip}`, block.x, 856, { width: block.width, align: 'center' });
 
   doc.fillColor(COLORS.muted)
      .font('Helvetica')
      .fontSize(17)
-     .text(block.role, block.x, 910, { width: block.width, align: 'center' });
+     .text(block.role, block.x, 882, { width: block.width, align: 'center' });
 }
 
 async function drawSignatureImage(doc, firmaUrl, x, y, width, height) {
@@ -225,19 +225,19 @@ async function drawSignatureImage(doc, firmaUrl, x, y, width, height) {
 }
 
 async function drawSignatures(doc) {
-  await drawSignatureImage(doc, '/assets/img/firmas/firma_gerente.png', 420, 758, 220, 62);
-  await drawSignatureImage(doc, '/assets/img/firmas/firma_gregorio.png', 932, 758, 220, 62);
+  await drawSignatureImage(doc, '/assets/img/firmas/firma_gerente.png', 395, 720, 220, 62);
+  await drawSignatureImage(doc, '/assets/img/firmas/firma_gregorio.png', 902, 720, 220, 62);
 
   drawSignatureText(doc, {
-    x: 345,
-    width: 330,
+    x: 295,
+    width: 420,
     name: 'Ing. Angel G. Baldeon Icochea',
     cip: '86277',
     role: 'Gerente de Operaciones',
   });
 
   drawSignatureText(doc, {
-    x: 810,
+    x: 802,
     width: 420,
     name: 'Ing. Gregorio A. Escajadillo Sarmiento',
     cip: '050142',
@@ -246,28 +246,7 @@ async function drawSignatures(doc) {
 }
 
 async function drawCertificateCode(doc, certificadoData) {
-  const logoPath = assetPath('public', 'img', 'logo_RV_azul.webp');
-  if (!(await tryImage(doc, logoPath, 704, 765, { width: 84 }))) {
-    doc.fillColor('#4b8fba')
-       .font('Helvetica-Bold')
-       .fontSize(48)
-       .text('RV', 698, 772, { width: 96, align: 'center' });
-  }
-
-  doc.fillColor('#111111')
-     .font('Helvetica-Bold')
-     .fontSize(24)
-     .text(certificadoData.codigo, 654, 842, { width: 184, align: 'center' });
-
-  doc.fillColor('#555555')
-     .font('Helvetica-Bold')
-     .fontSize(16)
-     .text('TEAM HSEC E.I.R.L.', 632, 894, { width: 230, align: 'center' });
-
-  doc.fillColor('#666666')
-     .font('Helvetica')
-     .fontSize(16)
-     .text('RUC: 20615517721', 632, 918, { width: 230, align: 'center' });
+  // Removido a petición del usuario para dejar limpia la zona central inferior
 }
 
 function buildCertificateId(certificadoData) {
@@ -288,18 +267,23 @@ async function drawQrSection(doc, certificadoData) {
   try {
     const qrDataUrl = await generarQR(certificadoData.hash);
     const qrBuffer = Buffer.from(qrDataUrl.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-    doc.image(qrBuffer, 1250, 807, { width: 112, height: 112 });
+    doc.image(qrBuffer, 1267, 767, { width: 116, height: 116 });
   } catch (error) {
     doc.font('Helvetica')
        .fontSize(13)
        .fillColor(COLORS.muted)
-       .text('QR no disponible', 1238, 850, { width: 135, align: 'center' });
+       .text('QR no disponible', 1260, 815, { width: 130, align: 'center' });
   }
 
   doc.fillColor('#111111')
      .font('Helvetica')
      .fontSize(14)
-     .text(`ID: ${buildCertificateId(certificadoData)}`, 1198, 940, { width: 300, align: 'center' });
+     .text(`ID: ${buildCertificateId(certificadoData)}`, 1175, 902, { width: 300, align: 'center' });
+
+  doc.fillColor('#111111')
+     .font('Helvetica-Bold')
+     .fontSize(16)
+     .text(certificadoData.codigo, 1175, 926, { width: 300, align: 'center' });
 }
 
 /**
@@ -344,7 +328,6 @@ async function generarCertificadoPDF(certificadoData, savePath) {
 
       drawVariableText(doc, certificadoData);
       await drawSignatures(doc);
-      await drawCertificateCode(doc, certificadoData);
       await drawQrSection(doc, certificadoData);
 
       doc.end();

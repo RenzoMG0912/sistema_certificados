@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pdfBtn = document.getElementById('btn-pdf-download');
     if (cert.pdf_path) {
       pdfBtn.href = cert.pdf_path;
+      pdfBtn.setAttribute('download', `Certificado_${cert.codigo}.pdf`);
       pdfBtn.style.display = 'inline-flex';
     } else {
       pdfBtn.style.display = 'none';

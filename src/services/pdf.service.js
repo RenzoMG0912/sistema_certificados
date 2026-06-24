@@ -20,7 +20,7 @@ const PAGE = {
 };
 
 const COLORS = {
-  black: '#000000ff',
+  wine: '#3d0008',
   red: '#690010',
   muted: '#222222',
   gold: '#b78622',
@@ -174,7 +174,7 @@ function drawVariableText(doc, certificadoData) {
   const nameSize = fitText(doc, studentName, 1080, 58, 38);
   doc.font('Times-Bold')
     .fontSize(nameSize)
-    .fillColor(COLORS.black)
+    .fillColor(COLORS.muted)
     .text(studentName, 200, 425, { width: 1136, align: 'center' });
 
   drawCenteredLine(doc, [

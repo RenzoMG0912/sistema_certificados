@@ -24,7 +24,6 @@ const COLORS = {
   red: '#690010',
   muted: '#222222',
   gold: '#b78622',
-  black: '#000000',
 };
 
 function assetPath(...parts) {

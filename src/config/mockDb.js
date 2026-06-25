@@ -14,7 +14,7 @@ const cursos = [
 ];
 
 const participantes = [
-  { id: 1, nombres: 'Usuario Demo', dni: '00000000', email: 'demo@teamhsec.local', created_at: new Date().toISOString() }
+  { id: 1, nombres: 'Usuario Demo', dni: '00000000', email: 'demo@teamhsec.local', cargo: 'ING. SUPERVISOR', telefono: '964680064', procedencia: 'HUANCAYO', induccion: 'APTO', examen_medico: 'APTO', created_at: new Date().toISOString() }
 ];
 
 const firmas = [

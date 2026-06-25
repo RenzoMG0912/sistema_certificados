@@ -450,6 +450,11 @@
                 <tr class="bg-surface-container text-on-surface-variant">
                   <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">DNI / Identificación</th>
                   <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Nombre Completo</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Cargo</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Teléfono</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Procedencia</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Inducción</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Examen Médico</th>
                   <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Correo Electrónico</th>
                   <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Fecha Registro</th>
                   <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Acciones</th>
@@ -457,7 +462,7 @@
               </thead>
               <tbody id="participants-list" class="divide-y divide-outline-variant/60">
                 <tr>
-                  <td colspan="5" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td>
+                  <td colspan="10" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td>
                 </tr>
               </tbody>
             </table>
@@ -667,6 +672,41 @@
             <input type="text" id="participant-name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: Juan Pérez Gómez" required>
           </div>
           
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label for="participant-cargo" class="text-xs font-semibold text-slate-700 font-title">Cargo</label>
+              <input type="text" id="participant-cargo" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: ING. SUPERVISOR">
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="participant-telefono" class="text-xs font-semibold text-slate-700 font-title">Teléfono</label>
+              <input type="text" id="participant-telefono" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: 964680064">
+            </div>
+          </div>
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="participant-procedencia" class="text-xs font-semibold text-slate-700 font-title">Procedencia</label>
+            <input type="text" id="participant-procedencia" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: HUANCAYO">
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label for="participant-induccion" class="text-xs font-semibold text-slate-700 font-title">Inducción</label>
+              <select id="participant-induccion" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all">
+                <option value="APTO" selected>APTO</option>
+                <option value="NO APTO">NO APTO</option>
+                <option value="PENDIENTE">PENDIENTE</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="participant-examen-medico" class="text-xs font-semibold text-slate-700 font-title">Examen Médico</label>
+              <select id="participant-examen-medico" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all">
+                <option value="APTO" selected>APTO</option>
+                <option value="NO APTO">NO APTO</option>
+                <option value="PENDIENTE">PENDIENTE</option>
+              </select>
+            </div>
+          </div>
+
           <div class="flex flex-col gap-1.5">
             <label for="participant-email" class="text-xs font-semibold text-slate-700 font-title">Correo Electrónico (Opcional)</label>
             <input type="email" id="participant-email" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: juan.perez@email.com">

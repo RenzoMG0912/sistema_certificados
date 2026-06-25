@@ -17,6 +17,11 @@ CREATE TABLE IF NOT EXISTS participantes (
   nombres VARCHAR(150) NOT NULL,
   dni VARCHAR(20) UNIQUE NOT NULL,
   email VARCHAR(150),
+  cargo VARCHAR(150),
+  telefono VARCHAR(50),
+  procedencia VARCHAR(150),
+  induccion VARCHAR(50),
+  examen_medico VARCHAR(50),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

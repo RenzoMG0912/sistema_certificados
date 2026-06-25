@@ -32,7 +32,7 @@ module.exports = {
   },
 
   create: async (req, res, next) => {
-    const { nombres, dni, email } = req.body;
+    const { nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico } = req.body;
     try {
       const [check] = await db.query('SELECT id FROM participantes WHERE dni = ?', [dni]);
       if (check.length > 0) {
@@ -40,10 +40,10 @@ module.exports = {
       }
 
       const query = `
-        INSERT INTO participantes (nombres, dni, email)
-        VALUES (?, ?, ?)
+        INSERT INTO participantes (nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `;
-      const [result] = await db.query(query, [nombres, dni, email]);
+      const [result] = await db.query(query, [nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico]);
       const [newRow] = await db.query('SELECT * FROM participantes WHERE id = ?', [result.insertId]);
       return res.status(201).json({ success: true, participante: newRow[0] });
     } catch (error) {
@@ -57,6 +57,11 @@ module.exports = {
         nombres,
         dni,
         email,
+        cargo,
+        telefono,
+        procedencia,
+        induccion,
+        examen_medico,
         created_at: new Date().toISOString()
       };
       mockDb.participantes.push(newP);
@@ -66,7 +71,7 @@ module.exports = {
 
   update: async (req, res, next) => {
     const { id } = req.params;
-    const { nombres, dni, email } = req.body;
+    const { nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico } = req.body;
     try {
       const [check] = await db.query('SELECT id FROM participantes WHERE dni = ? AND id <> ?', [dni, id]);
       if (check.length > 0) {
@@ -75,10 +80,10 @@ module.exports = {
 
       const query = `
         UPDATE participantes
-        SET nombres = ?, dni = ?, email = ?
+        SET nombres = ?, dni = ?, email = ?, cargo = ?, telefono = ?, procedencia = ?, induccion = ?, examen_medico = ?
         WHERE id = ?
       `;
-      await db.query(query, [nombres, dni, email, id]);
+      await db.query(query, [nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico, id]);
       const [updatedRow] = await db.query('SELECT * FROM participantes WHERE id = ?', [id]);
       return res.status(200).json({ success: true, participante: updatedRow[0] });
     } catch (error) {
@@ -95,7 +100,12 @@ module.exports = {
         ...mockDb.participantes[index],
         nombres,
         dni,
-        email
+        email,
+        cargo,
+        telefono,
+        procedencia,
+        induccion,
+        examen_medico
       };
       return res.status(200).json({ success: true, participante: mockDb.participantes[index] });
     }

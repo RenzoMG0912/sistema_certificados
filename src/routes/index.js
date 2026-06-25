@@ -45,7 +45,7 @@ router.get('/admin/dashboard', authMiddleware, async (req, res, next) => {
     return res.status(200).json({
       totalParticipantes: parseInt(pRows[0].count, 10),
       totalCursos: parseInt(cRows[0].count, 10),
-      totalCertificados: parseInt(certCount, 10),
+      totalCertificados: parseInt(certRows[0].count, 10),
       recientes: recentRows
     });
   } catch (error) {

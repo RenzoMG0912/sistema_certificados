@@ -24,5 +24,5 @@ INSERT IGNORE INTO firmas (nombre, cargo, firma_url, cip) VALUES
 ('Ing. Gregorio A. Escajadillo Sarmiento', 'Entrenador', '/assets/img/firmas/firma_gregorio.png', '050142');
 
 -- 4. Participante Demo
-INSERT IGNORE INTO participantes (nombres, dni, email) VALUES
-('Usuario Demo', '00000000', 'demo@teamhsec.local');
+INSERT IGNORE INTO participantes (nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico) VALUES
+('Usuario Demo', '00000000', 'demo@teamhsec.local', 'ING. SUPERVISOR', '964680064', 'HUANCAYO', 'APTO', 'APTO');

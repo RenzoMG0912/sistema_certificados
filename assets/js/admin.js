@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----------------------------------------------------
   const loadParticipants = async () => {
     const listContainer = document.getElementById('participants-list');
-    listContainer.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
+    listContainer.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
     
     try {
       const participants = await apiFetch('/api/participantes');
@@ -289,22 +289,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const renderList = (items) => {
         if (items.length === 0) {
-          listContainer.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">No hay alumnos registrados.</td></tr>';
+          listContainer.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #64748b;">No hay alumnos registrados.</td></tr>';
           return;
         }
 
-        listContainer.innerHTML = items.map(p => `
-          <tr>
-            <td><strong>${p.dni}</strong></td>
-            <td>${p.nombres}</td>
-            <td>${p.email || 'Sin correo'}</td>
-            <td>${new Date(p.created_at).toLocaleDateString('es-ES')}</td>
-            <td class="actions-cell">
-              <button class="btn-icon btn-edit-participant" data-id="${p.id}" title="Editar"><i class="fa-solid fa-pen"></i></button>
-              <button class="btn-icon btn-delete btn-delete-participant" data-id="${p.id}" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-            </td>
-          </tr>
-        `).join('');
+        listContainer.innerHTML = items.map(p => {
+          const indClass = p.induccion === 'APTO' ? 'badge-active' : (p.induccion === 'NO APTO' ? 'badge-expired' : 'bg-amber-100 text-amber-700');
+          const exClass = p.examen_medico === 'APTO' ? 'badge-active' : (p.examen_medico === 'NO APTO' ? 'badge-expired' : 'bg-amber-100 text-amber-700');
+
+          return `
+            <tr>
+              <td><strong>${p.dni}</strong></td>
+              <td>${p.nombres}</td>
+              <td>${p.cargo || 'N/A'}</td>
+              <td>${p.telefono || 'N/A'}</td>
+              <td>${p.procedencia || 'N/A'}</td>
+              <td><span class="badge-status ${indClass}">${p.induccion || 'N/A'}</span></td>
+              <td><span class="badge-status ${exClass}">${p.examen_medico || 'N/A'}</span></td>
+              <td>${p.email || 'Sin correo'}</td>
+              <td>${new Date(p.created_at).toLocaleDateString('es-ES')}</td>
+              <td class="actions-cell">
+                <button class="btn-icon btn-edit-participant" data-id="${p.id}" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn-icon btn-delete btn-delete-participant" data-id="${p.id}" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+              </td>
+            </tr>
+          `;
+        }).join('');
 
         // Listeners
         document.querySelectorAll('.btn-edit-participant').forEach(btn => {
@@ -315,6 +325,11 @@ document.addEventListener('DOMContentLoaded', () => {
               document.getElementById('participant-id').value = p.id;
               document.getElementById('participant-dni').value = p.dni;
               document.getElementById('participant-name').value = p.nombres;
+              document.getElementById('participant-cargo').value = p.cargo || '';
+              document.getElementById('participant-telefono').value = p.telefono || '';
+              document.getElementById('participant-procedencia').value = p.procedencia || '';
+              document.getElementById('participant-induccion').value = p.induccion || 'APTO';
+              document.getElementById('participant-examen-medico').value = p.examen_medico || 'APTO';
               document.getElementById('participant-email').value = p.email || '';
               document.getElementById('modal-participant-title').textContent = 'Editar Alumno';
               
@@ -366,6 +381,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = {
       dni: document.getElementById('participant-dni').value.trim(),
       nombres: document.getElementById('participant-name').value.trim(),
+      cargo: document.getElementById('participant-cargo').value.trim(),
+      telefono: document.getElementById('participant-telefono').value.trim(),
+      procedencia: document.getElementById('participant-procedencia').value.trim(),
+      induccion: document.getElementById('participant-induccion').value,
+      examen_medico: document.getElementById('participant-examen-medico').value,
       email: document.getElementById('participant-email').value.trim() || null
     };
 
@@ -388,6 +408,11 @@ document.addEventListener('DOMContentLoaded', () => {
   setupModalHandlers('modal-participant', 'btn-new-participant', () => {
     document.getElementById('form-participant').reset();
     document.getElementById('participant-id').value = '';
+    document.getElementById('participant-cargo').value = '';
+    document.getElementById('participant-telefono').value = '';
+    document.getElementById('participant-procedencia').value = '';
+    document.getElementById('participant-induccion').value = 'APTO';
+    document.getElementById('participant-examen-medico').value = 'APTO';
     document.getElementById('modal-participant-title').textContent = 'Registrar Alumno';
   });
 

@@ -648,14 +648,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----------------------------------------------------
   const loadSignatures = async () => {
     const listContainer = document.getElementById('signatures-list');
-    listContainer.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
+    listContainer.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
     
     try {
       const signatures = await apiFetch('/api/firmas');
       if (!signatures) return;
 
       if (signatures.length === 0) {
-        listContainer.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">No hay firmas registradas.</td></tr>';
+        listContainer.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">No hay firmas registradas.</td></tr>';
         return;
       }
 
@@ -665,16 +665,32 @@ document.addEventListener('DOMContentLoaded', () => {
           <td><strong>${s.nombre}</strong></td>
           <td>${s.cargo}</td>
           <td>${s.cip || 'N/A'}</td>
-          <td>
-            <a href="${s.firma_url}" target="_blank" style="color: var(--red); text-decoration: underline; font-size: 13px;">
-              ${s.firma_url}
-            </a>
-          </td>
-          <td>
+          <td class="actions-cell">
+            <a href="${s.firma_url}" target="_blank" class="btn-icon" title="Ver Firma"><i class="fa-solid fa-eye"></i></a>
+            <button class="btn-icon btn-edit-signature" data-id="${s.id}" title="Editar Firma"><i class="fa-solid fa-pen"></i></button>
             <button class="btn-icon btn-delete btn-delete-signature" data-id="${s.id}" title="Eliminar Firma"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
       `).join('');
+
+      document.querySelectorAll('.btn-edit-signature').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const signature = signatures.find(item => item.id == id);
+          if (!signature) return;
+
+          document.getElementById('sig-id').value = signature.id;
+          document.getElementById('sig-name').value = signature.nombre || '';
+          document.getElementById('sig-role').value = signature.cargo || '';
+          document.getElementById('sig-cip').value = signature.cip || '';
+          document.getElementById('sig-file').value = '';
+          document.getElementById('modal-signature-title').textContent = 'Editar Firma Autorizada';
+
+          const modal = document.getElementById('modal-signature');
+          modal.classList.add('is-open');
+          modal.setAttribute('aria-hidden', 'false');
+        });
+      });
 
       document.querySelectorAll('.btn-delete-signature').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -693,35 +709,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setupModalHandlers('modal-signature', 'btn-new-signature', () => {
     document.getElementById('form-signature').reset();
+    document.getElementById('sig-id').value = '';
+    document.getElementById('modal-signature-title').textContent = 'Agregar Firma Autorizada';
   });
 
   document.getElementById('form-signature').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const id = document.getElementById('sig-id').value;
     const nombre = document.getElementById('sig-name').value.trim();
     const cargo = document.getElementById('sig-role').value.trim();
     const cip = document.getElementById('sig-cip').value.trim();
-    const firmaUrlInput = document.getElementById('sig-url').value.trim();
     const fileInput = document.getElementById('sig-file');
 
-    if (!firmaUrlInput && (!fileInput.files || fileInput.files.length === 0)) {
-      showToast('Debe subir una imagen de firma o ingresar una ruta de firma alternativa.', 'error');
+    if (!id && (!fileInput.files || fileInput.files.length === 0)) {
+      showToast('Debe subir una imagen de firma PNG o JPG.', 'error');
       return;
     }
 
     const body = {
       nombre,
       cargo,
-      cip: cip || null,
-      firma_url: firmaUrlInput || null
+      cip: cip || null
     };
 
     const submitForm = async (payload) => {
       try {
-        await apiFetch('/api/firmas', {
-          method: 'POST',
+        await apiFetch(id ? `/api/firmas/${id}` : '/api/firmas', {
+          method: id ? 'PUT' : 'POST',
           body: JSON.stringify(payload)
         });
-        showToast('Firma agregada exitosamente');
+        showToast(id ? 'Firma actualizada correctamente' : 'Firma agregada exitosamente');
         closeModal('modal-signature');
         loadSignatures();
       } catch (err) {

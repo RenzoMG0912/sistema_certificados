@@ -8,6 +8,7 @@ router.use(authMiddleware);
 
 router.get('/', firmasController.list);
 router.post('/', firmasController.create);
+router.put('/:id', firmasController.update);
 router.delete('/:id', firmasController.delete);
 
 module.exports = router;

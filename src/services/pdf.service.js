@@ -202,10 +202,12 @@ function drawSignatureText(doc, block) {
     .fontSize(18)
     .text(block.name, block.x, 830, { width: block.width, align: 'center' });
 
-  doc.fillColor(COLORS.red)
-    .font('Helvetica-Bold')
-    .fontSize(17)
-    .text(`CIP - ${block.cip}`, block.x, 856, { width: block.width, align: 'center' });
+  if (block.cip) {
+    doc.fillColor(COLORS.red)
+      .font('Helvetica-Bold')
+      .fontSize(17)
+      .text(`CIP - ${block.cip}`, block.x, 856, { width: block.width, align: 'center' });
+  }
 
   doc.fillColor(COLORS.muted)
     .font('Helvetica')

@@ -224,25 +224,31 @@ async function drawSignatureImage(doc, firmaUrl, x, y, width, height) {
     .text('Firma', x, y + 22, { width, align: 'center' });
 }
 
-async function drawSignatures(doc) {
-  await drawSignatureImage(doc, '/assets/img/firmas/firma_gerente.png', 395, 720, 220, 62);
-  await drawSignatureImage(doc, '/assets/img/firmas/firma_gregorio.png', 902, 720, 220, 62);
+async function drawSignatures(doc, certificadoData) {
+  const f1 = certificadoData.firma_1;
+  const f2 = certificadoData.firma_2;
 
-  drawSignatureText(doc, {
-    x: 295,
-    width: 420,
-    name: 'Ing. Angel G. Baldeon Icochea',
-    cip: '86277',
-    role: 'Gerente de Operaciones',
-  });
+  if (f1) {
+    await drawSignatureImage(doc, f1.firma_url, 395, 720, 220, 62);
+    drawSignatureText(doc, {
+      x: 295,
+      width: 420,
+      name: f1.nombre,
+      cip: f1.cip,
+      role: f1.cargo,
+    });
+  }
 
-  drawSignatureText(doc, {
-    x: 802,
-    width: 420,
-    name: 'Ing. Gregorio A. Escajadillo Sarmiento',
-    cip: '050142',
-    role: 'Entrenador',
-  });
+  if (f2) {
+    await drawSignatureImage(doc, f2.firma_url, 902, 720, 220, 62);
+    drawSignatureText(doc, {
+      x: 802,
+      width: 420,
+      name: f2.nombre,
+      cip: f2.cip,
+      role: f2.cargo,
+    });
+  }
 }
 
 async function drawCertificateCode(doc, certificadoData) {
@@ -327,7 +333,7 @@ async function generarCertificadoPDF(certificadoData, savePath) {
       doc.image(TEMPLATE_PATH, 0, 0, { width: templateSize.width, height: templateSize.height });
 
       drawVariableText(doc, certificadoData);
-      await drawSignatures(doc);
+      await drawSignatures(doc, certificadoData);
       await drawQrSection(doc, certificadoData);
 
       doc.end();

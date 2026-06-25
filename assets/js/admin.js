@@ -648,14 +648,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----------------------------------------------------
   const loadSignatures = async () => {
     const listContainer = document.getElementById('signatures-list');
-    listContainer.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
+    listContainer.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
     
     try {
       const signatures = await apiFetch('/api/firmas');
       if (!signatures) return;
 
       if (signatures.length === 0) {
-        listContainer.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">No hay firmas registradas.</td></tr>';
+        listContainer.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">No hay firmas registradas.</td></tr>';
         return;
       }
 
@@ -664,6 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td><code>#${s.id}</code></td>
           <td><strong>${s.nombre}</strong></td>
           <td>${s.cargo}</td>
+          <td>${s.cip || 'N/A'}</td>
           <td>
             <a href="${s.firma_url}" target="_blank" style="color: var(--red); text-decoration: underline; font-size: 13px;">
               ${s.firma_url}
@@ -696,22 +697,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('form-signature').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const nombre = document.getElementById('sig-name').value.trim();
+    const cargo = document.getElementById('sig-role').value.trim();
+    const cip = document.getElementById('sig-cip').value.trim();
+    const firmaUrlInput = document.getElementById('sig-url').value.trim();
+    const fileInput = document.getElementById('sig-file');
+
+    if (!firmaUrlInput && (!fileInput.files || fileInput.files.length === 0)) {
+      showToast('Debe subir una imagen de firma o ingresar una ruta de firma alternativa.', 'error');
+      return;
+    }
+
     const body = {
-      nombre: document.getElementById('sig-name').value.trim(),
-      cargo: document.getElementById('sig-role').value.trim(),
-      firma_url: document.getElementById('sig-url').value.trim()
+      nombre,
+      cargo,
+      cip: cip || null,
+      firma_url: firmaUrlInput || null
     };
 
-    try {
-      await apiFetch('/api/firmas', {
-        method: 'POST',
-        body: JSON.stringify(body)
-      });
-      showToast('Firma agregada exitosamente');
-      closeModal('modal-signature');
-      loadSignatures();
-    } catch (err) {
-      console.error(err);
+    const submitForm = async (payload) => {
+      try {
+        await apiFetch('/api/firmas', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        showToast('Firma agregada exitosamente');
+        closeModal('modal-signature');
+        loadSignatures();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = async () => {
+        body.firma_base64 = reader.result;
+        await submitForm(body);
+      };
+      reader.onerror = () => {
+        showToast('Error al leer el archivo de imagen.', 'error');
+      };
+      reader.readAsDataURL(file);
+    } else {
+      await submitForm(body);
     }
   });
 

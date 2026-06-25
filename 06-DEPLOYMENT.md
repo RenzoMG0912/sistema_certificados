@@ -55,7 +55,10 @@ Plesk administra las variables de entorno de Node.js de dos formas. Puedes usar 
    - `DB_PASSWORD` = `la_contrasena_que_creaste_en_plesk`
    - `DB_NAME` = `tu_nombre_de_bd_de_plesk` (ej. `usuario_teamhsec`)
    - `DB_PORT` = `3306`
-   - `JWT_SECRET` = `un_texto_secreto_muy_seguro_cualquiera`
+   - `JWT_SECRET` = `un_texto_secreto_muy_seguro_de_minimo_32_caracteres`
+   - `JWT_EXPIRES_IN` = `8h`
+   - `JWT_ISSUER` = `teamhsec`
+   - `JWT_AUDIENCE` = `teamhsec-admin`
    - `BASE_URL` = `https://tu-dominio.com` (Usa HTTPS de tu dominio en Plesk)
 3. Haz clic en **Guardar** o **Aplicar**.
 
@@ -71,7 +74,10 @@ Plesk administra las variables de entorno de Node.js de dos formas. Puedes usar 
    DB_PASSWORD=tu_contrasena_de_bd
    DB_NAME=usuario_teamhsec
    DB_PORT=3306
-   JWT_SECRET=clave_secreta_para_los_tokens_jwt
+   JWT_SECRET=clave_secreta_para_los_tokens_jwt_minimo_32_chars
+   JWT_EXPIRES_IN=8h
+   JWT_ISSUER=teamhsec
+   JWT_AUDIENCE=teamhsec-admin
    BASE_URL=https://tu-dominio.com
    ```
 
@@ -96,4 +102,6 @@ Una vez inicializado, dirígete a:
 
 E introduce las credenciales predeterminadas (sembradas por `03-SEED.sql`):
 - **Usuario**: `admin@teamhsec.com`
-- **Contraseña**: `Admin123!` *(O puedes usar temporalmente `TeamHsec123` si la base de datos tiene algún problema de conexión)*
+- **Contraseña**: `Admin123!`
+
+> Por seguridad, el acceso temporal fue eliminado. El login solo funciona con un usuario existente en la tabla `usuarios` y su contraseña cifrada.

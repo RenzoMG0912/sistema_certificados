@@ -3,87 +3,86 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
 
+const TOKEN_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '8h';
+const TOKEN_ISSUER = process.env.JWT_ISSUER || 'teamhsec';
+const TOKEN_AUDIENCE = process.env.JWT_AUDIENCE || 'teamhsec-admin';
+
+function getJwtSecret() {
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+    return null;
+  }
+
+  return process.env.JWT_SECRET;
+}
+
+function buildUserPayload(usuario) {
+  return {
+    id: usuario.id,
+    nombre: usuario.nombre,
+    email: usuario.email,
+    rol: usuario.rol
+  };
+}
+
 module.exports = {
-  login: async (req, res, next) => {
-    const { email, password } = req.body;
+  login: async (req, res) => {
+    const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const password = typeof req.body.password === 'string' ? req.body.password : '';
 
-    // BYPASS temporal solicitado: permite ingresar usando la contraseña "TeamHsec123" sin validar BD
-    if (password === 'TeamHsec123') {
-      const token = jwt.sign(
-        {
-          id: 1,
-          nombre: 'Administrador HSEC',
-          email: email || 'admin@teamhsec.com',
-          rol: 'admin'
-        },
-        process.env.JWT_SECRET || 'teamhsec_secret_key_2026_super_secure_987123',
-        { expiresIn: '8h' }
-      );
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Debe ingresar correo electronico y contrasena.'
+      });
+    }
 
-      return res.status(200).json({
-        success: true,
-        message: 'Acceso temporal autorizado (Modo Bypass)',
-        token,
-        usuario: {
-          id: 1,
-          nombre: 'Administrador HSEC',
-          email: email || 'admin@teamhsec.com',
-          rol: 'admin'
-        }
+    const jwtSecret = getJwtSecret();
+    if (!jwtSecret) {
+      return res.status(500).json({
+        success: false,
+        message: 'La autenticacion no esta configurada correctamente.'
       });
     }
 
     try {
-      // Intento normal de autenticación por base de datos
-      const query = 'SELECT * FROM usuarios WHERE email = ?';
-      const [rows] = await db.query(query, [email.trim().toLowerCase()]);
+      const query = 'SELECT id, nombre, email, password, rol FROM usuarios WHERE email = ? LIMIT 1';
+      const [rows] = await db.query(query, [email]);
 
       if (rows.length === 0) {
         return res.status(401).json({
           success: false,
-          message: 'El correo electrónico o la contraseña son incorrectos.'
+          message: 'El correo electronico o la contrasena son incorrectos.'
         });
       }
 
       const usuario = rows[0];
+      const validPassword = await bcrypt.compare(password, usuario.password);
 
-      // Verificar la contraseña cifrada
-      const validPassword = bcrypt.compareSync(password, usuario.password);
       if (!validPassword) {
         return res.status(401).json({
           success: false,
-          message: 'El correo electrónico o la contraseña son incorrectos.'
+          message: 'El correo electronico o la contrasena son incorrectos.'
         });
       }
 
-      // Generar JWT
-      const token = jwt.sign(
-        {
-          id: usuario.id,
-          nombre: usuario.nombre,
-          email: usuario.email,
-          rol: usuario.rol
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: '8h' }
-      );
+      const payload = buildUserPayload(usuario);
+      const token = jwt.sign(payload, jwtSecret, {
+        expiresIn: TOKEN_EXPIRES_IN,
+        issuer: TOKEN_ISSUER,
+        audience: TOKEN_AUDIENCE
+      });
 
       return res.status(200).json({
         success: true,
         message: 'Acceso autorizado',
         token,
-        usuario: {
-          id: usuario.id,
-          nombre: usuario.nombre,
-          email: usuario.email,
-          rol: usuario.rol
-        }
+        usuario: payload
       });
     } catch (error) {
-      console.warn('Fallo de conexión a la Base de Datos. Use la contraseña bypass "TeamHsec123".');
+      console.error('Error durante el inicio de sesion:', error.message);
       return res.status(500).json({
         success: false,
-        message: 'Error de conexión a la base de datos. Para pruebas locales, use la contraseña bypass "TeamHsec123".'
+        message: 'No se pudo iniciar sesion en este momento.'
       });
     }
   }

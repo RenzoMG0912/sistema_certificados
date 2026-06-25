@@ -137,9 +137,12 @@
           </div>
           <div class="relative">
             <input type="password" id="password" 
-              class="w-full bg-white border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-slate-800 placeholder-slate-400 focus:border-secondary focus:ring-1 focus:ring-secondary focus:bg-white outline-none transition-all text-sm shadow-sm" 
+              class="w-full bg-white border border-slate-300 rounded-xl pl-12 pr-12 py-3 text-slate-800 placeholder-slate-400 focus:border-secondary focus:ring-1 focus:ring-secondary focus:bg-white outline-none transition-all text-sm shadow-sm" 
               placeholder="••••••••" required autocomplete="current-password">
             <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors"></i>
+            <button type="button" id="toggle-password" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors w-8 h-8 flex items-center justify-center" aria-label="Ver contrasena" aria-pressed="false">
+              <i class="fa-regular fa-eye"></i>
+            </button>
           </div>
         </div>
 
@@ -152,7 +155,7 @@
         <button type="submit" id="submit-btn" 
           class="w-full bg-[#a62b2b] hover:bg-[#8e2525] active:bg-[#781f1f] text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg shadow-red-950/10 hover:shadow-red-950/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-2">
           <span id="btn-text" class="flex items-center gap-2">
-            Iniciar Sesión <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            Ingresar a la plataforma <i class="fa-solid fa-arrow-right-to-bracket"></i>
           </span>
           <div class="spinner" id="btn-spinner"></div>
         </button>
@@ -203,6 +206,19 @@
     const submitBtn = document.getElementById('submit-btn');
     const btnText = document.getElementById('btn-text');
     const btnSpinner = document.getElementById('btn-spinner');
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('toggle-password');
+
+    togglePassword.addEventListener('click', () => {
+      const isVisible = passwordInput.type === 'text';
+      passwordInput.type = isVisible ? 'password' : 'text';
+      togglePassword.setAttribute('aria-label', isVisible ? 'Ver contrasena' : 'Ocultar contrasena');
+      togglePassword.setAttribute('aria-pressed', String(!isVisible));
+      togglePassword.innerHTML = isVisible
+        ? '<i class="fa-regular fa-eye"></i>'
+        : '<i class="fa-regular fa-eye-slash"></i>';
+      passwordInput.focus();
+    });
 
     // Check if already logged in
     if (localStorage.getItem('admin_token')) {
@@ -237,7 +253,12 @@
           localStorage.setItem('admin_user', JSON.stringify(data.usuario || { email }));
           
           alertBox.className = 'alert alert-success';
-          alertBox.innerHTML = '<i class="fa-solid fa-circle-check"></i> Acceso autorizado. Redirigiendo...';
+          alertBox.replaceChildren();
+          const icon = document.createElement('i');
+          icon.className = 'fa-solid fa-circle-check';
+          const message = document.createElement('span');
+          message.textContent = 'Acceso autorizado. Redirigiendo...';
+          alertBox.append(icon, message);
           alertBox.style.display = 'flex';
 
           setTimeout(() => {
@@ -253,7 +274,12 @@
       } catch (err) {
         alertMsg.textContent = err.message;
         alertBox.className = 'alert alert-danger';
-        alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${err.message}`;
+        alertBox.replaceChildren();
+        const icon = document.createElement('i');
+        icon.className = 'fa-solid fa-circle-exclamation';
+        const message = document.createElement('span');
+        message.textContent = err.message;
+        alertBox.append(icon, message);
         alertBox.style.display = 'flex';
         
         submitBtn.disabled = false;

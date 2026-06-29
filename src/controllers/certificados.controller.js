@@ -317,6 +317,217 @@ module.exports = {
     }
   },
 
+  bulkGenerate: async (req, res, next) => {
+    const { curso_id } = req.body;
+    if (!curso_id) {
+      return res.status(400).json({ success: false, message: 'curso_id es requerido' });
+    }
+
+    try {
+      // 1. Find all pending enrollments (no certificate yet) for this curso
+      const pendQuery = `
+        SELECT m.id AS matricula_id, m.fecha_inicio,
+               p.nombres AS alumno_nombres, p.dni AS alumno_dni,
+               c.nombre AS curso_nombre, c.duracion AS curso_duracion,
+               c.entrenador AS curso_entrenador, c.codigo_curso, c.firma_id AS curso_firma_id
+        FROM matriculas m
+        JOIN participantes p ON m.participante_id = p.id
+        JOIN cursos c ON m.curso_id = c.id
+        LEFT JOIN certificados cert ON cert.matricula_id = m.id
+        WHERE m.curso_id = ? AND cert.id IS NULL
+      `;
+      const [pendRows] = await db.query(pendQuery, [curso_id]);
+
+      if (pendRows.length === 0) {
+        return res.status(200).json({ success: true, message: 'No hay alumnos pendientes por certificar', count: 0 });
+      }
+
+      // 2. Auto-select firma_1: find Gerente
+      const [gerenteRows] = await db.query("SELECT * FROM firmas WHERE cargo LIKE '%Gerente%' LIMIT 1");
+      if (gerenteRows.length === 0) {
+        return res.status(404).json({ success: false, message: 'No se encontró una firma de Gerente' });
+      }
+      const firma1 = gerenteRows[0];
+
+      // 3. Get firma_2 from curso
+      const [cursoRows] = await db.query('SELECT * FROM cursos WHERE id = ?', [curso_id]);
+      if (cursoRows.length === 0) {
+        return res.status(404).json({ success: false, message: 'Curso no encontrado' });
+      }
+      const curso = cursoRows[0];
+
+      let firma2 = null;
+      if (curso.firma_id) {
+        const [sig2Rows] = await db.query('SELECT * FROM firmas WHERE id = ?', [curso.firma_id]);
+        if (sig2Rows.length > 0) {
+          firma2 = sig2Rows[0];
+        }
+      }
+
+      // 4. Generate certificates for each pending enrollment
+      const results = [];
+      for (const row of pendRows) {
+        const fecha_emision = new Date().toISOString().split('T')[0];
+        const fecha_realizacion = row.fecha_inicio ? new Date(row.fecha_inicio).toISOString().split('T')[0] : fecha_emision;
+        const vigencia_anos = 2;
+
+        const codigo = await generarCodigoCertificado();
+        const hashInput = `${codigo}-${row.alumno_dni}-${row.matricula_id}-${fecha_emision}-${Math.random()}`;
+        const hash = generarHash(hashInput);
+
+        const dateIssued = new Date(fecha_emision);
+        const dateExpiry = new Date(dateIssued);
+        dateExpiry.setFullYear(dateExpiry.getFullYear() + vigencia_anos);
+        const formattedExpiry = dateExpiry.toISOString().split('T')[0];
+
+        const cleanCourseFolder = row.codigo_curso.replace(/[^a-zA-Z0-9-_]/g, '_');
+        const pdfFileName = `${row.alumno_dni}_${codigo}.pdf`;
+        const relativePdfPath = `/certificados/${cleanCourseFolder}/${pdfFileName}`;
+        const absoluteSavePath = path.join(__dirname, '..', '..', 'public', 'certificados', cleanCourseFolder, pdfFileName);
+
+        const pdfParams = {
+          codigo,
+          hash,
+          alumno_nombres: row.alumno_nombres,
+          alumno_dni: row.alumno_dni,
+          curso_nombre: row.curso_nombre,
+          curso_duracion: row.curso_duracion,
+          fecha_realizacion,
+          fecha_emision,
+          fecha_vencimiento: formattedExpiry,
+          firma_1: { nombre: firma1.nombre, cargo: firma1.cargo, firma_url: firma1.firma_url, cip: firma1.cip },
+          firma_2: firma2 ? { nombre: firma2.nombre, cargo: firma2.cargo, firma_url: firma2.firma_url, cip: firma2.cip } : null
+        };
+
+        await generarCertificadoPDF(pdfParams, absoluteSavePath);
+
+        const [insertResult] = await db.query(
+          `INSERT INTO certificados (codigo, hash, matricula_id, firma_id_1, firma_id_2, fecha_emision, fecha_vencimiento, pdf_path)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          [codigo, hash, row.matricula_id, firma1.id, firma2 ? firma2.id : null, fecha_emision, formattedExpiry, relativePdfPath]
+        );
+
+        results.push({ matricula_id: row.matricula_id, certificado_id: insertResult.insertId, codigo });
+      }
+
+      syncIndexStatic();
+
+      return res.status(201).json({
+        success: true,
+        message: `${results.length} certificado(s) generado(s) con éxito`,
+        count: results.length,
+        certificados: results
+      });
+
+    } catch (error) {
+      console.warn('[Mock DB] Generación masiva en memoria temporal');
+
+      const pendMatriculas = mockDb.matriculas.filter(m => m.curso_id == curso_id);
+      let pendientes = [];
+      for (const m of pendMatriculas) {
+        const exists = mockDb.certificados.some(c => c.matricula_id == m.id);
+        if (!exists) pendientes.push(m);
+      }
+
+      if (pendientes.length === 0) {
+        return res.status(200).json({ success: true, message: 'No hay alumnos pendientes por certificar', count: 0 });
+      }
+
+      const gerente = mockDb.firmas.find(f => f.cargo && f.cargo.toLowerCase().includes('gerente'));
+      if (!gerente) {
+        return res.status(404).json({ success: false, message: 'No se encontró una firma de Gerente' });
+      }
+
+      const curso = mockDb.cursos.find(c => c.id == curso_id);
+      if (!curso) {
+        return res.status(404).json({ success: false, message: 'Curso no encontrado' });
+      }
+
+      const f2 = curso.firma_id ? mockDb.firmas.find(f => f.id == curso.firma_id) : null;
+
+      const results = [];
+      for (const mat of pendientes) {
+        const alumno = mockDb.participantes.find(p => p.id == mat.participante_id);
+        if (!alumno) continue;
+
+        const fecha_emision = new Date().toISOString().split('T')[0];
+        const fecha_realizacion = mat.fecha_inicio ? new Date(mat.fecha_inicio).toISOString().split('T')[0] : fecha_emision;
+        const vigencia_anos = 2;
+
+        const yearSuffix = String(new Date().getFullYear()).slice(-2);
+        const pattern = new RegExp(`^PE-\\d{4}-${yearSuffix}$`);
+        const yearCerts = mockDb.certificados
+          .filter(c => pattern.test(c.codigo))
+          .map(c => parseInt(c.codigo.split('-')[1], 10))
+          .sort((a,b) => b-a);
+        const nextNum = yearCerts.length > 0 ? yearCerts[0] + 1 : 1;
+        const codigo = `PE-${nextNum}-${yearSuffix}`;
+
+        const hash = generarHash(`${codigo}-${alumno.dni}-${mat.id}-${fecha_emision}-${Math.random()}`);
+
+        const dateIssued = new Date(fecha_emision);
+        const dateExpiry = new Date(dateIssued);
+        dateExpiry.setFullYear(dateExpiry.getFullYear() + vigencia_anos);
+        const formattedExpiry = dateExpiry.toISOString().split('T')[0];
+
+        const cleanCourseFolder = curso.codigo_curso.replace(/[^a-zA-Z0-9-_]/g, '_');
+        const pdfFileName = `${alumno.dni}_${codigo}.pdf`;
+        const relativePdfPath = `/certificados/${cleanCourseFolder}/${pdfFileName}`;
+        const absoluteSavePath = path.join(__dirname, '..', '..', 'public', 'certificados', cleanCourseFolder, pdfFileName);
+
+        const pdfParams = {
+          codigo, hash,
+          alumno_nombres: alumno.nombres,
+          alumno_dni: alumno.dni,
+          curso_nombre: curso.nombre,
+          curso_duracion: curso.duracion,
+          fecha_realizacion, fecha_emision,
+          fecha_vencimiento: formattedExpiry,
+          firma_1: { nombre: gerente.nombre, cargo: gerente.cargo, firma_url: gerente.firma_url, cip: gerente.cip },
+          firma_2: f2 ? { nombre: f2.nombre, cargo: f2.cargo, firma_url: f2.firma_url, cip: f2.cip } : null
+        };
+
+        try {
+          await generarCertificadoPDF(pdfParams, absoluteSavePath);
+        } catch (pdfErr) {
+          console.error('Error generando PDF en bulk:', pdfErr);
+        }
+
+        const mockCert = {
+          id: mockDb.certificados.length + 1,
+          codigo, hash,
+          matricula_id: mat.id,
+          firma_id_1: gerente.id,
+          firma_id_2: f2 ? f2.id : null,
+          fecha_emision, fecha_vencimiento: formattedExpiry,
+          pdf_path: relativePdfPath,
+          alumno_nombre: alumno.nombres,
+          alumno_dni: alumno.dni,
+          curso_nombre: curso.nombre,
+          curso_duracion: curso.duracion,
+          curso_entrenador: curso.entrenador,
+          firma_nombre_1: gerente.nombre,
+          firma_cargo_1: gerente.cargo,
+          firma_nombre_2: f2 ? f2.nombre : null,
+          firma_cargo_2: f2 ? f2.cargo : null,
+          created_at: new Date().toISOString()
+        };
+        mockDb.certificados.push(mockCert);
+
+        results.push({ matricula_id: mat.id, certificado_id: mockCert.id, codigo });
+      }
+
+      syncIndexStatic();
+
+      return res.status(201).json({
+        success: true,
+        message: `${results.length} certificado(s) generado(s) con éxito (Modo Temporal)`,
+        count: results.length,
+        certificados: results
+      });
+    }
+  },
+
   delete: async (req, res, next) => {
     const { id } = req.params;
 

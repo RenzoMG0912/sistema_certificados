@@ -203,7 +203,7 @@ const loadCourses = async () => {
           document.getElementById('course-category').value = course.categoria || '';
           document.getElementById('modal-course-title').textContent = 'Editar Curso';
 
-          await populateCourseTrainerSelect(course.entrenador);
+          await populateCourseTrainerSelect(course.entrenador, course.firma_id);
 
           const modal = document.getElementById('modal-course');
           modal.classList.add('is-open');
@@ -227,35 +227,47 @@ const loadCourses = async () => {
   }
 };
 
-const populateCourseTrainerSelect = async (selectedName = null) => {
+const populateCourseTrainerSelect = async (selectedName = null, selectedFirmaId = null) => {
   const select = document.getElementById('course-trainer');
+  const firmaSelect = document.getElementById('course-firma-id');
   if (!select) return;
   try {
     const firmas = await apiFetch('/api/firmas');
     if (firmas && firmas.length) {
       select.innerHTML = '<option value="">-- Seleccionar Firmante --</option>' +
         firmas.map(f => `<option value="${f.nombre}" ${f.nombre === selectedName ? 'selected' : ''}>${f.nombre} (${f.cargo})</option>`).join('');
+
+      if (firmaSelect) {
+        firmaSelect.innerHTML = '<option value="">-- Seleccionar firma --</option>' +
+          firmas.map(f => `<option value="${f.id}" ${f.id == selectedFirmaId ? 'selected' : ''}>${f.nombre} (${f.cargo})</option>`).join('');
+      }
+
       if (firmas.length === 0) {
         select.innerHTML = '<option value="">No hay firmas registradas</option>';
+        if (firmaSelect) firmaSelect.innerHTML = '<option value="">No hay firmas registradas</option>';
       }
     } else {
       select.innerHTML = '<option value="">No hay firmas registradas</option>';
+      if (firmaSelect) firmaSelect.innerHTML = '<option value="">No hay firmas registradas</option>';
     }
   } catch (e) {
     console.error(e);
     select.innerHTML = '<option value="">Error al cargar firmantes</option>';
+    if (firmaSelect) firmaSelect.innerHTML = '<option value="">Error al cargar firmas</option>';
   }
 };
 
 document.getElementById('form-course').addEventListener('submit', async (e) => {
   e.preventDefault();
   const id = document.getElementById('course-id').value;
+  const firmaId = document.getElementById('course-firma-id')?.value;
   const body = {
     codigo_curso: document.getElementById('course-code').value.trim(),
     nombre: document.getElementById('course-name').value.trim(),
     duracion: document.getElementById('course-duration').value.trim(),
     categoria: document.getElementById('course-category').value.trim(),
     entrenador: document.getElementById('course-trainer').value.trim(),
+    firma_id: firmaId ? parseInt(firmaId) : null
   };
 
   const method = id ? 'PUT' : 'POST';
@@ -468,10 +480,21 @@ const loadEnrollments = async () => {
       });
 
       document.querySelectorAll('.btn-generate-cert-enrollment').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
           const cursoId = btn.dataset.cursoId;
           const cursoNombre = btn.dataset.cursoNombre;
-          openGenerateCertificates(cursoId, cursoNombre);
+          if (confirm(`¿Generar certificados para TODOS los alumnos pendientes del curso "${cursoNombre}"?\n\nSe usarán: Firma Gerente + Firma del Entrenador.`)) {
+            try {
+              const result = await apiFetch('/api/certificados/bulk-generate', {
+                method: 'POST',
+                body: JSON.stringify({ curso_id: parseInt(cursoId) })
+              });
+              showToast(result.message || 'Certificados generados correctamente');
+              loadEnrollments();
+            } catch (err) {
+              console.error(err);
+            }
+          }
         });
       });
 

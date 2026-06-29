@@ -32,7 +32,7 @@ module.exports = {
   },
 
   create: async (req, res, next) => {
-    const { codigo_curso, nombre, duracion, categoria, entrenador } = req.body;
+    const { codigo_curso, nombre, duracion, categoria, entrenador, firma_id } = req.body;
     try {
       const [check] = await db.query('SELECT id FROM cursos WHERE codigo_curso = ?', [codigo_curso]);
       if (check.length > 0) {
@@ -40,10 +40,10 @@ module.exports = {
       }
 
       const query = `
-        INSERT INTO cursos (codigo_curso, nombre, duracion, categoria, entrenador)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO cursos (codigo_curso, nombre, duracion, categoria, entrenador, firma_id)
+        VALUES (?, ?, ?, ?, ?, ?)
       `;
-      const [result] = await db.query(query, [codigo_curso, nombre, duracion, categoria, entrenador]);
+      const [result] = await db.query(query, [codigo_curso, nombre, duracion, categoria, entrenador, firma_id || null]);
       const [newRow] = await db.query('SELECT * FROM cursos WHERE id = ?', [result.insertId]);
       return res.status(201).json({ success: true, curso: newRow[0] });
     } catch (error) {
@@ -58,7 +58,8 @@ module.exports = {
         nombre,
         duracion,
         categoria,
-        entrenador
+        entrenador,
+        firma_id: firma_id || null
       };
       mockDb.cursos.push(newCurso);
       return res.status(201).json({ success: true, curso: newCurso });
@@ -67,7 +68,7 @@ module.exports = {
 
   update: async (req, res, next) => {
     const { id } = req.params;
-    const { codigo_curso, nombre, duracion, categoria, entrenador } = req.body;
+    const { codigo_curso, nombre, duracion, categoria, entrenador, firma_id } = req.body;
     try {
       const [check] = await db.query('SELECT id FROM cursos WHERE codigo_curso = ? AND id <> ?', [codigo_curso, id]);
       if (check.length > 0) {
@@ -76,10 +77,10 @@ module.exports = {
 
       const query = `
         UPDATE cursos
-        SET codigo_curso = ?, nombre = ?, duracion = ?, categoria = ?, entrenador = ?
+        SET codigo_curso = ?, nombre = ?, duracion = ?, categoria = ?, entrenador = ?, firma_id = ?
         WHERE id = ?
       `;
-      await db.query(query, [codigo_curso, nombre, duracion, categoria, entrenador, id]);
+      await db.query(query, [codigo_curso, nombre, duracion, categoria, entrenador, firma_id || null, id]);
       const [updatedRow] = await db.query('SELECT * FROM cursos WHERE id = ?', [id]);
       return res.status(200).json({ success: true, curso: updatedRow[0] });
     } catch (error) {
@@ -98,7 +99,8 @@ module.exports = {
         nombre,
         duracion,
         categoria,
-        entrenador
+        entrenador,
+        firma_id: firma_id || null
       };
       return res.status(200).json({ success: true, curso: mockDb.cursos[index] });
     }

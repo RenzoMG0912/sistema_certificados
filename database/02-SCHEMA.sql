@@ -33,7 +33,9 @@ CREATE TABLE IF NOT EXISTS cursos (
   duracion VARCHAR(50) NOT NULL,
   categoria VARCHAR(100),
   entrenador VARCHAR(150),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  firma_id INT DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_curso_firma FOREIGN KEY (firma_id) REFERENCES firmas(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabla de Firmas Autorizadas

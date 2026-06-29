@@ -940,6 +940,30 @@ const loadEnrollments = async () => {
     }
   });
 
+  document.getElementById('form-certificate').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const body = {
+      matricula_id: parseInt(document.getElementById('cert-matricula').value),
+      firma_id_1: parseInt(document.getElementById('cert-signature-1').value),
+      firma_id_2: document.getElementById('cert-signature-2').value ? parseInt(document.getElementById('cert-signature-2').value) : null,
+      fecha_realizacion: document.getElementById('cert-course-date').value,
+      fecha_emision: document.getElementById('cert-issue-date').value,
+      vigencia_anos: parseInt(document.getElementById('cert-expiry-years').value)
+    };
+
+    try {
+      const res = await apiFetch('/api/certificados', {
+        method: 'POST',
+        body: JSON.stringify(body)
+      });
+      showToast('Certificado emitido exitosamente y PDF generado');
+      closeModal('modal-certificate');
+      loadCertificates();
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
   setupModalHandlers('modal-certificate', 'btn-new-certificate', () => {
     document.getElementById('form-certificate')?.reset();
   });
@@ -957,16 +981,27 @@ const loadEnrollments = async () => {
     window.location.href = '/admin/login.html';
   });
 
-  const token = localStorage.getItem('admin_token');
-  if (!token) {
-    window.location.href = '/admin/login.html';
-    return;
-  }
+  (async () => {
+    const token = localStorage.getItem('admin_token');
+    if (!token) {
+      window.location.href = '/admin/login.html';
+      return;
+    }
 
-  checkSession().then(valid => {
+    const userDisplay = document.getElementById('user-display');
+    if (userDisplay) {
+      try {
+        const user = JSON.parse(localStorage.getItem('admin_user') || '{}');
+        userDisplay.textContent = user.nombre || user.email || 'Admin';
+      } catch (e) {
+        userDisplay.textContent = 'Admin';
+      }
+    }
+
+    const valid = await checkSession();
     if (!valid) {
       window.location.href = '/admin/login.html';
     } else {
       loadDashboardStats();
     }
-  });
+  })();

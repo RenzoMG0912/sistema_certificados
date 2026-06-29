@@ -23,7 +23,7 @@ const firmas = [
 ];
 
 const matriculas = [
-  { id: 1, participante_id: 1, curso_id: 1, alumno_nombre: 'Usuario Demo', alumno_dni: '00000000', curso_nombre: 'Respuesta a emergencias', created_at: new Date().toISOString() }
+  { id: 1, participante_id: 1, curso_id: 1, alumno_nombre: 'Usuario Demo', alumno_dni: '00000000', curso_nombre: 'Respuesta a emergencias', fecha_inicio: null, fecha_fin: null, created_at: new Date().toISOString() }
 ];
 
 const certificados = [

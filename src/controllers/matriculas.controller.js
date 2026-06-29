@@ -5,7 +5,7 @@ module.exports = {
   list: async (req, res, next) => {
     try {
       const query = `
-        SELECT m.id, m.participante_id, m.curso_id, m.created_at,
+        SELECT m.id, m.participante_id, m.curso_id, m.fecha_inicio, m.fecha_fin, m.created_at,
                p.nombres AS alumno_nombre, p.dni AS alumno_dni,
                c.nombre AS curso_nombre
         FROM matriculas m
@@ -27,6 +27,8 @@ module.exports = {
           alumno_nombre: p ? p.nombres : 'Alumno Eliminado',
           alumno_dni: p ? p.dni : '00000000',
           curso_nombre: c ? c.nombre : 'Curso Eliminado',
+          fecha_inicio: m.fecha_inicio || null,
+          fecha_fin: m.fecha_fin || null,
           created_at: m.created_at || new Date().toISOString()
         };
       }).reverse();
@@ -37,9 +39,11 @@ module.exports = {
   listGrouped: async (req, res, next) => {
     try {
       const query = `
-        SELECT m.id, m.participante_id, m.curso_id, m.created_at,
+        SELECT m.id, m.participante_id, m.curso_id, m.fecha_inicio, m.fecha_fin, m.created_at,
                p.nombres AS alumno_nombre, p.dni AS alumno_dni,
-               c.nombre AS curso_nombre, c.id AS curso_id_ref
+               c.nombre AS curso_nombre, c.id AS curso_id_ref,
+               c.duracion AS curso_duracion, c.entrenador AS curso_entrenador,
+               c.categoria AS curso_categoria, c.codigo_curso AS curso_codigo
         FROM matriculas m
         JOIN participantes p ON m.participante_id = p.id
         JOIN cursos c ON m.curso_id = c.id
@@ -54,6 +58,12 @@ module.exports = {
           grouped[key] = {
             curso_id: key,
             curso_nombre: r.curso_nombre,
+            curso_duracion: r.curso_duracion,
+            curso_entrenador: r.curso_entrenador,
+            curso_categoria: r.curso_categoria,
+            curso_codigo: r.curso_codigo,
+            fecha_inicio: r.fecha_inicio,
+            fecha_fin: r.fecha_fin,
             enrollments: []
           };
         }
@@ -62,6 +72,8 @@ module.exports = {
           participante_id: r.participante_id,
           alumno_nombre: r.alumno_nombre,
           alumno_dni: r.alumno_dni,
+          fecha_inicio: r.fecha_inicio,
+          fecha_fin: r.fecha_fin,
           created_at: r.created_at
         });
       });
@@ -78,6 +90,12 @@ module.exports = {
           grouped[key] = {
             curso_id: key,
             curso_nombre: c ? c.nombre : 'Curso Eliminado',
+            curso_duracion: c ? c.duracion : null,
+            curso_entrenador: c ? c.entrenador : null,
+            curso_categoria: c ? c.categoria : null,
+            curso_codigo: c ? c.codigo_curso : null,
+            fecha_inicio: m.fecha_inicio || null,
+            fecha_fin: m.fecha_fin || null,
             enrollments: []
           };
         }
@@ -86,6 +104,8 @@ module.exports = {
           participante_id: m.participante_id,
           alumno_nombre: p ? p.nombres : 'Alumno Eliminado',
           alumno_dni: p ? p.dni : '00000000',
+          fecha_inicio: m.fecha_inicio || null,
+          fecha_fin: m.fecha_fin || null,
           created_at: m.created_at || new Date().toISOString()
         });
       });
@@ -97,7 +117,7 @@ module.exports = {
     const { curso_id } = req.params;
     try {
       const query = `
-        SELECT m.id, m.participante_id, m.curso_id, m.created_at,
+        SELECT m.id, m.participante_id, m.curso_id, m.fecha_inicio, m.fecha_fin, m.created_at,
                p.nombres AS alumno_nombre, p.dni AS alumno_dni
         FROM matriculas m
         JOIN participantes p ON m.participante_id = p.id
@@ -118,6 +138,8 @@ module.exports = {
             curso_id: m.curso_id,
             alumno_nombre: p ? p.nombres : 'Alumno Eliminado',
             alumno_dni: p ? p.dni : '00000000',
+            fecha_inicio: m.fecha_inicio || null,
+            fecha_fin: m.fecha_fin || null,
             created_at: m.created_at || new Date().toISOString()
           };
         });
@@ -126,7 +148,7 @@ module.exports = {
   },
 
   create: async (req, res, next) => {
-    const { participante_id, curso_id } = req.body;
+    const { participante_id, curso_id, fecha_inicio, fecha_fin } = req.body;
     try {
       const [check] = await db.query(
         'SELECT id FROM matriculas WHERE participante_id = ? AND curso_id = ?',
@@ -137,10 +159,10 @@ module.exports = {
       }
 
       const query = `
-        INSERT INTO matriculas (participante_id, curso_id)
-        VALUES (?, ?)
+        INSERT INTO matriculas (participante_id, curso_id, fecha_inicio, fecha_fin)
+        VALUES (?, ?, ?, ?)
       `;
-      const [result] = await db.query(query, [participante_id, curso_id]);
+      const [result] = await db.query(query, [participante_id, curso_id, fecha_inicio || null, fecha_fin || null]);
       const [newRow] = await db.query('SELECT * FROM matriculas WHERE id = ?', [result.insertId]);
       return res.status(201).json({ success: true, matricula: newRow[0] });
     } catch (error) {
@@ -154,6 +176,8 @@ module.exports = {
         id: mockDb.matriculas.length + 1,
         participante_id,
         curso_id,
+        fecha_inicio: fecha_inicio || null,
+        fecha_fin: fecha_fin || null,
         created_at: new Date().toISOString()
       };
       mockDb.matriculas.push(newM);
@@ -162,7 +186,7 @@ module.exports = {
   },
 
   bulkCreate: async (req, res, next) => {
-    const { curso_id, participante_ids } = req.body;
+    const { curso_id, participante_ids, fecha_inicio, fecha_fin } = req.body;
     if (!curso_id || !participante_ids || !Array.isArray(participante_ids) || participante_ids.length === 0) {
       return res.status(400).json({ success: false, message: 'Debe especificar un curso y al menos un alumno' });
     }
@@ -176,10 +200,10 @@ module.exports = {
         );
         if (check.length === 0) {
           const [result] = await db.query(
-            'INSERT INTO matriculas (participante_id, curso_id) VALUES (?, ?)',
-            [pid, curso_id]
+            'INSERT INTO matriculas (participante_id, curso_id, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?)',
+            [pid, curso_id, fecha_inicio || null, fecha_fin || null]
           );
-          inserted.push({ id: result.insertId, participante_id: pid, curso_id });
+          inserted.push({ id: result.insertId, participante_id: pid, curso_id, fecha_inicio, fecha_fin });
         }
       }
       return res.status(201).json({ success: true, message: `${inserted.length} matrícula(s) creada(s)`, matriculas: inserted });
@@ -193,6 +217,8 @@ module.exports = {
             id: mockDb.matriculas.length + 1,
             participante_id: pid,
             curso_id,
+            fecha_inicio: fecha_inicio || null,
+            fecha_fin: fecha_fin || null,
             created_at: new Date().toISOString()
           };
           mockDb.matriculas.push(newM);

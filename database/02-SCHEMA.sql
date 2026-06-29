@@ -51,6 +51,8 @@ CREATE TABLE IF NOT EXISTS matriculas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   participante_id INT NOT NULL,
   curso_id INT NOT NULL,
+  fecha_inicio DATE DEFAULT NULL,
+  fecha_fin DATE DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY unique_p_c (participante_id, curso_id),
   CONSTRAINT fk_mat_participante FOREIGN KEY (participante_id) REFERENCES participantes(id) ON DELETE CASCADE,

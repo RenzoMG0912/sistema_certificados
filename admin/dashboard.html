@@ -487,9 +487,9 @@
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-surface-container text-on-surface-variant">
-                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Alumno (DNI)</th>
                   <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Curso</th>
-                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Fecha de Registro</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Alumnos Matriculados</th>
+                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Cant.</th>
                   <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Acciones</th>
                 </tr>
               </thead>
@@ -636,7 +636,9 @@
           
           <div class="flex flex-col gap-1.5">
             <label for="course-trainer" class="text-xs font-semibold text-slate-700 font-title">Entrenador / Ponente</label>
-            <input type="text" id="course-trainer" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="ej: Ing. Gregorio A. Escajadillo Sarmiento" required>
+            <select id="course-trainer" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
+              <option value="">Cargando firmantes...</option>
+            </select>
           </div>
           
           <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
@@ -721,38 +723,73 @@
     </div>
   </div>
 
-  <!-- MODAL: REGISTRAR MATRÍCULA -->
+  <!-- MODAL: REGISTRAR MATRÍCULA (MULTIPLE ALUMNOS) -->
   <div class="modal modal-dashboard" id="modal-enrollment" aria-hidden="true">
     <div class="modal__backdrop" data-modal-close></div>
-    <div class="modal__panel">
+    <div class="modal__panel" style="max-width:650px;">
       <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
         <span class="material-symbols-outlined text-[18px]">close</span>
       </button>
       <div class="p-6 border-b border-slate-100">
-        <h3 class="font-title text-base font-bold text-on-surface">Matricular Alumno en Curso</h3>
+        <h3 class="font-title text-base font-bold text-on-surface">Matricular Alumnos en Curso</h3>
       </div>
       <div class="p-6">
         <form id="form-enrollment" class="space-y-4">
           
           <div class="flex flex-col gap-1.5">
-            <label for="enrollment-participant" class="text-xs font-semibold text-slate-700 font-title">Seleccionar Alumno (DNI)</label>
-            <select id="enrollment-participant" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
-              <option value="">Cargando alumnos...</option>
+            <label for="enrollment-course" class="text-xs font-semibold text-slate-700 font-title">1. Seleccionar Curso</label>
+            <select id="enrollment-course" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
+              <option value="">-- Primero selecciona un curso --</option>
             </select>
           </div>
           
           <div class="flex flex-col gap-1.5">
-            <label for="enrollment-course" class="text-xs font-semibold text-slate-700 font-title">Seleccionar Curso</label>
-            <select id="enrollment-course" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
-              <option value="">Cargando cursos...</option>
-            </select>
+            <label class="text-xs font-semibold text-slate-700 font-title">2. Seleccionar Alumnos a Matricular</label>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 max-h-52 overflow-y-auto custom-scrollbar" id="enrollment-participants-container">
+              <p class="text-sm text-slate-400 text-center py-4">Selecciona un curso primero para cargar los alumnos disponibles.</p>
+            </div>
+            <p class="text-[11px] text-on-surface-variant">Mantén presionada la tecla Ctrl (o Cmd en Mac) para seleccionar múltiples alumnos.</p>
           </div>
           
           <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
             <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cancelar</button>
-            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="submit">Matricular</button>
+            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="submit">Matricular Seleccionados</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EDITAR MATRÍCULA (agregar/quitar alumnos de un curso) -->
+  <div class="modal modal-dashboard" id="modal-enrollment-edit" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" style="max-width:650px;">
+      <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+      <div class="p-6 border-b border-slate-100">
+        <h3 class="font-title text-base font-bold text-on-surface" id="modal-enrollment-edit-title">Editar Matrícula</h3>
+      </div>
+      <div class="p-6">
+        <input type="hidden" id="enrollment-edit-curso-id">
+        
+        <div class="mb-5">
+          <h4 class="text-xs font-semibold text-slate-700 font-title mb-2">Alumnos Actualmente Matriculados</h4>
+          <div id="enrollment-current-list" class="space-y-2">
+            <p class="text-sm text-slate-400">Cargando...</p>
+          </div>
+        </div>
+
+        <div class="border-t border-slate-100 pt-4">
+          <h4 class="text-xs font-semibold text-slate-700 font-title mb-2">Agregar Alumnos Adicionales</h4>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 max-h-40 overflow-y-auto custom-scrollbar" id="enrollment-add-participants-container">
+            <p class="text-sm text-slate-400 text-center py-3">Cargando alumnos disponibles...</p>
+          </div>
+          <div class="flex justify-end gap-3 pt-4 mt-2">
+            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cancelar</button>
+            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="btn-enrollment-add-selected">Agregar Seleccionados</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

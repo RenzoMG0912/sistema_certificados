@@ -1,6 +1,3 @@
-// Archivo: assets/js/admin.js
-// Lógica frontend para el panel administrativo de TEAM HSEC
-
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('admin_token');
   if (!token) {
@@ -8,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // Set user display email
   try {
     const user = JSON.parse(localStorage.getItem('admin_user') || '{}');
     document.getElementById('user-display').textContent = user.nombre || user.email || 'Admin';
@@ -16,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('user-display').textContent = 'Admin';
   }
 
-  // Toast notifications
   const showToast = (message, type = 'success') => {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -32,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3500);
   };
 
-  // Helper API fetch wrapper with token injection
   const apiFetch = async (url, options = {}) => {
     options.headers = {
       ...options.headers,
@@ -43,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(url, options);
       if (response.status === 401 || response.status === 403) {
-        // Token expired or invalid
         localStorage.removeItem('admin_token');
         localStorage.removeItem('admin_user');
         window.location.href = '/admin/login.html';
@@ -61,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Simple Router / Tab Switcher
   const sidebarLinks = document.querySelectorAll('.sidebar-menu li a');
   const tabContents = document.querySelectorAll('.tab-content');
   const pageTitle = document.getElementById('page-title');
@@ -69,8 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const switchTab = (tabId) => {
     sidebarLinks.forEach(link => link.classList.toggle('active', link.dataset.tab === tabId));
     tabContents.forEach(content => content.classList.toggle('active', content.id === `tab-${tabId}`));
-    
-    // Set titles
+
     const titles = {
       inicio: 'Resumen del Sistema',
       cursos: 'Gestión de Cursos',
@@ -81,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     pageTitle.textContent = titles[tabId] || 'TEAM HSEC';
 
-    // Fetch tab-specific data
     if (tabId === 'inicio') loadDashboardStats();
     if (tabId === 'cursos') loadCourses();
     if (tabId === 'participantes') loadParticipants();
@@ -97,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Modal Open/Close handling
   const setupModalHandlers = (modalId, openButtonId, onOpen = () => {}) => {
     const modal = document.getElementById(modalId);
     const openBtn = document.getElementById(openButtonId);
@@ -127,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Logout handler
   document.getElementById('logout-btn').addEventListener('click', (e) => {
     e.preventDefault();
     localStorage.removeItem('admin_token');
@@ -136,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ----------------------------------------------------
-  // BUSINESS LOGIC: TAB: INICIO
+  // TAB: INICIO
   // ----------------------------------------------------
   const loadDashboardStats = async () => {
     try {
@@ -147,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('stat-cursos').textContent = stats.totalCursos || 0;
       document.getElementById('stat-certificados').textContent = stats.totalCertificados || 0;
 
-      // Render recent certificates
       const recentList = document.getElementById('recent-certs-list');
       if (stats.recientes && stats.recientes.length) {
         recentList.innerHTML = stats.recientes.map(cert => {
@@ -178,12 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ----------------------------------------------------
-  // BUSINESS LOGIC: TAB: CURSOS
+  // TAB: CURSOS
   // ----------------------------------------------------
   const loadCourses = async () => {
     const listContainer = document.getElementById('courses-list');
     listContainer.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
-    
+
     try {
       const courses = await apiFetch('/api/cursos');
       if (!courses) return;
@@ -207,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </tr>
       `).join('');
 
-      // Add edit/delete button listeners
       document.querySelectorAll('.btn-edit-course').forEach(btn => {
         btn.addEventListener('click', async () => {
           const id = btn.dataset.id;
@@ -218,9 +204,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('course-name').value = course.nombre;
             document.getElementById('course-duration').value = course.duracion;
             document.getElementById('course-category').value = course.categoria || '';
-            document.getElementById('course-trainer').value = course.entrenador;
             document.getElementById('modal-course-title').textContent = 'Editar Curso';
-            
+
+            await populateCourseTrainerSelect(course.entrenador);
+
             const modal = document.getElementById('modal-course');
             modal.classList.add('is-open');
             modal.setAttribute('aria-hidden', 'false');
@@ -240,6 +227,25 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const populateCourseTrainerSelect = async (selectedName = null) => {
+    const select = document.getElementById('course-trainer');
+    try {
+      const firmas = await apiFetch('/api/firmas');
+      if (firmas && firmas.length) {
+        select.innerHTML = '<option value="">-- Seleccionar Firmante --</option>' +
+          firmas.map(f => `<option value="${f.nombre}" ${f.nombre === selectedName ? 'selected' : ''}>${f.nombre} (${f.cargo})</option>`).join('');
+        if (firmas.length === 0) {
+          select.innerHTML = '<option value="">No hay firmas registradas</option>';
+        }
+      } else {
+        select.innerHTML = '<option value="">No hay firmas registradas</option>';
+      }
+    } catch (e) {
+      console.error(e);
+      select.innerHTML = '<option value="">Error al cargar firmantes</option>';
     }
   };
 
@@ -270,19 +276,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  setupModalHandlers('modal-course', 'btn-new-course', () => {
+  setupModalHandlers('modal-course', 'btn-new-course', async () => {
     document.getElementById('form-course').reset();
     document.getElementById('course-id').value = '';
     document.getElementById('modal-course-title').textContent = 'Registrar Curso';
+    await populateCourseTrainerSelect();
   });
 
   // ----------------------------------------------------
-  // BUSINESS LOGIC: TAB: PARTICIPANTES
+  // TAB: PARTICIPANTES
   // ----------------------------------------------------
   const loadParticipants = async () => {
     const listContainer = document.getElementById('participants-list');
     listContainer.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
-    
+
     try {
       const participants = await apiFetch('/api/participantes');
       if (!participants) return;
@@ -316,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
         }).join('');
 
-        // Listeners
         document.querySelectorAll('.btn-edit-participant').forEach(btn => {
           btn.addEventListener('click', () => {
             const id = btn.dataset.id;
@@ -332,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
               document.getElementById('participant-examen-medico').value = p.examen_medico || 'APTO';
               document.getElementById('participant-email').value = p.email || '';
               document.getElementById('modal-participant-title').textContent = 'Editar Alumno';
-              
+
               const modal = document.getElementById('modal-participant');
               modal.classList.add('is-open');
               modal.setAttribute('aria-hidden', 'false');
@@ -354,19 +360,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       renderList(participants);
 
-      // Filtering search bar
       const searchDni = document.getElementById('search-participant-dni');
       const searchName = document.getElementById('search-participant-name');
       const applyFilters = () => {
         const dniVal = searchDni.value.trim().toLowerCase();
         const nameVal = searchName.value.trim().toLowerCase();
-        
+
         const filtered = participants.filter(p => {
           return p.dni.toLowerCase().includes(dniVal) && p.nombres.toLowerCase().includes(nameVal);
         });
         renderList(filtered);
       };
-      
+
       searchDni.oninput = applyFilters;
       searchName.oninput = applyFilters;
 
@@ -417,91 +422,250 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ----------------------------------------------------
-  // BUSINESS LOGIC: TAB: MATRÍCULAS
+  // TAB: MATRÍCULAS
   // ----------------------------------------------------
   const loadEnrollments = async () => {
     const listContainer = document.getElementById('enrollments-list');
     listContainer.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
-    
-    try {
-      const enrollments = await apiFetch('/api/matriculas');
-      if (!enrollments) return;
 
-      if (enrollments.length === 0) {
+    try {
+      const grouped = await apiFetch('/api/matriculas/grouped');
+      if (!grouped) return;
+
+      if (grouped.length === 0) {
         listContainer.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #64748b;">No hay matrículas registradas.</td></tr>';
         return;
       }
 
-      listContainer.innerHTML = enrollments.map(m => `
-        <tr>
-          <td><strong>${m.alumno_nombre}</strong> (${m.alumno_dni})</td>
-          <td>${m.curso_nombre}</td>
-          <td>${new Date(m.created_at).toLocaleDateString('es-ES')}</td>
-          <td>
-            <button class="btn-icon btn-delete btn-delete-enrollment" data-id="${m.id}" title="Eliminar Matrícula"><i class="fa-solid fa-trash"></i></button>
-          </td>
-        </tr>
-      `).join('');
+      const allCerts = await apiFetch('/api/certificados').catch(() => []);
+
+      listContainer.innerHTML = grouped.map(g => {
+        const studentRows = g.enrollments.map(e => `
+          <div class="flex items-center justify-between py-1.5 px-2 hover:bg-slate-50 rounded-lg">
+            <span><strong>${e.alumno_nombre}</strong> (${e.alumno_dni})</span>
+            <button class="btn-icon btn-delete-enrollment" data-id="${e.id}" title="Quitar Alumno" style="width:26px;height:26px;">
+              <i class="fa-solid fa-xmark" style="font-size:14px;"></i>
+            </button>
+          </div>
+        `).join('');
+
+        const hasCertForAny = g.enrollments.some(e =>
+          allCerts.some(c => c.matricula_id == e.id)
+        );
+
+        return `
+          <tr>
+            <td><strong>${g.curso_nombre}</strong></td>
+            <td style="min-width:280px;"><div class="space-y-1">${studentRows}</div></td>
+            <td><span class="badge-status badge-active">${g.enrollments.length}</span></td>
+            <td class="actions-cell">
+              <button class="btn-icon btn-edit-enrollment" data-curso-id="${g.curso_id}" title="Editar Matrícula (agregar/quitar alumnos)"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-icon btn-generate-cert-enrollment" data-curso-id="${g.curso_id}" data-curso-nombre="${g.curso_nombre}" title="Generar Certificados Pendientes"><i class="fa-solid fa-file-circle-plus" style="color:#2563eb;"></i></button>
+              <button class="btn-icon btn-delete btn-delete-enrollment-group" data-curso-id="${g.curso_id}" title="Eliminar todas las matrículas de este curso"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
 
       document.querySelectorAll('.btn-delete-enrollment').forEach(btn => {
         btn.addEventListener('click', async () => {
           const id = btn.dataset.id;
-          if (confirm('¿Está seguro de eliminar esta matrícula? Se eliminará cualquier certificado emitido bajo esta.')) {
+          if (confirm('¿Quitar este alumno del curso?')) {
             await apiFetch(`/api/matriculas/${id}`, { method: 'DELETE' });
-            showToast('Matrícula eliminada correctamente');
+            showToast('Alumno removido del curso');
             loadEnrollments();
           }
         });
       });
+
+      document.querySelectorAll('.btn-edit-enrollment').forEach(btn => {
+        btn.addEventListener('click', () => openEditEnrollmentModal(btn.dataset.cursoId));
+      });
+
+      document.querySelectorAll('.btn-generate-cert-enrollment').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cursoId = btn.dataset.cursoId;
+          const cursoNombre = btn.dataset.cursoNombre;
+          openGenerateCertificates(cursoId, cursoNombre);
+        });
+      });
+
+      document.querySelectorAll('.btn-delete-enrollment-group').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const cursoId = btn.dataset.cursoId;
+          if (confirm('¿Eliminar TODAS las matrículas de este curso? Los certificados existentes no se eliminarán.')) {
+            const enrollments = grouped.find(g => g.curso_id == cursoId);
+            if (enrollments) {
+              for (const e of enrollments.enrollments) {
+                await apiFetch(`/api/matriculas/${e.id}`, { method: 'DELETE' }).catch(() => {});
+              }
+              showToast('Matrículas eliminadas');
+              loadEnrollments();
+            }
+          }
+        });
+      });
+
     } catch (err) {
       console.error(err);
     }
   };
 
-  setupModalHandlers('modal-enrollment', 'btn-new-enrollment', async () => {
-    const pSelect = document.getElementById('enrollment-participant');
-    const cSelect = document.getElementById('enrollment-course');
-    
-    pSelect.innerHTML = '<option value="">Cargando...</option>';
-    cSelect.innerHTML = '<option value="">Cargando...</option>';
+  const openEditEnrollmentModal = async (cursoId) => {
+    const modal = document.getElementById('modal-enrollment-edit');
+    document.getElementById('enrollment-edit-curso-id').value = cursoId;
+    document.getElementById('modal-enrollment-edit-title').textContent = 'Editar Matrícula';
+
+    const currentList = document.getElementById('enrollment-current-list');
+    const addContainer = document.getElementById('enrollment-add-participants-container');
+
+    currentList.innerHTML = '<p class="text-sm text-slate-400">Cargando...</p>';
+    addContainer.innerHTML = '<p class="text-sm text-slate-400">Cargando...</p>';
+
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
 
     try {
-      const [participants, courses] = await Promise.all([
-        apiFetch('/api/participantes'),
-        apiFetch('/api/cursos')
+      const [enrollments, allParticipants] = await Promise.all([
+        apiFetch(`/api/matriculas/by-course/${cursoId}`),
+        apiFetch('/api/participantes')
       ]);
 
-      if (participants && participants.length) {
-        pSelect.innerHTML = '<option value="">-- Seleccionar Alumno --</option>' + 
-          participants.map(p => `<option value="${p.id}">${p.nombres} (${p.dni})</option>`).join('');
+      const enrolledIds = enrollments.map(e => e.participante_id);
+
+      if (enrollments.length === 0) {
+        currentList.innerHTML = '<p class="text-sm text-slate-400">No hay alumnos matriculados en este curso.</p>';
       } else {
-        pSelect.innerHTML = '<option value="">No hay alumnos registrados</option>';
+        currentList.innerHTML = enrollments.map(e => `
+          <div class="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2">
+            <span class="text-sm"><strong>${e.alumno_nombre}</strong> (${e.alumno_dni})</span>
+            <button class="btn-icon btn-delete-enrollment" data-id="${e.id}" title="Quitar" style="width:26px;height:26px;">
+              <i class="fa-solid fa-xmark" style="font-size:14px;"></i>
+            </button>
+          </div>
+        `).join('');
+
+        document.querySelectorAll('#enrollment-current-list .btn-delete-enrollment').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.id;
+            if (confirm('¿Quitar este alumno del curso?')) {
+              await apiFetch(`/api/matriculas/${id}`, { method: 'DELETE' });
+              showToast('Alumno removido');
+              openEditEnrollmentModal(cursoId);
+            }
+          });
+        });
       }
 
-      if (courses && courses.length) {
-        cSelect.innerHTML = '<option value="">-- Seleccionar Curso --</option>' + 
-          courses.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+      const available = allParticipants.filter(p => !enrolledIds.includes(p.id));
+      if (available.length === 0) {
+        addContainer.innerHTML = '<p class="text-sm text-slate-400">Todos los alumnos ya están matriculados en este curso.</p>';
       } else {
-        cSelect.innerHTML = '<option value="">No hay cursos registrados</option>';
+        addContainer.innerHTML = available.map(p => `
+          <label class="flex items-center gap-2.5 py-1.5 px-2 hover:bg-white rounded-lg cursor-pointer">
+            <input type="checkbox" class="enrollment-add-checkbox" value="${p.id}" style="accent-color:#e60000;">
+            <span class="text-sm">${p.nombres} (${p.dni})</span>
+          </label>
+        `).join('');
       }
     } catch (e) {
       console.error(e);
+      currentList.innerHTML = '<p class="text-sm text-red-500">Error al cargar datos.</p>';
+      addContainer.innerHTML = '';
+    }
+  };
+
+  document.getElementById('btn-enrollment-add-selected').addEventListener('click', async () => {
+    const cursoId = document.getElementById('enrollment-edit-curso-id').value;
+    const checkboxes = document.querySelectorAll('#enrollment-add-participants-container .enrollment-add-checkbox:checked');
+    const participante_ids = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+    if (participante_ids.length === 0) {
+      showToast('Selecciona al menos un alumno para agregar', 'error');
+      return;
+    }
+
+    try {
+      await apiFetch('/api/matriculas/bulk', {
+        method: 'POST',
+        body: JSON.stringify({ curso_id: parseInt(cursoId), participante_ids })
+      });
+      showToast(`${participante_ids.length} alumno(s) agregado(s) al curso`);
+      closeModal('modal-enrollment-edit');
+      loadEnrollments();
+    } catch (err) {
+      console.error(err);
     }
   });
 
+  const openGenerateCertificates = (cursoId, cursoNombre) => {
+    const certModal = document.getElementById('modal-certificate');
+    document.getElementById('modal-certificate-title').textContent = `Generar Certificado - ${cursoNombre}`;
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('cert-course-date').value = today;
+    document.getElementById('cert-issue-date').value = today;
+
+    const matSelect = document.getElementById('cert-matricula');
+    matSelect.innerHTML = '<option value="">Cargando matrículas de este curso...</option>';
+
+    const sig1Select = document.getElementById('cert-signature-1');
+    const sig2Select = document.getElementById('cert-signature-2');
+    sig1Select.innerHTML = '<option value="">Cargando firmas...</option>';
+    sig2Select.innerHTML = '<option value="">Ninguna</option>';
+
+    Promise.all([
+      apiFetch(`/api/matriculas/by-course/${cursoId}`),
+      apiFetch('/api/firmas'),
+      apiFetch('/api/certificados')
+    ]).then(([enrollments, signatures, certs]) => {
+      const certMatriculaIds = new Set((certs || []).map(c => c.matricula_id));
+      const available = enrollments.filter(e => !certMatriculaIds.has(e.id));
+
+      if (available.length === 0) {
+        matSelect.innerHTML = '<option value="">Todos los alumnos ya tienen certificado</option>';
+      } else {
+        matSelect.innerHTML = '<option value="">-- Selecciona una matrícula --</option>' +
+          available.map(e => `<option value="${e.id}">${e.alumno_nombre} (${e.alumno_dni})</option>`).join('');
+      }
+
+      if (signatures && signatures.length) {
+        const sigOptions = signatures.map(s => `<option value="${s.id}">${s.nombre} (${s.cargo})</option>`).join('');
+        sig1Select.innerHTML = '<option value="">-- Seleccionar Firma Principal --</option>' + sigOptions;
+        sig2Select.innerHTML = '<option value="">Ninguna</option>' + sigOptions;
+      } else {
+        sig1Select.innerHTML = '<option value="">No hay firmas autorizadas</option>';
+      }
+
+      certModal.classList.add('is-open');
+      certModal.setAttribute('aria-hidden', 'false');
+    }).catch(err => {
+      console.error(err);
+      showToast('Error al cargar datos para certificado', 'error');
+    });
+  };
+
   document.getElementById('form-enrollment').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const body = {
-      participante_id: parseInt(document.getElementById('enrollment-participant').value),
-      curso_id: parseInt(document.getElementById('enrollment-course').value)
-    };
+    const curso_id = parseInt(document.getElementById('enrollment-course').value);
+    const checkboxes = document.querySelectorAll('#enrollment-participants-container .enrollment-participant-checkbox:checked');
+    const participante_ids = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+    if (!curso_id) {
+      showToast('Debes seleccionar un curso', 'error');
+      return;
+    }
+    if (participante_ids.length === 0) {
+      showToast('Debes seleccionar al menos un alumno', 'error');
+      return;
+    }
 
     try {
-      await apiFetch('/api/matriculas', {
+      await apiFetch('/api/matriculas/bulk', {
         method: 'POST',
-        body: JSON.stringify(body)
+        body: JSON.stringify({ curso_id, participante_ids })
       });
-      showToast('Matrícula registrada con éxito');
+      showToast(`${participante_ids.length} matrícula(s) registrada(s) con éxito`);
       closeModal('modal-enrollment');
       loadEnrollments();
     } catch (err) {
@@ -509,13 +673,82 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  setupModalHandlers('modal-enrollment', 'btn-new-enrollment', async () => {
+    const courseSelect = document.getElementById('enrollment-course');
+    const container = document.getElementById('enrollment-participants-container');
+
+    courseSelect.innerHTML = '<option value="">Cargando cursos...</option>';
+    container.innerHTML = '<p class="text-sm text-slate-400 text-center py-4">Selecciona un curso para ver los alumnos disponibles.</p>';
+
+    try {
+      const courses = await apiFetch('/api/cursos');
+      if (courses && courses.length) {
+        courseSelect.innerHTML = '<option value="">-- Seleccionar Curso --</option>' +
+          courses.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+      } else {
+        courseSelect.innerHTML = '<option value="">No hay cursos registrados</option>';
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  document.getElementById('enrollment-course').addEventListener('change', async function () {
+    const cursoId = parseInt(this.value);
+    const container = document.getElementById('enrollment-participants-container');
+
+    if (!cursoId) {
+      container.innerHTML = '<p class="text-sm text-slate-400 text-center py-4">Selecciona un curso para ver los alumnos disponibles.</p>';
+      return;
+    }
+
+    container.innerHTML = '<p class="text-sm text-slate-400 text-center py-4">Cargando alumnos...</p>';
+
+    try {
+      const [enrollments, allParticipants] = await Promise.all([
+        apiFetch(`/api/matriculas/by-course/${cursoId}`),
+        apiFetch('/api/participantes')
+      ]);
+
+      const enrolledIds = enrollments.map(e => e.participante_id);
+      const available = allParticipants.filter(p => !enrolledIds.includes(p.id));
+
+      if (available.length === 0) {
+        container.innerHTML = '<p class="text-sm text-slate-400 text-center py-4">Todos los alumnos ya están matriculados en este curso.</p>';
+        return;
+      }
+
+      container.innerHTML = available.map(p => `
+        <label class="flex items-center gap-2.5 py-1.5 px-2 hover:bg-white rounded-lg cursor-pointer">
+          <input type="checkbox" class="enrollment-participant-checkbox" value="${p.id}" style="accent-color:#e60000;">
+          <span class="text-sm">${p.nombres} (${p.dni}) - ${p.cargo || ''}</span>
+        </label>
+      `).join('');
+
+      const countLabel = document.createElement('div');
+      countLabel.className = 'text-xs text-on-surface-variant mt-1';
+      countLabel.id = 'enrollment-count';
+      container.appendChild(countLabel);
+
+      container.addEventListener('change', () => {
+        const checked = container.querySelectorAll('.enrollment-participant-checkbox:checked').length;
+        const countEl = document.getElementById('enrollment-count');
+        if (countEl) countEl.textContent = `${checked} alumno(s) seleccionado(s)`;
+      });
+
+    } catch (e) {
+      console.error(e);
+      container.innerHTML = '<p class="text-sm text-red-500 text-center py-4">Error al cargar alumnos.</p>';
+    }
+  });
+
   // ----------------------------------------------------
-  // BUSINESS LOGIC: TAB: CERTIFICADOS
+  // TAB: CERTIFICADOS
   // ----------------------------------------------------
   const loadCertificates = async () => {
     const listContainer = document.getElementById('certificates-list');
     listContainer.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
-    
+
     try {
       const certs = await apiFetch('/api/certificados');
       if (!certs) return;
@@ -561,13 +794,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       renderList(certs);
 
-      // Search filters
       const searchBox = document.getElementById('search-cert-query');
       searchBox.oninput = () => {
         const query = searchBox.value.trim().toLowerCase();
         const filtered = certs.filter(c => {
-          return c.codigo.toLowerCase().includes(query) || 
-                 c.alumno_nombre.toLowerCase().includes(query) || 
+          return c.codigo.toLowerCase().includes(query) ||
+                 c.alumno_nombre.toLowerCase().includes(query) ||
                  c.alumno_dni.includes(query);
         });
         renderList(filtered);
@@ -579,15 +811,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   setupModalHandlers('modal-certificate', 'btn-new-certificate', async () => {
-    // Populate select lists
     const matSelect = document.getElementById('cert-matricula');
     const sig1Select = document.getElementById('cert-signature-1');
     const sig2Select = document.getElementById('cert-signature-2');
 
-    // Default dates
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('cert-course-date').value = today;
     document.getElementById('cert-issue-date').value = today;
+    document.getElementById('modal-certificate-title').textContent = 'Emitir Certificado Oficial';
 
     matSelect.innerHTML = '<option value="">Cargando matrículas...</option>';
     sig1Select.innerHTML = '<option value="">Cargando firmas...</option>';
@@ -600,8 +831,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ]);
 
       if (matriculas && matriculas.length) {
-        // Only allow matriculas that don't have active certificates (optional validation, backend handles it too)
-        matSelect.innerHTML = '<option value="">-- Selecciona una matrícula --</option>' + 
+        matSelect.innerHTML = '<option value="">-- Selecciona una matrícula --</option>' +
           matriculas.map(m => `<option value="${m.id}">${m.alumno_nombre} (${m.alumno_dni}) - ${m.curso_nombre}</option>`).join('');
       } else {
         matSelect.innerHTML = '<option value="">No hay matrículas activas registradas</option>';
@@ -644,12 +874,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ----------------------------------------------------
-  // BUSINESS LOGIC: TAB: FIRMAS
+  // TAB: FIRMAS
   // ----------------------------------------------------
   const loadSignatures = async () => {
     const listContainer = document.getElementById('signatures-list');
     listContainer.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
-    
+
     try {
       const signatures = await apiFetch('/api/firmas');
       if (!signatures) return;
@@ -762,6 +992,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Initial load
   loadDashboardStats();
 });

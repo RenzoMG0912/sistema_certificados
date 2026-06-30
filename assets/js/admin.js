@@ -1,19 +1,23 @@
 // Archivo: assets/js/admin.js
 
-const showToast = (message, type = 'success') => {
+const showToast = (message, type = 'success', duration = 4000) => {
   const container = document.getElementById('toast-container');
   if (!container) return;
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
+  let icon = 'fa-solid fa-circle-check';
+  if (type === 'error') icon = 'fa-solid fa-circle-exclamation';
+  if (type === 'info') icon = 'fa-solid fa-envelope-circle-check';
+  if (type === 'warning') icon = 'fa-solid fa-triangle-exclamation';
   toast.innerHTML = `
-    <i class="${type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-exclamation'}"></i>
+    <i class="${icon}"></i>
     <span>${message}</span>
   `;
   container.appendChild(toast);
   setTimeout(() => {
     toast.style.opacity = '0';
     setTimeout(() => toast.remove(), 300);
-  }, 3500);
+  }, duration);
 };
 
 const closeModal = (modalId) => {
@@ -489,7 +493,34 @@ const loadEnrollments = async () => {
                 method: 'POST',
                 body: JSON.stringify({ curso_id: parseInt(cursoId) })
               });
-              showToast(result.message || 'Certificados generados correctamente');
+
+              // Toast principal: generación de certificados
+              const count = result.count || 0;
+              if (count === 0) {
+                showToast(result.message || 'No había alumnos pendientes', 'warning');
+              } else {
+                showToast(`✅ ${count} certificado(s) generado(s) correctamente`, 'success');
+              }
+
+              // Toast secundario: estado del envío de correos (aparece 1.2s después)
+              if (count > 0) {
+                const msg = result.message || '';
+                const sentMatch = msg.match(/(\d+) con éxito/);
+                const sentCount = sentMatch ? parseInt(sentMatch[1]) : null;
+
+                setTimeout(() => {
+                  if (sentCount === null) {
+                    showToast('📧 Estado de correos desconocido', 'warning', 5000);
+                  } else if (sentCount === 0) {
+                    showToast('⚠️ Certificados generados pero los correos NO se enviaron. Revisa la configuración SMTP.', 'error', 6000);
+                  } else if (sentCount < count) {
+                    showToast(`📧 ${sentCount} de ${count} correo(s) enviado(s). Algunos fallaron.`, 'warning', 6000);
+                  } else {
+                    showToast(`📧 Correo(s) enviado(s) exitosamente a ${sentCount} participante(s)`, 'info', 5000);
+                  }
+                }, 1200);
+              }
+
               loadEnrollments();
             } catch (err) {
               console.error(err);
@@ -1023,7 +1054,24 @@ const loadEnrollments = async () => {
         method: 'POST',
         body: JSON.stringify(body)
       });
-      showToast(res.message || 'Certificado emitido exitosamente y PDF generado');
+
+      // Toast principal: generación del certificado
+      showToast('✅ Certificado emitido correctamente y PDF generado', 'success');
+
+      // Toast secundario: estado del correo electrónico
+      const msg = res.message || '';
+      setTimeout(() => {
+        if (msg.includes('enviado por correo')) {
+          showToast('📧 Certificado enviado al correo del participante', 'info', 5000);
+        } else if (msg.includes('no se envió') || msg.includes('no enviado') || msg.includes('Correo no enviado')) {
+          showToast('⚠️ PDF generado pero el correo NO se pudo enviar. Verifica SMTP.', 'warning', 6000);
+        } else if (msg.includes('Error al enviar')) {
+          showToast('❌ Error al enviar el correo. Revisa la configuración SMTP en el servidor.', 'error', 7000);
+        } else {
+          showToast('📧 ' + (msg || 'Correo procesado'), 'info', 5000);
+        }
+      }, 1200);
+
       closeModal('modal-certificate');
       loadCertificates();
     } catch (err) {

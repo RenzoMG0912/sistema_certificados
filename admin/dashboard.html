@@ -867,11 +867,40 @@
           <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 max-h-40 overflow-y-auto custom-scrollbar" id="enrollment-add-participants-container">
             <p class="text-sm text-slate-400 text-center py-3">Cargando alumnos disponibles...</p>
           </div>
-          <div class="flex justify-end gap-3 pt-4 mt-2">
-            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cancelar</button>
-            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="btn-enrollment-add-selected">Agregar Seleccionados</button>
+          <div class="flex justify-between items-center gap-3 pt-4 mt-2 border-t border-slate-100">
+            <!-- Botón cerrar: permite guardar cambios (quitar alumnos) sin necesitar agregar nuevos -->
+            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" id="btn-enrollment-edit-done" data-modal-close>
+              <i class="fa-solid fa-check mr-1.5 text-green-600"></i>Guardar y Cerrar
+            </button>
+            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="btn-enrollment-add-selected">
+              <i class="fa-solid fa-user-plus mr-1.5"></i>Agregar Seleccionados
+            </button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PREVIEW DE FIRMA -->
+  <div class="modal" id="modal-firma-preview" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" style="max-width:420px;">
+      <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+      <div class="p-6 border-b border-slate-100">
+        <h3 class="font-title text-base font-bold text-on-surface" id="modal-firma-preview-title">Vista previa de Firma</h3>
+      </div>
+      <div class="p-6 flex flex-col items-center gap-4">
+        <div class="w-full bg-slate-50 border border-slate-200 rounded-xl p-6 flex items-center justify-center min-h-[120px]">
+          <img id="firma-preview-img" src="" alt="Firma" class="max-h-28 max-w-full object-contain" onerror="this.style.display='none'; document.getElementById('firma-preview-fallback').style.display='block'">
+          <p id="firma-preview-fallback" class="text-sm text-slate-400 hidden">No se pudo cargar la imagen de la firma.</p>
+        </div>
+        <div class="text-center">
+          <p class="font-semibold text-on-surface text-sm" id="firma-preview-nombre"></p>
+          <p class="text-xs text-on-surface-variant mt-0.5" id="firma-preview-cargo"></p>
+        </div>
+        <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors w-full" type="button" data-modal-close>Cerrar</button>
       </div>
     </div>
   </div>

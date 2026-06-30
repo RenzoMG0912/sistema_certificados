@@ -607,6 +607,11 @@ const loadEnrollments = async () => {
     }
   });
 
+  document.getElementById('btn-enrollment-edit-done').addEventListener('click', () => {
+    closeModal('modal-enrollment-edit');
+    loadEnrollments();
+  });
+
   (() => {
     const editModal = document.getElementById('modal-enrollment-edit');
     if (editModal) {
@@ -615,6 +620,7 @@ const loadEnrollments = async () => {
           resetModalForm(editModal);
           editModal.classList.remove('is-open');
           editModal.setAttribute('aria-hidden', 'true');
+          loadEnrollments();
         });
       });
     }
@@ -848,18 +854,56 @@ const loadEnrollments = async () => {
         return;
       }
 
-      listContainer.innerHTML = firmas.map(f => `
+      listContainer.innerHTML = firmas.map(f => {
+        const firmaUrl = f.firma_url || '';
+        return `
         <tr>
           <td>${f.id}</td>
           <td><strong>${f.nombre}</strong></td>
           <td>${f.cargo}</td>
           <td>${f.cip || 'N/A'}</td>
           <td class="actions-cell">
+            <button class="btn-icon btn-view-signature" data-id="${f.id}" data-url="${firmaUrl}" data-nombre="${f.nombre}" data-cargo="${f.cargo}" title="Ver Firma"><i class="fa-solid fa-eye" style="color:#2563eb;"></i></button>
             <button class="btn-icon btn-edit-signature" data-id="${f.id}" title="Editar"><i class="fa-solid fa-pen"></i></button>
             <button class="btn-icon btn-delete btn-delete-signature" data-id="${f.id}" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
+
+      document.querySelectorAll('.btn-view-signature').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const previewModal = document.getElementById('modal-firma-preview');
+          if (!previewModal) return;
+
+          const img = document.getElementById('firma-preview-img');
+          const fallback = document.getElementById('firma-preview-fallback');
+          const nombreEl = document.getElementById('firma-preview-nombre');
+          const cargoEl = document.getElementById('firma-preview-cargo');
+
+          img.style.display = 'block';
+          if (fallback) fallback.style.display = 'none';
+
+          const rawUrl = btn.dataset.url || '';
+          img.src = rawUrl.startsWith('http') ? rawUrl : rawUrl;
+
+          if (nombreEl) nombreEl.textContent = btn.dataset.nombre || '';
+          if (cargoEl) cargoEl.textContent = btn.dataset.cargo || '';
+          if (document.getElementById('modal-firma-preview-title')) {
+            document.getElementById('modal-firma-preview-title').textContent = `Firma de ${btn.dataset.nombre || 'firmante'}`;
+          }
+
+          previewModal.querySelectorAll('[data-modal-close]').forEach(el => {
+            el.onclick = () => {
+              previewModal.classList.remove('is-open');
+              previewModal.setAttribute('aria-hidden', 'true');
+            };
+          });
+
+          previewModal.classList.add('is-open');
+          previewModal.setAttribute('aria-hidden', 'false');
+        });
+      });
 
       document.querySelectorAll('.btn-edit-signature').forEach(btn => {
         btn.addEventListener('click', async () => {

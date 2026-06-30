@@ -198,20 +198,30 @@ module.exports = {
       // Sincronizar catálogo estático
       syncIndexStatic();
 
-      // Enviar correo electrónico de forma asíncrona (no bloqueante)
-      emailService.sendCertificateEmail({
-        email: matData.alumno_email,
-        alumno_nombre: matData.alumno_nombres,
-        curso_nombre: matData.curso_nombre,
-        codigo: codigo,
-        pdf_path: relativePdfPath
-      }, absoluteSavePath).catch(err => {
+      // Enviar correo electrónico de forma síncrona para reportar el estado del envío
+      let emailMessage = '';
+      try {
+        const emailResult = await emailService.sendCertificateEmail({
+          email: matData.alumno_email,
+          alumno_nombre: matData.alumno_nombres,
+          curso_nombre: matData.curso_nombre,
+          codigo: codigo,
+          pdf_path: relativePdfPath
+        }, absoluteSavePath);
+        
+        if (emailResult.success) {
+          emailMessage = ' y enviado por correo al participante';
+        } else {
+          emailMessage = ` (El correo no se envió: ${emailResult.message || 'Sin configurar'})`;
+        }
+      } catch (err) {
         console.error('[Email Error] Error al enviar correo de certificado:', err);
-      });
+        emailMessage = ' (Error al enviar el correo)';
+      }
 
       return res.status(201).json({
         success: true,
-        message: 'Certificado emitido con éxito',
+        message: `Certificado emitido con éxito${emailMessage}`,
         certificado: newCertRows[0]
       });
 
@@ -322,20 +332,30 @@ module.exports = {
       // Sincronizar index.json
       syncIndexStatic();
 
-      // Enviar correo electrónico de forma asíncrona (Modo Temporal)
-      emailService.sendCertificateEmail({
-        email: alumno.email,
-        alumno_nombre: alumno.nombres,
-        curso_nombre: curso.nombre,
-        codigo: codigo,
-        pdf_path: relativePdfPath
-      }, absoluteSavePath).catch(err => {
+      // Enviar correo electrónico de forma síncrona (Modo Temporal)
+      let emailMessage = '';
+      try {
+        const emailResult = await emailService.sendCertificateEmail({
+          email: alumno.email,
+          alumno_nombre: alumno.nombres,
+          curso_nombre: curso.nombre,
+          codigo: codigo,
+          pdf_path: relativePdfPath
+        }, absoluteSavePath);
+        
+        if (emailResult.success) {
+          emailMessage = ' y enviado por correo';
+        } else {
+          emailMessage = ` (Correo no enviado: ${emailResult.message || 'Sin configurar'})`;
+        }
+      } catch (err) {
         console.error('[Email Mock Error] Error al enviar correo de certificado:', err);
-      });
+        emailMessage = ' (Error al enviar el correo)';
+      }
 
       return res.status(201).json({
         success: true,
-        message: 'Certificado emitido con éxito (Modo Temporal)',
+        message: `Certificado emitido con éxito${emailMessage} (Modo Temporal)`,
         certificado: mockCert
       });
     }
@@ -390,6 +410,7 @@ module.exports = {
 
       // 4. Generate certificates for each pending enrollment
       const results = [];
+      const emailPromises = [];
       for (const row of pendRows) {
         const fecha_emision = new Date().toISOString().split('T')[0];
         const fecha_realizacion = row.fecha_inicio ? new Date(row.fecha_inicio).toISOString().split('T')[0] : fecha_emision;
@@ -433,23 +454,27 @@ module.exports = {
 
         results.push({ matricula_id: row.matricula_id, certificado_id: insertResult.insertId, codigo });
 
-        // Enviar correo electrónico de forma asíncrona
-        emailService.sendCertificateEmail({
-          email: row.alumno_email,
-          alumno_nombre: row.alumno_nombres,
-          curso_nombre: row.curso_nombre,
-          codigo: codigo,
-          pdf_path: relativePdfPath
-        }, absoluteSavePath).catch(err => {
-          console.error(`[Email Bulk Error] Error al enviar correo a ${row.alumno_nombres}:`, err);
-        });
+        // Guardamos la promesa del correo para esperarla al final
+        emailPromises.push(
+          emailService.sendCertificateEmail({
+            email: row.alumno_email,
+            alumno_nombre: row.alumno_nombres,
+            curso_nombre: row.curso_nombre,
+            codigo: codigo,
+            pdf_path: relativePdfPath
+          }, absoluteSavePath).then(res => ({ success: res.success }))
+        );
       }
+
+      // Esperar a que se completen todos los envíos
+      const emailStatuses = await Promise.all(emailPromises);
+      const sentCount = emailStatuses.filter(s => s.success).length;
 
       syncIndexStatic();
 
       return res.status(201).json({
         success: true,
-        message: `${results.length} certificado(s) generado(s) con éxito`,
+        message: `${results.length} certificado(s) generado(s) con éxito e intentado enviar por correo. Se enviaron ${sentCount} con éxito.`,
         count: results.length,
         certificados: results
       });
@@ -481,6 +506,7 @@ module.exports = {
       const f2 = curso.firma_id ? mockDb.firmas.find(f => f.id == curso.firma_id) : null;
 
       const results = [];
+      const emailPromises = [];
       for (const mat of pendientes) {
         const alumno = mockDb.participantes.find(p => p.id == mat.participante_id);
         if (!alumno) continue;
@@ -551,23 +577,27 @@ module.exports = {
 
         results.push({ matricula_id: mat.id, certificado_id: mockCert.id, codigo });
 
-        // Enviar correo electrónico de forma asíncrona (Modo Temporal)
-        emailService.sendCertificateEmail({
-          email: alumno.email,
-          alumno_nombre: alumno.nombres,
-          curso_nombre: curso.nombre,
-          codigo: codigo,
-          pdf_path: relativePdfPath
-        }, absoluteSavePath).catch(err => {
-          console.error(`[Email Bulk Mock Error] Error al enviar correo a ${alumno.nombres}:`, err);
-        });
+        // Guardamos la promesa del correo para esperarla al final
+        emailPromises.push(
+          emailService.sendCertificateEmail({
+            email: alumno.email,
+            alumno_nombre: alumno.nombres,
+            curso_nombre: curso.nombre,
+            codigo: codigo,
+            pdf_path: relativePdfPath
+          }, absoluteSavePath).then(res => ({ success: res.success }))
+        );
       }
+
+      // Esperar a que se completen todos los envíos
+      const emailStatuses = await Promise.all(emailPromises);
+      const sentCount = emailStatuses.filter(s => s.success).length;
 
       syncIndexStatic();
 
       return res.status(201).json({
         success: true,
-        message: `${results.length} certificado(s) generado(s) con éxito (Modo Temporal)`,
+        message: `${results.length} certificado(s) generado(s) con éxito (Modo Temporal). Se enviaron ${sentCount} correos con éxito.`,
         count: results.length,
         certificados: results
       });

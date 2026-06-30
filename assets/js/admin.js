@@ -1023,7 +1023,7 @@ const loadEnrollments = async () => {
         method: 'POST',
         body: JSON.stringify(body)
       });
-      showToast('Certificado emitido exitosamente y PDF generado');
+      showToast(res.message || 'Certificado emitido exitosamente y PDF generado');
       closeModal('modal-certificate');
       loadCertificates();
     } catch (err) {

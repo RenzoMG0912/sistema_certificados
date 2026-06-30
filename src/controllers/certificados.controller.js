@@ -6,6 +6,8 @@ const mockDb = require('../config/mockDb');
 const { generarHash } = require('../services/hash.service');
 const { generarCodigoCertificado } = require('../services/codigo.service');
 const { generarCertificadoPDF } = require('../services/pdf.service');
+const emailService = require('../services/email.service');
+
 
 // Función helper para sincronizar el index.json estático con los PDFs en disco
 function syncIndexStatic() {
@@ -85,7 +87,7 @@ module.exports = {
     try {
       // 1. Validar matrícula y obtener datos del alumno y del curso en MySQL
       const matQuery = `
-        SELECT m.id, p.nombres AS alumno_nombres, p.dni AS alumno_dni,
+        SELECT m.id, p.nombres AS alumno_nombres, p.dni AS alumno_dni, p.email AS alumno_email,
                c.nombre AS curso_nombre, c.duracion AS curso_duracion, 
                c.entrenador AS curso_entrenador, c.codigo_curso
         FROM matriculas m
@@ -195,6 +197,17 @@ module.exports = {
 
       // Sincronizar catálogo estático
       syncIndexStatic();
+
+      // Enviar correo electrónico de forma asíncrona (no bloqueante)
+      emailService.sendCertificateEmail({
+        email: matData.alumno_email,
+        alumno_nombre: matData.alumno_nombres,
+        curso_nombre: matData.curso_nombre,
+        codigo: codigo,
+        pdf_path: relativePdfPath
+      }, absoluteSavePath).catch(err => {
+        console.error('[Email Error] Error al enviar correo de certificado:', err);
+      });
 
       return res.status(201).json({
         success: true,
@@ -309,6 +322,17 @@ module.exports = {
       // Sincronizar index.json
       syncIndexStatic();
 
+      // Enviar correo electrónico de forma asíncrona (Modo Temporal)
+      emailService.sendCertificateEmail({
+        email: alumno.email,
+        alumno_nombre: alumno.nombres,
+        curso_nombre: curso.nombre,
+        codigo: codigo,
+        pdf_path: relativePdfPath
+      }, absoluteSavePath).catch(err => {
+        console.error('[Email Mock Error] Error al enviar correo de certificado:', err);
+      });
+
       return res.status(201).json({
         success: true,
         message: 'Certificado emitido con éxito (Modo Temporal)',
@@ -327,7 +351,7 @@ module.exports = {
       // 1. Find all pending enrollments (no certificate yet) for this curso
       const pendQuery = `
         SELECT m.id AS matricula_id, m.fecha_inicio,
-               p.nombres AS alumno_nombres, p.dni AS alumno_dni,
+               p.nombres AS alumno_nombres, p.dni AS alumno_dni, p.email AS alumno_email,
                c.nombre AS curso_nombre, c.duracion AS curso_duracion,
                c.entrenador AS curso_entrenador, c.codigo_curso, c.firma_id AS curso_firma_id
         FROM matriculas m
@@ -408,6 +432,17 @@ module.exports = {
         );
 
         results.push({ matricula_id: row.matricula_id, certificado_id: insertResult.insertId, codigo });
+
+        // Enviar correo electrónico de forma asíncrona
+        emailService.sendCertificateEmail({
+          email: row.alumno_email,
+          alumno_nombre: row.alumno_nombres,
+          curso_nombre: row.curso_nombre,
+          codigo: codigo,
+          pdf_path: relativePdfPath
+        }, absoluteSavePath).catch(err => {
+          console.error(`[Email Bulk Error] Error al enviar correo a ${row.alumno_nombres}:`, err);
+        });
       }
 
       syncIndexStatic();
@@ -515,6 +550,17 @@ module.exports = {
         mockDb.certificados.push(mockCert);
 
         results.push({ matricula_id: mat.id, certificado_id: mockCert.id, codigo });
+
+        // Enviar correo electrónico de forma asíncrona (Modo Temporal)
+        emailService.sendCertificateEmail({
+          email: alumno.email,
+          alumno_nombre: alumno.nombres,
+          curso_nombre: curso.nombre,
+          codigo: codigo,
+          pdf_path: relativePdfPath
+        }, absoluteSavePath).catch(err => {
+          console.error(`[Email Bulk Mock Error] Error al enviar correo a ${alumno.nombres}:`, err);
+        });
       }
 
       syncIndexStatic();

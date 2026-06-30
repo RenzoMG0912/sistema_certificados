@@ -184,6 +184,59 @@
     .badge-active { background-color: #dcfce7; color: #15803d; }
     .badge-expired { background-color: #fee2e2; color: #b91c1c; }
 
+    /* =============================================
+       TABLE CELLS — espaciado y alineación global
+       ============================================= */
+    table {
+      border-collapse: collapse;
+    }
+
+    /* Padding uniforme para TODAS las celdas de datos */
+    table tbody td {
+      padding: 14px 24px;
+      vertical-align: middle;
+      font-size: 13.5px;
+      color: #1e293b;
+      white-space: nowrap;
+    }
+
+    /* Columna de acciones: centrada y ancho fijo */
+    table tbody td.actions-cell {
+      text-align: center;
+      white-space: nowrap;
+      width: 96px;
+      padding: 12px 16px;
+    }
+
+    /* Primera celda de cada fila: pequeño indent extra a la izquierda */
+    table tbody td:first-child {
+      padding-left: 28px;
+    }
+
+    /* Última celda (acciones): no tanto padding derecho */
+    table tbody td:last-child {
+      padding-right: 20px;
+    }
+
+    /* Sincronizar primer th con primer td */
+    table thead tr th:first-child {
+      padding-left: 28px;
+    }
+
+    /* Hover sobre filas */
+    table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+    table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    /* Permitir wrapping en columnas de contenido largo */
+    table tbody td:not(.actions-cell) {
+      white-space: normal;
+      word-break: break-word;
+    }
+
     /* Action icons buttons */
     .btn-icon {
       border: 1px solid #e2e8f0;

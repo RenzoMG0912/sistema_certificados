@@ -207,7 +207,8 @@ const loadCourses = async () => {
           document.getElementById('course-category').value = course.categoria || '';
           document.getElementById('modal-course-title').textContent = 'Editar Curso';
 
-          await populateCourseTrainerSelect(course.entrenador, course.firma_id);
+          // Poblar el select usando firma_id (no el nombre)
+          await populateCourseTrainerSelect(course.firma_id);
 
           const modal = document.getElementById('modal-course');
           modal.classList.add('is-open');
@@ -231,47 +232,48 @@ const loadCourses = async () => {
   }
 };
 
-const populateCourseTrainerSelect = async (selectedName = null, selectedFirmaId = null) => {
+const populateCourseTrainerSelect = async (selectedFirmaId = null) => {
   const select = document.getElementById('course-trainer');
-  const firmaSelect = document.getElementById('course-firma-id');
   if (!select) return;
   try {
     const firmas = await apiFetch('/api/firmas');
     if (firmas && firmas.length) {
-      select.innerHTML = '<option value="">-- Seleccionar Firmante --</option>' +
-        firmas.map(f => `<option value="${f.nombre}" ${f.nombre === selectedName ? 'selected' : ''}>${f.nombre} (${f.cargo})</option>`).join('');
-
-      if (firmaSelect) {
-        firmaSelect.innerHTML = '<option value="">-- Seleccionar firma --</option>' +
-          firmas.map(f => `<option value="${f.id}" ${f.id == selectedFirmaId ? 'selected' : ''}>${f.nombre} (${f.cargo})</option>`).join('');
-      }
-
-      if (firmas.length === 0) {
-        select.innerHTML = '<option value="">No hay firmas registradas</option>';
-        if (firmaSelect) firmaSelect.innerHTML = '<option value="">No hay firmas registradas</option>';
-      }
+      select.innerHTML = '<option value="">-- Seleccionar Entrenador / Ponente --</option>' +
+        firmas.map(f =>
+          `<option value="${f.id}" ${f.id == selectedFirmaId ? 'selected' : ''}>${f.nombre} (${f.cargo})</option>`
+        ).join('');
     } else {
-      select.innerHTML = '<option value="">No hay firmas registradas</option>';
-      if (firmaSelect) firmaSelect.innerHTML = '<option value="">No hay firmas registradas</option>';
+      select.innerHTML = '<option value="">No hay firmantes registrados. Crea uno en "Firmas".</option>';
     }
   } catch (e) {
     console.error(e);
     select.innerHTML = '<option value="">Error al cargar firmantes</option>';
-    if (firmaSelect) firmaSelect.innerHTML = '<option value="">Error al cargar firmas</option>';
   }
 };
 
 document.getElementById('form-course').addEventListener('submit', async (e) => {
   e.preventDefault();
   const id = document.getElementById('course-id').value;
-  const firmaId = document.getElementById('course-firma-id')?.value;
+
+  // El select course-trainer ahora usa firma_id como valor
+  const trainerSelect = document.getElementById('course-trainer');
+  const firmaId = trainerSelect?.value ? parseInt(trainerSelect.value) : null;
+  // Extraer solo el nombre (sin el cargo entre paréntesis) del texto de la opción seleccionada
+  const selectedOption = trainerSelect?.options[trainerSelect.selectedIndex];
+  const trainerName = selectedOption ? selectedOption.text.replace(/\s*\(.*\)$/, '').trim() : '';
+
+  if (!firmaId) {
+    showToast('Debes seleccionar un Entrenador / Ponente', 'error');
+    return;
+  }
+
   const body = {
     codigo_curso: document.getElementById('course-code').value.trim(),
     nombre: document.getElementById('course-name').value.trim(),
     duracion: document.getElementById('course-duration').value.trim(),
     categoria: document.getElementById('course-category').value.trim(),
-    entrenador: document.getElementById('course-trainer').value.trim(),
-    firma_id: firmaId ? parseInt(firmaId) : null
+    entrenador: trainerName,
+    firma_id: firmaId
   };
 
   const method = id ? 'PUT' : 'POST';
@@ -294,7 +296,7 @@ setupModalHandlers('modal-course', 'btn-new-course', async () => {
   document.getElementById('form-course').reset();
   document.getElementById('course-id').value = '';
   document.getElementById('modal-course-title').textContent = 'Registrar Curso';
-  await populateCourseTrainerSelect();
+  await populateCourseTrainerSelect(); // sin parámetros = sin selección previa
 });
 
 const loadParticipants = async () => {
@@ -843,28 +845,70 @@ const loadEnrollments = async () => {
       const enrolledIds = enrollments.map(e => e.participante_id);
       const available = allParticipants.filter(p => !enrolledIds.includes(p.id));
 
-      if (available.length === 0) {
-        container.innerHTML = '<p class="text-sm text-slate-400 text-center py-4">Todos los alumnos ya están matriculados en este curso.</p>';
-        return;
+      const searchInput = document.getElementById('enrollment-search');
+      const selectAllBtn = document.getElementById('btn-select-all-participants');
+      const countLabel = document.getElementById('enrollment-selected-count');
+      let allSelected = false;
+
+      if (searchInput) searchInput.value = '';
+
+      const updateCount = () => {
+        const checked = container.querySelectorAll('.enrollment-participant-checkbox:checked').length;
+        if (countLabel) countLabel.textContent = checked > 0
+          ? `✅ ${checked} alumno(s) seleccionado(s)`
+          : 'Selecciona los alumnos que deseas matricular en este curso.';
+      };
+
+      const renderParticipants = (query = '') => {
+        const q = query.toLowerCase().trim();
+        const filtered = q
+          ? available.filter(p =>
+              p.nombres.toLowerCase().includes(q) ||
+              p.dni.includes(q) ||
+              (p.cargo || '').toLowerCase().includes(q)
+            )
+          : available;
+
+        if (available.length === 0) {
+          container.innerHTML = '<p class="text-sm text-slate-400 text-center py-4">Todos los alumnos ya están matriculados en este curso.</p>';
+          if (selectAllBtn) selectAllBtn.disabled = true;
+          return;
+        }
+
+        if (filtered.length === 0) {
+          container.innerHTML = '<p class="text-sm text-slate-400 text-center py-4">No se encontraron alumnos con esa búsqueda.</p>';
+          return;
+        }
+
+        container.innerHTML = filtered.map(p => `
+          <label class="flex items-center gap-2.5 py-2 px-2 hover:bg-white rounded-lg cursor-pointer border-b border-slate-100 last:border-0">
+            <input type="checkbox" class="enrollment-participant-checkbox" value="${p.id}" style="accent-color:#e60000; width:15px; height:15px; flex-shrink:0;">
+            <span class="flex-1 min-w-0">
+              <span class="block text-sm font-medium text-slate-800 truncate">${p.nombres}</span>
+              <span class="block text-[11px] text-slate-400">${p.dni}${p.cargo ? ' · ' + p.cargo : ''}${p.procedencia ? ' · ' + p.procedencia : ''}</span>
+            </span>
+          </label>
+        `).join('');
+
+        container.addEventListener('change', updateCount);
+        updateCount();
+      };
+
+      renderParticipants();
+
+      if (searchInput) {
+        searchInput.oninput = () => renderParticipants(searchInput.value);
       }
 
-      container.innerHTML = available.map(p => `
-        <label class="flex items-center gap-2.5 py-1.5 px-2 hover:bg-white rounded-lg cursor-pointer">
-          <input type="checkbox" class="enrollment-participant-checkbox" value="${p.id}" style="accent-color:#e60000;">
-          <span class="text-sm">${p.nombres} (${p.dni})${p.cargo ? ' - ' + p.cargo : ''}</span>
-        </label>
-      `).join('');
-
-      const countLabel = document.createElement('div');
-      countLabel.className = 'text-xs text-on-surface-variant mt-1';
-      countLabel.id = 'enrollment-count';
-      container.appendChild(countLabel);
-
-      container.addEventListener('change', () => {
-        const checked = container.querySelectorAll('.enrollment-participant-checkbox:checked').length;
-        const countEl = document.getElementById('enrollment-count');
-        if (countEl) countEl.textContent = `${checked} alumno(s) seleccionado(s)`;
-      });
+      if (selectAllBtn) {
+        selectAllBtn.disabled = false;
+        selectAllBtn.onclick = () => {
+          allSelected = !allSelected;
+          container.querySelectorAll('.enrollment-participant-checkbox').forEach(cb => cb.checked = allSelected);
+          selectAllBtn.textContent = allSelected ? 'Deselec. todos' : 'Selec. todos';
+          updateCount();
+        };
+      }
     } catch (e) {
       console.error(e);
       container.innerHTML = '<p class="text-sm text-red-500 text-center py-4">Error al cargar datos.</p>';

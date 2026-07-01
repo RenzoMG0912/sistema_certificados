@@ -8,29 +8,35 @@ const path = require('path');
  */
 function getTransporter() {
   const host = process.env.SMTP_HOST;
-  const port = parseInt(process.env.SMTP_PORT || '465');
+  const port = parseInt(process.env.SMTP_PORT || '587');
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
-  // secure es true si el puerto es 465
+
+  // Puerto 465 = SSL directo (secure:true), Puerto 587 = STARTTLS (secure:false)
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
 
   if (!host || !user || !pass) {
-    console.warn('[SMTP Service] Advertencia: Las credenciales SMTP no están completamente configuradas.');
+    console.warn('[SMTP Service] ⚠️ Credenciales SMTP no configuradas.');
+    console.warn(`[SMTP Service] SMTP_HOST=${host || 'FALTA'}, SMTP_USER=${user || 'FALTA'}, SMTP_PASS=${pass ? 'OK' : 'FALTA'}`);
     return null;
   }
+
+  console.log(`[SMTP Service] Configurando transporter → ${host}:${port} | secure=${secure} | user=${user}`);
 
   return nodemailer.createTransport({
     host,
     port,
     secure,
-    auth: {
-      user,
-      pass,
-    },
-    // Opciones adicionales útiles para servidores con certificados autofirmados (común en Plesk)
+    auth: { user, pass },
     tls: {
-      rejectUnauthorized: false
-    }
+      rejectUnauthorized: false,
+      // Necesario para Gmail con STARTTLS
+      ciphers: 'SSLv3'
+    },
+    // Timeouts para no quedar colgado si el servidor no responde
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 20000
   });
 }
 
@@ -269,8 +275,12 @@ async function sendCertificateEmail(data, absolutePdfPath) {
     console.log(`[SMTP Service] Correo enviado correctamente: ${info.messageId}`);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error(`[SMTP Service] Error al enviar correo de certificado ${codigo} a ${email}:`, error);
-    return { success: false, error: error.message };
+    console.error(`[SMTP Service] ❌ Error al enviar correo a ${email}:`);
+    console.error(`  → Código de error: ${error.code || 'N/A'}`);
+    console.error(`  → Mensaje: ${error.message}`);
+    console.error(`  → Respuesta SMTP: ${error.response || 'N/A'}`);
+    console.error(`  → Command: ${error.command || 'N/A'}`);
+    return { success: false, error: error.message, code: error.code };
   }
 }
 

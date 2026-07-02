@@ -268,7 +268,7 @@
     }
   </style>
 </head>
-<body class="font-body text-sm text-on-surface">
+<body class="font-body text-[13px] text-on-surface">
 
   <!-- SideNavBar -->
   <aside class="h-screen w-72 fixed left-0 top-0 flex flex-col py-8 px-6 bg-white border-r border-outline-variant z-50">
@@ -352,7 +352,7 @@
           <span class="opacity-30">&gt;</span>
           <span class="text-primary font-bold truncate" id="breadcrumb-section">Panel</span>
         </nav>
-        <h1 class="font-title text-2xl font-bold text-on-surface truncate" id="page-title">Resumen del Sistema</h1>
+        <h1 class="font-title text-xl font-bold text-on-surface truncate" id="page-title">Resumen del Sistema</h1>
         <p class="text-sm text-on-surface-variant mt-1 max-w-2xl truncate" id="page-subtitle">Visualiza un resumen general de la actividad del sistema.</p>
       </div>
       <div class="flex items-center gap-4 shrink-0">
@@ -375,7 +375,7 @@
     </header>
 
     <!-- Main Content Area -->
-    <main class="flex-grow p-10 max-w-[1200px] w-full mx-auto">
+    <main class="flex-grow px-10 pt-12 pb-10 max-w-[1200px] w-full mx-auto">
       
       <!-- Toast container (controlled by JS) -->
       <div class="toast-container" id="toast-container"></div>
@@ -588,16 +588,14 @@
                     <th class="w-[150px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Cargo</th>
                     <th class="w-[140px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Teléfono</th>
                     <th class="w-[120px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Procedencia</th>
-                    <th class="w-[110px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Inducción</th>
-                    <th class="w-[120px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Examen Médico</th>
                     <th class="w-[180px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Correo Electrónico</th>
                     <th class="w-[120px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Fecha Registro</th>
-                    <th class="w-[70px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant text-center whitespace-nowrap">Acción</th>
+                    <th class="w-[110px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant text-center whitespace-nowrap">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="participants-list" class="divide-y divide-outline-variant/60">
                   <tr>
-                    <td colspan="10" class="px-6 py-10 text-center text-on-surface-variant">Cargando...</td>
+                    <td colspan="8" class="px-6 py-10 text-center text-on-surface-variant">Cargando...</td>
                   </tr>
                 </tbody>
               </table>
@@ -1018,6 +1016,60 @@
           <p class="text-xs text-on-surface-variant mt-0.5" id="firma-preview-cargo"></p>
         </div>
         <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors w-full" type="button" data-modal-close>Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DETALLE DE ALUMNO -->
+  <div class="modal modal-dashboard" id="modal-participant-details" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" style="max-width:520px;">
+      <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+      <div class="p-6 border-b border-slate-100">
+        <h3 class="font-title text-base font-bold text-on-surface" id="modal-participant-details-title">Detalle del Alumno</h3>
+      </div>
+      <div class="p-6 space-y-4 text-[13px]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">DNI</p>
+            <p class="mt-1 font-semibold text-on-surface" id="participant-detail-dni"></p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Nombre</p>
+            <p class="mt-1 font-semibold text-on-surface" id="participant-detail-name"></p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Cargo</p>
+            <p class="mt-1 text-on-surface" id="participant-detail-cargo"></p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Teléfono</p>
+            <p class="mt-1 text-on-surface" id="participant-detail-phone"></p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Procedencia</p>
+            <p class="mt-1 text-on-surface" id="participant-detail-origin"></p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Correo</p>
+            <p class="mt-1 text-on-surface break-words" id="participant-detail-email"></p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="rounded-xl border border-slate-100 p-4 bg-slate-50">
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Inducción</p>
+            <p class="mt-1 font-semibold text-on-surface" id="participant-detail-induccion"></p>
+          </div>
+          <div class="rounded-xl border border-slate-100 p-4 bg-slate-50">
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Examen médico</p>
+            <p class="mt-1 font-semibold text-on-surface" id="participant-detail-examen"></p>
+          </div>
+        </div>
+        <div class="flex justify-end pt-2">
+          <button class="px-5 py-2.5 rounded-xl bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-dark transition-colors" type="button" data-modal-close>Cerrar</button>
+        </div>
       </div>
     </div>
   </div>

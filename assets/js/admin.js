@@ -97,6 +97,16 @@ const setupModalHandlers = (modalId, openButtonId, onOpen = () => {}) => {
   });
 };
 
+const participantDetailsModal = document.getElementById('modal-participant-details');
+if (participantDetailsModal) {
+  participantDetailsModal.querySelectorAll('[data-modal-close]').forEach(el => {
+    el.addEventListener('click', () => {
+      participantDetailsModal.classList.remove('is-open');
+      participantDetailsModal.setAttribute('aria-hidden', 'true');
+    });
+  });
+}
+
 const sidebarLinks = document.querySelectorAll('.sidebar-menu li a');
 const tabContents = document.querySelectorAll('.tab-content');
 const pageTitle = document.getElementById('page-title');
@@ -321,7 +331,7 @@ setupModalHandlers('modal-course', 'btn-new-course', async () => {
 
 const loadParticipants = async () => {
   const listContainer = document.getElementById('participants-list');
-  listContainer.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
+  listContainer.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
 
   try {
     const [participants, dashboardStats] = await Promise.all([
@@ -345,14 +355,11 @@ const loadParticipants = async () => {
 
     const renderList = (items) => {
       if (items.length === 0) {
-        listContainer.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #64748b;">No hay alumnos registrados.</td></tr>';
+        listContainer.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #64748b;">No hay alumnos registrados.</td></tr>';
         return;
       }
 
       listContainer.innerHTML = items.map(p => {
-        const indClass = p.induccion === 'APTO' ? 'badge-active' : (p.induccion === 'NO APTO' ? 'badge-expired' : 'bg-amber-100 text-amber-700');
-        const exClass = p.examen_medico === 'APTO' ? 'badge-active' : (p.examen_medico === 'NO APTO' ? 'badge-expired' : 'bg-amber-100 text-amber-700');
-
         return `
           <tr>
             <td><strong>${p.dni}</strong></td>
@@ -360,17 +367,48 @@ const loadParticipants = async () => {
             <td>${p.cargo || 'N/A'}</td>
             <td>${p.telefono || 'N/A'}</td>
             <td>${p.procedencia || 'N/A'}</td>
-            <td><span class="badge-status ${indClass}">${p.induccion || 'N/A'}</span></td>
-            <td><span class="badge-status ${exClass}">${p.examen_medico || 'N/A'}</span></td>
             <td>${p.email || 'Sin correo'}</td>
             <td>${new Date(p.created_at).toLocaleDateString('es-ES')}</td>
             <td class="actions-cell">
+              <button class="btn-icon btn-view-participant" data-id="${p.id}" title="Ver detalles"><i class="fa-solid fa-eye"></i></button>
               <button class="btn-icon btn-edit-participant" data-id="${p.id}" title="Editar"><i class="fa-solid fa-pen"></i></button>
               <button class="btn-icon btn-delete btn-delete-participant" data-id="${p.id}" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
             </td>
           </tr>
         `;
       }).join('');
+
+      document.querySelectorAll('.btn-view-participant').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const p = items.find(item => item.id == id);
+          if (!p) return;
+
+          const title = document.getElementById('modal-participant-details-title');
+          const fields = {
+            'participant-detail-dni': p.dni || 'N/A',
+            'participant-detail-name': p.nombres || 'N/A',
+            'participant-detail-cargo': p.cargo || 'N/A',
+            'participant-detail-phone': p.telefono || 'N/A',
+            'participant-detail-origin': p.procedencia || 'N/A',
+            'participant-detail-email': p.email || 'Sin correo',
+            'participant-detail-induccion': p.induccion || 'N/A',
+            'participant-detail-examen': p.examen_medico || 'N/A'
+          };
+
+          if (title) title.textContent = `Detalle de ${p.nombres || 'Alumno'}`;
+          Object.entries(fields).forEach(([fieldId, value]) => {
+            const el = document.getElementById(fieldId);
+            if (el) el.textContent = value;
+          });
+
+          const modal = document.getElementById('modal-participant-details');
+          if (modal) {
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+          }
+        });
+      });
 
       document.querySelectorAll('.btn-edit-participant').forEach(btn => {
         btn.addEventListener('click', () => {

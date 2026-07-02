@@ -100,6 +100,8 @@ const setupModalHandlers = (modalId, openButtonId, onOpen = () => {}) => {
 const sidebarLinks = document.querySelectorAll('.sidebar-menu li a');
 const tabContents = document.querySelectorAll('.tab-content');
 const pageTitle = document.getElementById('page-title');
+const pageSubtitle = document.getElementById('page-subtitle');
+const breadcrumbSection = document.getElementById('breadcrumb-section');
 
 const switchTab = (tabId) => {
   sidebarLinks.forEach(link => link.classList.toggle('active', link.dataset.tab === tabId));
@@ -113,7 +115,25 @@ const switchTab = (tabId) => {
     certificados: 'Historial de Certificados',
     firmas: 'Firmas Autorizadas'
   };
+  const subtitles = {
+    inicio: 'Visualiza un resumen general de la actividad del sistema.',
+    cursos: 'Administra el catálogo de cursos y entrenamientos registrados.',
+    participantes: 'Administra la información y el estado de los alumnos del sistema.',
+    matriculas: 'Gestiona las inscripciones activas por curso.',
+    certificados: 'Consulta y administra los certificados emitidos.',
+    firmas: 'Controla las firmas autorizadas para certificados.'
+  };
+  const breadcrumbs = {
+    inicio: 'Panel',
+    cursos: 'Cursos',
+    participantes: 'Alumnos',
+    matriculas: 'Matrículas',
+    certificados: 'Certificados',
+    firmas: 'Firmas'
+  };
   pageTitle.textContent = titles[tabId] || 'TEAM HSEC';
+  if (pageSubtitle) pageSubtitle.textContent = subtitles[tabId] || '';
+  if (breadcrumbSection) breadcrumbSection.textContent = breadcrumbs[tabId] || 'Panel';
 
   if (tabId === 'inicio') loadDashboardStats();
   if (tabId === 'cursos') loadCourses();
@@ -304,8 +324,24 @@ const loadParticipants = async () => {
   listContainer.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #64748b;">Cargando...</td></tr>';
 
   try {
-    const participants = await apiFetch('/api/participantes');
+    const [participants, dashboardStats] = await Promise.all([
+      apiFetch('/api/participantes'),
+      apiFetch('/api/admin/dashboard').catch(() => null)
+    ]);
     if (!participants) return;
+
+    const totalParticipantsEl = document.getElementById('alumnos-stat-total');
+    const aptosEl = document.getElementById('alumnos-stat-aptos');
+    const pendientesEl = document.getElementById('alumnos-stat-pendientes');
+    const certsEl = document.getElementById('alumnos-stat-certificados');
+
+    const aptosCount = participants.filter(p => p.induccion === 'APTO' && p.examen_medico === 'APTO').length;
+    const pendientesCount = Math.max(participants.length - aptosCount, 0);
+
+    if (totalParticipantsEl) totalParticipantsEl.textContent = participants.length || 0;
+    if (aptosEl) aptosEl.textContent = aptosCount;
+    if (pendientesEl) pendientesEl.textContent = pendientesCount;
+    if (certsEl) certsEl.textContent = dashboardStats?.totalCertificados || 0;
 
     const renderList = (items) => {
       if (items.length === 0) {
@@ -376,8 +412,8 @@ const loadParticipants = async () => {
     const searchDni = document.getElementById('search-participant-dni');
     const searchName = document.getElementById('search-participant-name');
     const applyFilters = () => {
-      const dniVal = searchDni.value.trim().toLowerCase();
-      const nameVal = searchName.value.trim().toLowerCase();
+      const dniVal = searchDni ? searchDni.value.trim().toLowerCase() : '';
+      const nameVal = searchName ? searchName.value.trim().toLowerCase() : '';
 
       const filtered = participants.filter(p => {
         return p.dni.toLowerCase().includes(dniVal) && p.nombres.toLowerCase().includes(nameVal);
@@ -385,8 +421,8 @@ const loadParticipants = async () => {
       renderList(filtered);
     };
 
-    searchDni.oninput = applyFilters;
-    searchName.oninput = applyFilters;
+    if (searchDni) searchDni.oninput = applyFilters;
+    if (searchName) searchName.oninput = applyFilters;
 
   } catch (err) {
     console.error(err);

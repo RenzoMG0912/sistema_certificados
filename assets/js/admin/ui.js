@@ -22,7 +22,7 @@ const updatePageHeader = (tabId) => {
     inicio: 'Visualiza un resumen general de la actividad del sistema.',
     cursos: 'Administra el catálogo de cursos y entrenamientos registrados.',
     participantes: 'Administra la información y el estado de los alumnos del sistema.',
-    matriculas: 'Gestiona las inscripciones activas por curso.',
+    matriculas: 'Registros oficiales de inscripción de alumnos activos en los cursos.',
     certificados: 'Consulta y administra los certificados emitidos.',
     firmas: 'Controla las firmas autorizadas para certificados.'
   };

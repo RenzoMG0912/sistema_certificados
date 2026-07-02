@@ -2,7 +2,7 @@ import { el, showToast, apiFetch, openModal, resetForm, closeModal, bindModalClo
 import { initTabs, setActiveTab, loadCurrentSection } from './ui.js';
 import { loadCourses, populateCourseTrainerSelect, renderCourses } from './courses.js';
 import { loadParticipants, openParticipantModal, renderParticipants } from './participants.js';
-import { loadEnrollments, openEnrollmentCreateModal, openEnrollmentEditModal } from './enrollments.js';
+import { loadEnrollments, renderEnrollments, openEnrollmentCreateModal, openEnrollmentEditModal } from './enrollments.js';
 import { loadCertificates } from './certificates.js';
 import { loadSignatures } from './signatures.js';
 import { state } from './state.js';
@@ -229,8 +229,9 @@ const initForms = () => {
     }
   });
 
-  el('search-enrollment-query')?.addEventListener('input', () => {
-    loadEnrollments();
+  el('search-enrollment-query')?.addEventListener('input', event => {
+    state.enrollmentQuery = event.target.value || '';
+    renderEnrollments();
   });
 
   el('search-cert-query')?.addEventListener('input', () => {

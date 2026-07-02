@@ -345,31 +345,63 @@
   <div class="ml-72 min-h-screen flex flex-col bg-[#fcfcfc]">
     
     <!-- Topbar -->
-    <header class="min-h-[104px] bg-white border-b border-outline-variant flex items-center justify-between px-10 py-6 sticky top-0 z-40">
-      <div class="min-w-0">
-        <nav class="flex items-center text-on-surface-variant font-medium text-[11px] gap-2 uppercase tracking-widest mb-1 min-w-0">
+    <header class="bg-[#fcfcfc] flex flex-col px-10 pt-8 pb-4 gap-6 sticky top-0 z-40">
+      <!-- Fila superior: Breadcrumb a la izquierda, Notificaciones y Perfil a la derecha -->
+      <div class="flex items-center justify-between">
+        <nav class="flex items-center text-on-surface-variant font-medium text-[11px] gap-2 uppercase tracking-widest min-w-0">
           <span class="truncate">Admin Portal</span>
+          <span class="opacity-30">&gt;</span>
+          <span class="truncate">Panel</span>
           <span class="opacity-30">&gt;</span>
           <span class="text-primary font-bold truncate" id="breadcrumb-section">Panel</span>
         </nav>
-        <h1 class="font-title text-xl font-bold text-on-surface truncate" id="page-title">Resumen del Sistema</h1>
-        <p class="text-sm text-on-surface-variant mt-1 max-w-2xl truncate" id="page-subtitle">Visualiza un resumen general de la actividad del sistema.</p>
+        
+        <div class="flex items-center gap-4 shrink-0">
+          <button class="w-11 h-11 rounded-2xl border border-outline-variant bg-white text-on-surface-variant flex items-center justify-center shadow-sm hover:bg-surface-container transition-colors" type="button" aria-label="Notificaciones">
+            <span class="relative inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-[21px]">notifications</span>
+              <span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">3</span>
+            </span>
+          </button>
+          <div class="flex items-center gap-3">
+            <div class="text-right leading-tight hidden sm:block">
+              <p class="text-sm font-semibold text-on-surface">Administrador TEAM HSEC</p>
+              <p class="text-xs text-primary font-medium">Administrador</p>
+            </div>
+            <div class="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center shadow-sm ring-4 ring-primary/10">
+              <span class="material-symbols-outlined text-[24px]">account_circle</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="flex items-center gap-4 shrink-0">
-        <button class="w-11 h-11 rounded-2xl border border-outline-variant bg-white text-on-surface-variant flex items-center justify-center shadow-sm hover:bg-surface-container transition-colors" type="button" aria-label="Notificaciones">
-          <span class="relative inline-flex items-center justify-center">
-            <span class="material-symbols-outlined text-[21px]">notifications</span>
-            <span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">3</span>
-          </span>
-        </button>
-        <div class="flex items-center gap-3">
-          <div class="text-right leading-tight hidden sm:block">
-            <p class="text-sm font-semibold text-on-surface">Administrador TEAM HSEC</p>
-            <p class="text-xs text-primary font-medium">Administrador</p>
-          </div>
-          <div class="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center shadow-sm ring-4 ring-primary/10">
-            <span class="material-symbols-outlined text-[24px]">account_circle</span>
-          </div>
+      
+      <!-- Fila inferior: Título del panel a la izquierda, botón de acción dinámico a la derecha -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="min-w-0">
+          <h1 class="font-title text-3xl font-bold text-on-surface tracking-tight leading-none" id="page-title">Resumen del Sistema</h1>
+          <p class="text-sm text-on-surface-variant mt-1.5 max-w-2xl" id="page-subtitle">Visualiza un resumen general de la actividad del sistema.</p>
+        </div>
+        <div id="header-action-container" class="shrink-0 flex items-center">
+          <button class="hidden bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-course">
+            <span class="material-symbols-outlined">add</span>
+            <span>Nuevo Curso</span>
+          </button>
+          <button class="hidden bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-participant">
+            <span class="material-symbols-outlined">add</span>
+            <span>Nuevo Alumno</span>
+          </button>
+          <button class="hidden bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-enrollment">
+            <span class="material-symbols-outlined">link</span>
+            <span>Registrar Matrícula</span>
+          </button>
+          <button class="hidden bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-certificate">
+            <span class="material-symbols-outlined">workspace_premium</span>
+            <span>Emitir Certificado</span>
+          </button>
+          <button class="hidden bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-signature">
+            <span class="material-symbols-outlined">edit_document</span>
+            <span>Nueva Firma</span>
+          </button>
         </div>
       </div>
     </header>
@@ -471,35 +503,109 @@
 
       <!-- TAB 2: CURSOS -->
       <section class="tab-content" id="tab-cursos">
-        <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
-          <div class="p-6 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
-            <div>
-              <h2 class="font-title text-lg font-bold text-on-surface">Gestión de Cursos</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Catálogo oficial de capacitaciones y entrenamientos registrados en el sistema.</p>
-            </div>
-            <button class="bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-course">
-              <span class="material-symbols-outlined">add</span>
-              <span>Nuevo Curso</span>
-            </button>
+        <div class="space-y-7">
+          <!-- Stats Grid for Courses -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-red-50 text-primary flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">school</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Cursos registrados</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="course-stat-total">0</p>
+                  <p class="mt-3 text-xs text-on-surface-variant font-medium">Total en el sistema</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">check_circle</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Cursos activos</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="course-stat-active">0</p>
+                  <p class="mt-3 text-xs text-emerald-600 font-medium" id="course-stat-active-pct">0% del total</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">schedule</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Horas de capacitación</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="course-stat-hours">0</p>
+                  <p class="mt-3 text-xs text-on-surface-variant font-medium">Total acumulado</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">group</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Entrenadores</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="course-stat-trainers">0</p>
+                  <p class="mt-3 text-xs text-on-surface-variant font-medium">Asignados</p>
+                </div>
+              </div>
+            </article>
           </div>
-          <div class="overflow-x-auto custom-scrollbar">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-surface-container text-on-surface-variant">
-                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Código Interno</th>
-                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Nombre del Curso</th>
-                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Duración</th>
-                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Categoría</th>
-                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Entrenador</th>
-                  <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-widest border-b border-outline-variant">Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="courses-list" class="divide-y divide-outline-variant/60">
-                <tr>
-                  <td colspan="6" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td>
-                </tr>
-              </tbody>
-            </table>
+
+          <!-- Courses Table Card -->
+          <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+            <div class="px-6 py-5 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
+              <div>
+                <h2 class="font-title text-lg font-bold text-on-surface">Listado de Cursos</h2>
+              </div>
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="relative w-[230px] max-w-full">
+                  <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                  <input type="text" id="search-course-query" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Buscar curso...">
+                </div>
+                <button class="h-11 px-4 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors inline-flex items-center gap-2" id="btn-filter-courses">
+                  <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+                  <span>Filtros</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="overflow-x-auto custom-scrollbar">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-white text-on-surface-variant">
+                    <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Código Interno</th>
+                    <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Nombre del Curso</th>
+                    <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Duración</th>
+                    <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Categoría</th>
+                    <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Entrenador</th>
+                    <th class="px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="courses-list" class="divide-y divide-outline-variant/60">
+                  <tr>
+                    <td colspan="6" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination for courses -->
+            <div class="px-6 py-4 border-t border-outline-variant flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-sm text-on-surface-variant">
+              <p id="courses-count-label">Mostrando 0 de 0 cursos</p>
+              <div class="flex items-center gap-2" id="courses-pagination">
+                <button class="w-10 h-10 rounded-xl border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button" aria-label="Anterior" id="courses-prev">&lsaquo;</button>
+                <div class="flex items-center gap-2" id="courses-pages"></div>
+                <button class="w-10 h-10 rounded-xl border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button" aria-label="Siguiente" id="courses-next">&rsaquo;</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -568,9 +674,9 @@
                   <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
                   <input type="text" id="search-participant-dni" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Buscar alumno...">
                 </div>
-                <button class="h-11 px-5 rounded-xl bg-primary text-on-primary text-sm font-semibold hover:bg-primary-dark transition-colors inline-flex items-center gap-2 shadow-md shadow-primary/10" id="btn-new-participant">
-                  <span class="material-symbols-outlined text-[18px]">add</span>
-                  <span>Nuevo Alumno</span>
+                <button class="h-11 px-4 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors inline-flex items-center gap-2" id="btn-filter-participants">
+                  <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+                  <span>Filtros</span>
                 </button>
               </div>
             </div>
@@ -610,17 +716,61 @@
 
       <!-- TAB 4: MATRÍCULAS -->
       <section class="tab-content" id="tab-matriculas">
-        <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
-          <div class="p-6 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
-            <div>
-              <h2 class="font-title text-lg font-bold text-on-surface">Gestión de Matrículas</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Registros oficiales de inscripción de alumnos activos en los cursos.</p>
-            </div>
-            <button class="bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-enrollment">
-              <span class="material-symbols-outlined">link</span>
-              <span>Registrar Matrícula</span>
-            </button>
+        <div class="space-y-7">
+          <!-- Stats Grid for Enrollments to keep design consistent! -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">assignment_ind</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Cursos Matriculados</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="enrollment-stat-courses">0</p>
+                  <p class="mt-3 text-xs text-on-surface-variant font-medium">Cursos con alumnos</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">group</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Total Matriculados</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="enrollment-stat-total">0</p>
+                  <p class="mt-3 text-xs text-on-surface-variant font-medium">Alumnos inscritos</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">tag</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Promedio por Curso</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="enrollment-stat-avg">0</p>
+                  <p class="mt-3 text-xs text-on-surface-variant font-medium">Alumnos por curso</p>
+                </div>
+              </div>
+            </article>
           </div>
+
+          <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+            <div class="px-6 py-5 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
+              <div>
+                <h2 class="font-title text-lg font-bold text-on-surface">Listado de Matrículas</h2>
+              </div>
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="relative w-[230px] max-w-full">
+                  <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                  <input type="text" id="search-enrollment-query" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Buscar matrícula...">
+                </div>
+              </div>
+            </div>
           <div class="overflow-x-auto custom-scrollbar">
             <table class="w-full text-left border-collapse">
               <thead>
@@ -643,25 +793,61 @@
 
       <!-- TAB 5: CERTIFICADOS -->
       <section class="tab-content" id="tab-certificados">
-        <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
-          <div class="p-6 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
-            <div>
-              <h2 class="font-title text-lg font-bold text-on-surface">Historial de Certificados</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Listado histórico y herramientas de administración para certificados emitidos.</p>
-            </div>
-            <button class="bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-certificate">
-              <span class="material-symbols-outlined">workspace_premium</span>
-              <span>Emitir Certificado</span>
-            </button>
+        <div class="space-y-7">
+          <!-- Stats Grid for Certificates -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-red-50 text-primary flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">workspace_premium</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Emitidos</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="cert-stat-total">0</p>
+                  <p class="mt-3 text-xs text-on-surface-variant font-medium">Total en el sistema</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">verified</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Vigentes</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="cert-stat-active">0</p>
+                  <p class="mt-3 text-xs text-emerald-600 font-medium" id="cert-stat-active-pct">0% del total</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">error</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Vencidos</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="cert-stat-expired">0</p>
+                  <p class="mt-3 text-xs text-amber-500 font-medium" id="cert-stat-expired-pct">0% del total</p>
+                </div>
+              </div>
+            </article>
           </div>
 
-          <!-- Filters row -->
-          <div class="p-6 bg-slate-50/50 border-b border-outline-variant flex flex-wrap gap-4 items-center">
-            <div class="relative flex-1 max-w-xs">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
-              <input type="text" id="search-cert-query" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Buscar por DNI o código...">
+          <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+            <div class="px-6 py-5 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
+              <div>
+                <h2 class="font-title text-lg font-bold text-on-surface">Listado de Certificados</h2>
+              </div>
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="relative w-[230px] max-w-full">
+                  <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                  <input type="text" id="search-cert-query" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Buscar por DNI o código...">
+                </div>
+              </div>
             </div>
-          </div>
 
           <div class="overflow-x-auto custom-scrollbar">
             <table class="w-full text-left border-collapse">
@@ -688,17 +874,48 @@
 
       <!-- TAB 6: FIRMAS -->
       <section class="tab-content" id="tab-firmas">
-        <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
-          <div class="p-6 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
-            <div>
-              <h2 class="font-title text-lg font-bold text-on-surface">Firmas Autorizadas</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Firmas digitales de los instructores registradas para el diseño del PDF.</p>
-            </div>
-            <button class="bg-primary text-on-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-[0.98] shadow-md shadow-primary/10" id="btn-new-signature">
-              <span class="material-symbols-outlined">edit_document</span>
-              <span>Nueva Firma</span>
-            </button>
+        <div class="space-y-7">
+          <!-- Stats Grid for Signatures -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">draw</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Firmas Registradas</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="sig-stat-total">0</p>
+                  <p class="mt-3 text-xs text-on-surface-variant font-medium">Total en el sistema</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">verified</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Firmas Activas</p>
+                  <p class="mt-2 text-[28px] font-bold tracking-tight text-on-surface leading-none" id="sig-stat-active">0</p>
+                  <p class="mt-3 text-xs text-emerald-600 font-medium">Asignadas a cursos</p>
+                </div>
+              </div>
+            </article>
           </div>
+
+          <div class="bg-white rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+            <div class="px-6 py-5 flex flex-wrap justify-between items-center gap-4 border-b border-outline-variant">
+              <div>
+                <h2 class="font-title text-lg font-bold text-on-surface">Listado de Firmas Autorizadas</h2>
+              </div>
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="relative w-[230px] max-w-full">
+                  <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                  <input type="text" id="search-sig-query" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Buscar firma...">
+                </div>
+              </div>
+            </div>
           <div class="overflow-x-auto custom-scrollbar">
             <table class="w-full text-left border-collapse">
               <thead>

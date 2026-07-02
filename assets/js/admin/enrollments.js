@@ -52,12 +52,31 @@ export const loadEnrollments = async () => {
   const enrollments = await apiFetch('/api/matriculas/grouped');
   state.enrollments = Array.isArray(enrollments) ? enrollments : [];
 
-  if (state.enrollments.length === 0) {
+  // Calculate enrollment stats
+  const coursesCount = state.enrollments.length;
+  const totalEnrollments = state.enrollments.reduce((sum, g) => sum + (g.enrollments?.length || 0), 0);
+  const avgEnrollments = coursesCount > 0 ? (totalEnrollments / coursesCount).toFixed(1) : 0;
+
+  if (el('enrollment-stat-courses')) el('enrollment-stat-courses').textContent = coursesCount;
+  if (el('enrollment-stat-total')) el('enrollment-stat-total').textContent = totalEnrollments;
+  if (el('enrollment-stat-avg')) el('enrollment-stat-avg').textContent = avgEnrollments;
+
+  const query = (el('search-enrollment-query')?.value || '').trim().toLowerCase();
+  const filtered = state.enrollments.filter(group => {
+    if (!query) return true;
+    const matchCourse = [group.curso_nombre, group.curso_codigo].filter(Boolean).some(v => String(v).toLowerCase().includes(query));
+    if (matchCourse) return true;
+    return (group.enrollments || []).some(item => 
+      [item.alumno_nombre, item.alumno_dni].filter(Boolean).some(v => String(v).toLowerCase().includes(query))
+    );
+  });
+
+  if (filtered.length === 0) {
     list.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-on-surface-variant">No hay matrículas registradas.</td></tr>';
     return;
   }
 
-  list.innerHTML = state.enrollments.map(group => `
+  list.innerHTML = filtered.map(group => `
     <tr>
       <td class="px-6 py-4">
         <div>

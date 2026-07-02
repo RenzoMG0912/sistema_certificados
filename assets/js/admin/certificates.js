@@ -8,6 +8,19 @@ export const loadCertificates = async () => {
   const certificates = await apiFetch('/api/certificados');
   state.certificates = Array.isArray(certificates) ? certificates : [];
 
+  // Calculate certificate stats
+  const total = state.certificates.length;
+  const expiredCount = state.certificates.filter(cert => cert.fecha_vencimiento && new Date(cert.fecha_vencimiento) < new Date()).length;
+  const activeCount = total - expiredCount;
+  const activePct = total > 0 ? ((activeCount / total) * 100).toFixed(1) : 0;
+  const expiredPct = total > 0 ? ((expiredCount / total) * 100).toFixed(1) : 0;
+
+  if (el('cert-stat-total')) el('cert-stat-total').textContent = total;
+  if (el('cert-stat-active')) el('cert-stat-active').textContent = activeCount;
+  if (el('cert-stat-active-pct')) el('cert-stat-active-pct').textContent = `${activePct}% del total`;
+  if (el('cert-stat-expired')) el('cert-stat-expired').textContent = expiredCount;
+  if (el('cert-stat-expired-pct')) el('cert-stat-expired-pct').textContent = `${expiredPct}% del total`;
+
   const query = (el('search-cert-query')?.value || '').trim().toLowerCase();
   const filtered = state.certificates.filter(cert => {
     if (!query) return true;

@@ -6,15 +6,33 @@ export const loadSignatures = async () => {
   const list = el('signatures-list');
   if (!list) return;
   list.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-on-surface-variant">Cargando...</td></tr>';
-  const signatures = await apiFetch('/api/firmas');
+  
+  const [signatures, courses] = await Promise.all([
+    apiFetch('/api/firmas'),
+    apiFetch('/api/cursos').catch(() => [])
+  ]);
   state.signatures = Array.isArray(signatures) ? signatures : [];
 
-  if (state.signatures.length === 0) {
+  // Calculate signature stats
+  const totalSignatures = state.signatures.length;
+  const activeSignatureIds = new Set(courses.map(c => String(c.firma_id)).filter(id => id && id !== 'null' && id !== 'undefined'));
+  const activeSignatures = state.signatures.filter(sig => activeSignatureIds.has(String(sig.id))).length;
+
+  if (el('sig-stat-total')) el('sig-stat-total').textContent = totalSignatures;
+  if (el('sig-stat-active')) el('sig-stat-active').textContent = activeSignatures;
+
+  const query = (el('search-sig-query')?.value || '').trim().toLowerCase();
+  const filtered = state.signatures.filter(sig => {
+    if (!query) return true;
+    return [sig.nombre, sig.cargo, sig.cip].filter(Boolean).some(v => String(v).toLowerCase().includes(query));
+  });
+
+  if (filtered.length === 0) {
     list.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-on-surface-variant">No hay firmas registradas.</td></tr>';
     return;
   }
 
-  list.innerHTML = state.signatures.map(signature => `
+  list.innerHTML = filtered.map(signature => `
     <tr>
       <td class="px-6 py-4">${escapeHtml(signature.id || '')}</td>
       <td class="px-6 py-4">${escapeHtml(signature.nombre || '')}</td>

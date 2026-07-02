@@ -1,6 +1,6 @@
 import { el, showToast, apiFetch, openModal, resetForm, closeModal, bindModalClose, readFileAsDataURL } from './utils.js';
 import { initTabs, setActiveTab, loadCurrentSection } from './ui.js';
-import { loadCourses, populateCourseTrainerSelect } from './courses.js';
+import { loadCourses, populateCourseTrainerSelect, renderCourses } from './courses.js';
 import { loadParticipants, openParticipantModal, renderParticipants } from './participants.js';
 import { loadEnrollments, openEnrollmentCreateModal, openEnrollmentEditModal } from './enrollments.js';
 import { loadCertificates } from './certificates.js';
@@ -201,8 +201,44 @@ const initForms = () => {
     }
   });
 
+  el('search-course-query')?.addEventListener('input', event => {
+    state.courseQuery = event.target.value || '';
+    state.coursePage = 1;
+    renderCourses();
+  });
+
+  el('courses-prev')?.addEventListener('click', () => {
+    if (state.coursePage > 1) {
+      state.coursePage -= 1;
+      renderCourses();
+    }
+  });
+
+  el('courses-next')?.addEventListener('click', () => {
+    const query = (state.courseQuery || '').trim().toLowerCase();
+    const filtered = state.courses.filter(course => {
+      if (!query) return true;
+      return [course.codigo_curso, course.nombre, course.duracion, course.categoria, course.entrenador]
+        .filter(Boolean)
+        .some(value => String(value).toLowerCase().includes(query));
+    });
+    const totalPages = Math.max(1, Math.ceil(filtered.length / state.coursePageSize));
+    if (state.coursePage < totalPages) {
+      state.coursePage += 1;
+      renderCourses();
+    }
+  });
+
+  el('search-enrollment-query')?.addEventListener('input', () => {
+    loadEnrollments();
+  });
+
   el('search-cert-query')?.addEventListener('input', () => {
     loadCertificates();
+  });
+
+  el('search-sig-query')?.addEventListener('input', () => {
+    loadSignatures();
   });
 };
 

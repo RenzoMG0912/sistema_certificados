@@ -48,6 +48,13 @@ export const setActiveTab = (tabId) => {
     section.classList.toggle('active', section.id === `tab-${tabId}`);
   });
   updatePageHeader(tabId);
+
+  // Toggle header action buttons based on active tab
+  if (el('btn-new-course')) el('btn-new-course').classList.toggle('hidden', tabId !== 'cursos');
+  if (el('btn-new-participant')) el('btn-new-participant').classList.toggle('hidden', tabId !== 'participantes');
+  if (el('btn-new-enrollment')) el('btn-new-enrollment').classList.toggle('hidden', tabId !== 'matriculas');
+  if (el('btn-new-certificate')) el('btn-new-certificate').classList.toggle('hidden', tabId !== 'certificados');
+  if (el('btn-new-signature')) el('btn-new-signature').classList.toggle('hidden', tabId !== 'firmas');
 };
 
 export const loadCurrentSection = async (tabId) => {

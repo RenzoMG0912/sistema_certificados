@@ -28,6 +28,9 @@
         <a href="/#contacto">Contacto</a>
       </nav>
       <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">
+          <i class="fa-solid fa-moon"></i>
+        </button>
         <a href="/admin/login.html" class="button outline" style="padding: 8px 18px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
           <i class="fa-solid fa-user-lock"></i> Ingresar a la plataforma
         </a>
@@ -41,36 +44,36 @@
         
         <!-- Header Section -->
         <div class="section__header" style="max-width: 800px; margin: 0 auto 40px auto;">
-          <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--ink);">Nuestros Certificados</h2>
+          <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text);">Nuestros Certificados</h2>
           <div class="section__bar" style="margin-bottom: 24px;"></div>
-          <p style="font-size: 14.5px; color: var(--muted); line-height: 1.7; max-width: 680px; margin: 0 auto; text-align: center;">
+          <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.7; max-width: 680px; margin: 0 auto; text-align: center;">
             En TEAM HSEC, reconocemos tu esfuerzo y dedicación. Al finalizar exitosamente nuestros cursos, obtendrás un certificado de participación y/o aprobación que avala tus nuevas habilidades y conocimientos. Estos certificados son un valioso añadido a tu perfil profesional.
           </p>
         </div>
 
         <!-- Info Cards Section -->
         <div class="certs" id="info-cards-wrapper" style="margin-bottom: 40px;">
-          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid #f3ead0; background: #ffffff;">
-            <h4 style="font-size: 16px; font-weight: 700; color: var(--ink); margin: 0; display: flex; align-items: center; gap: 8px;">
+          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid var(--border-soft); background: var(--bg-card);">
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--text); margin: 0; display: flex; align-items: center; gap: 8px;">
               <span style="color: var(--red); font-size: 20px; font-weight: 900;">|</span> Certificado Digital
             </h4>
-            <p style="font-size: 13.5px; color: var(--muted); line-height: 1.5; margin: 0;">
+            <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin: 0;">
               Accede a tu certificado en PDF, listo para compartir o imprimir en cualquier momento.
             </p>
           </div>
-          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid #f3ead0; background: #ffffff;">
-            <h4 style="font-size: 16px; font-weight: 700; color: var(--ink); margin: 0; display: flex; align-items: center; gap: 8px;">
+          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid var(--border-soft); background: var(--bg-card);">
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--text); margin: 0; display: flex; align-items: center; gap: 8px;">
               <span style="color: var(--red); font-size: 20px; font-weight: 900;">|</span> Certificado Físico
             </h4>
-            <p style="font-size: 13.5px; color: var(--muted); line-height: 1.5; margin: 0;">
+            <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin: 0;">
               Para ciertos cursos de la plataforma, ofrecemos certificación física impresa de alta calidad.
             </p>
           </div>
-          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid #f3ead0; background: #ffffff;">
-            <h4 style="font-size: 16px; font-weight: 700; color: var(--ink); margin: 0; display: flex; align-items: center; gap: 8px;">
+          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid var(--border-soft); background: var(--bg-card);">
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--text); margin: 0; display: flex; align-items: center; gap: 8px;">
               <span style="color: var(--red); font-size: 20px; font-weight: 900;">|</span> Reconocimiento Profesional
             </h4>
-            <p style="font-size: 13.5px; color: var(--muted); line-height: 1.5; margin: 0;">
+            <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin: 0;">
               Avalado por ponentes certificados e instructores líderes, relevante para el mercado laboral.
             </p>
           </div>
@@ -84,13 +87,13 @@
           </button>
         </div>
 
-        <!-- Search Form Panel -->
+          <!-- Search Form Panel -->
         <div class="search-container" id="search-box-wrapper" style="margin-bottom: 30px;">
-          <form class="search" id="cert-search-form" style="max-width: 720px; margin: 0 auto; padding: 35px 24px; border-radius: var(--radius); border: 1px solid #f0e0b9; box-shadow: var(--shadow); background: #ffffff;">
-            <h3 style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 20px; text-align: center;">Buscar Certificado</h3>
+          <form class="search" id="cert-search-form" style="max-width: 720px; margin: 0 auto; padding: 35px 24px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); background: var(--bg-card);">
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 20px; text-align: center;">Buscar Certificado</h3>
             <div class="search__fields" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 0;">
-              <input id="search-code" type="text" placeholder="ID O CÓDIGO DE CERTIFICADO (ej: PE-0001-26)" style="flex-grow: 2; min-width: 260px; padding: 12px 20px; border-radius: 999px; border: 1px solid #f0e0b9;" required>
-              <input id="search-dni" type="text" placeholder="DNI (8 dígitos)" style="flex-grow: 1; min-width: 180px; padding: 12px 20px; border-radius: 999px; border: 1px solid #f0e0b9;" required>
+              <input id="search-code" type="text" placeholder="ID O CÓDIGO DE CERTIFICADO (ej: PE-0001-26)" style="flex-grow: 2; min-width: 260px; padding: 12px 20px; border-radius: 999px; border: 1px solid var(--border);" required>
+              <input id="search-dni" type="text" placeholder="DNI (8 dígitos)" style="flex-grow: 1; min-width: 180px; padding: 12px 20px; border-radius: 999px; border: 1px solid var(--border);" required>
               <button class="button primary" type="submit" style="padding: 12px 30px; font-weight: 700; background: var(--red); color: white;">Buscar</button>
             </div>
           </form>
@@ -154,7 +157,7 @@
           <p style="margin-bottom: 20px; font-weight: 500;">
             El código del certificado o el DNI ingresado no coinciden con nuestros registros oficiales de verificación.
           </p>
-          <button type="button" class="button" id="btn-error-retry" style="background: transparent; border: 1px solid #cbd5e1; color: #475569; padding: 10px 24px; font-weight: 600; border-radius: 999px;">
+          <button type="button" class="button" id="btn-error-retry" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 10px 24px; font-weight: 600; border-radius: 999px;">
             Intentar de Nuevo
           </button>
         </div>

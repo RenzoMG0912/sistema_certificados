@@ -1,6 +1,31 @@
 document.body.classList.remove('js-loading');
 document.body.classList.add('js-enabled');
 
+(() => {
+  const html = document.documentElement;
+  const toggle = document.getElementById('theme-toggle');
+  const icon = toggle ? toggle.querySelector('i') : null;
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = saved ? saved === 'dark' : prefersDark;
+
+  if (isDark) {
+    html.setAttribute('data-theme', 'dark');
+    if (icon) { icon.className = 'fa-solid fa-sun'; }
+    if (toggle) { toggle.title = 'Modo claro'; }
+  }
+
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const now = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', now ? '' : 'dark');
+      localStorage.setItem('theme', now ? 'light' : 'dark');
+      if (icon) { icon.className = now ? 'fa-solid fa-moon' : 'fa-solid fa-sun'; }
+      toggle.title = now ? 'Modo oscuro' : 'Modo claro';
+    });
+  }
+})();
+
 const initPage = () => {
   const navLinks = Array.from(document.querySelectorAll('.nav-links a'));
   const sections = navLinks

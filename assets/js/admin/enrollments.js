@@ -43,7 +43,7 @@ const downloadGroupCSV = (group) => {
 };
 
 // ─────────────────────────────────────────
-// Render accordeon completo
+// Render accordeon completo con Animaciones
 // ─────────────────────────────────────────
 export const renderEnrollments = () => {
   const container = document.getElementById('enrollments-accordion');
@@ -95,10 +95,10 @@ export const renderEnrollments = () => {
           </td>
           <td class="px-4 py-3">
             <div class="flex items-center gap-1.5">
-              <button type="button" class="btn-icon btn-view-enrollment-student" data-enrollment-id="${item.id}" data-course-id="${courseId}" title="Ver alumno">
+              <button type="button" class="btn-icon btn-view-enrollment-student text-slate-400 hover:text-primary transition-colors" data-enrollment-id="${item.id}" data-course-id="${courseId}" title="Ver alumno">
                 <i class="fa-solid fa-eye text-[12px]"></i>
               </button>
-              <button type="button" class="btn-icon btn-delete btn-remove-enrollment-student" data-enrollment-id="${item.id}" data-course-id="${courseId}" title="Quitar matrícula">
+              <button type="button" class="btn-icon btn-delete btn-remove-enrollment-student text-slate-400 hover:text-red-600 transition-colors" data-enrollment-id="${item.id}" data-course-id="${courseId}" title="Quitar matrícula">
                 <i class="fa-solid fa-trash text-[12px]"></i>
               </button>
             </div>
@@ -108,39 +108,39 @@ export const renderEnrollments = () => {
 
     const paginationRow = !showAll && total > PAGE_SIZE ? `
       <tr>
-        <td colspan="7" class="pl-8 pr-6 py-3 border-t border-slate-100">
+        <td colspan="7" class="pl-8 pr-6 py-3.5 border-t border-slate-100 bg-slate-50/20">
           <div class="flex items-center justify-between">
             <span class="text-xs text-slate-400">Mostrando 1 a ${Math.min(PAGE_SIZE, total)} de ${total} alumnos</span>
             <button type="button"
-              class="btn-show-all-students inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-dark transition-colors"
+              class="btn-show-all-students inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
               data-course-id="${courseId}">
-              <span class="material-symbols-outlined text-[16px]">group</span>
+              <span class="material-symbols-outlined text-[16px] text-slate-500">groups</span>
               Ver todos los alumnos (${total})
-              <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+              <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
             </button>
           </div>
         </td>
       </tr>` : (showAll && total > PAGE_SIZE ? `
       <tr>
-        <td colspan="7" class="pl-8 pr-6 py-3 border-t border-slate-100">
+        <td colspan="7" class="pl-8 pr-6 py-3.5 border-t border-slate-100 bg-slate-50/20">
           <div class="flex items-center justify-between">
             <span class="text-xs text-slate-400">Mostrando todos los ${total} alumnos</span>
             <button type="button"
-              class="btn-hide-all-students inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors"
+              class="btn-hide-all-students inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 text-xs font-semibold text-slate-500 hover:bg-slate-50 transition-colors"
               data-course-id="${courseId}">
-              <span class="material-symbols-outlined text-[16px]">expand_less</span>
+              <span class="material-symbols-outlined text-[16px] text-slate-400">expand_less</span>
               Mostrar menos
             </button>
           </div>
         </td>
       </tr>` : '');
 
-    const innerTable = isExpanded ? `
-      <div class="bg-slate-50/40 border-t border-slate-100">
+    const tableHTML = `
+      <div class="border-t border-slate-100 bg-white">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="text-on-surface-variant">
+              <tr class="text-on-surface-variant bg-slate-50/50">
                 <th class="pl-8 pr-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100 w-10">N°</th>
                 <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Alumno</th>
                 <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">DNI / Identificación</th>
@@ -156,15 +156,17 @@ export const renderEnrollments = () => {
             </tbody>
           </table>
         </div>
-      </div>` : '';
+      </div>`;
+
+    const maxHeightStyle = isExpanded ? 'max-height: none;' : 'max-height: 0px;';
 
     return `
-      <div class="enrollment-accordion-item" data-course-id="${courseId}">
+      <div class="enrollment-accordion-item bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm my-3" data-course-id="${courseId}">
         <!-- Course Header Row -->
         <div class="enrollment-course-header flex items-center gap-3 px-6 py-4 hover:bg-slate-50/50 transition-colors cursor-pointer" data-toggle-course="${courseId}">
           <!-- Toggle arrow (left) -->
           <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center shrink-0 transition-all hover:bg-slate-100" data-toggle-course="${courseId}">
-            <span class="material-symbols-outlined text-[18px] text-slate-500 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}">chevron_right</span>
+            <span class="chevron-left material-symbols-outlined text-[18px] text-slate-500 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}">chevron_right</span>
           </button>
 
           <!-- Course Info -->
@@ -177,38 +179,73 @@ export const renderEnrollments = () => {
           </div>
 
           <!-- Alumno count -->
-          <div class="text-right shrink-0 mr-2">
-            <p class="text-lg font-bold text-on-surface leading-none">${total}</p>
+          <div class="text-right shrink-0 mr-4">
+            <p class="text-base font-bold text-emerald-600 leading-none">${total}</p>
             <p class="text-[11px] text-on-surface-variant mt-0.5">Alumnos</p>
           </div>
 
           <!-- Action buttons -->
           <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
-            <button type="button" class="btn-icon btn-download-enrollment" data-course-id="${courseId}" title="Descargar lista">
-              <span class="material-symbols-outlined text-[16px]">download</span>
+            <button type="button" class="btn-icon btn-download-enrollment text-slate-500 hover:text-primary transition-colors border border-slate-200 bg-white hover:bg-slate-50" data-course-id="${courseId}" title="Descargar lista de alumnos">
+              <span class="material-symbols-outlined text-[18px]">download</span>
             </button>
-            <button type="button" class="btn-icon btn-edit-enrollment" data-course-id="${courseId}" title="Editar matrícula">
+            <button type="button" class="btn-icon btn-edit-enrollment text-slate-500 hover:text-primary transition-colors border border-slate-200 bg-white hover:bg-slate-50" data-course-id="${courseId}" title="Editar matrícula">
               <i class="fa-solid fa-pen text-[12px]"></i>
             </button>
-            <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-100 transition-all" data-toggle-course="${courseId}" title="${isExpanded ? 'Colapsar' : 'Expandir'}">
-              <span class="material-symbols-outlined text-[18px] text-slate-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}">expand_more</span>
+            <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-100 transition-all text-slate-500" data-toggle-course="${courseId}" title="${isExpanded ? 'Colapsar' : 'Expandir'}">
+              <span class="chevron-right material-symbols-outlined text-[18px] transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}">expand_more</span>
             </button>
           </div>
         </div>
 
-        <!-- Expandable inner table -->
-        ${innerTable}
+        <!-- Expandable inner table container -->
+        <div class="accordion-collapse-container" style="${maxHeightStyle}">
+          ${tableHTML}
+        </div>
       </div>`;
   }).join('');
 
-  // ── Bind toggle events ──
+  // ── Bind toggle events with smooth height transitions ──
   container.querySelectorAll('[data-toggle-course]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const cid = btn.dataset.toggleCourse;
-      if (state.expandedCourses.has(cid)) state.expandedCourses.delete(cid);
-      else state.expandedCourses.add(cid);
-      renderEnrollments();
+      
+      const itemEl = container.querySelector(`.enrollment-accordion-item[data-course-id="${cid}"]`);
+      if (!itemEl) return;
+      
+      const collapseEl = itemEl.querySelector('.accordion-collapse-container');
+      const chevronLeft = itemEl.querySelector('.chevron-left');
+      const chevronRight = itemEl.querySelector('.chevron-right');
+      
+      if (!collapseEl) return;
+      
+      const isCurrentlyOpen = state.expandedCourses.has(cid);
+      
+      if (isCurrentlyOpen) {
+        // Collapse
+        collapseEl.style.maxHeight = collapseEl.scrollHeight + 'px';
+        collapseEl.offsetHeight; // force reflow
+        collapseEl.style.maxHeight = '0px';
+        
+        chevronLeft?.classList.remove('rotate-90');
+        chevronRight?.classList.remove('rotate-180');
+        state.expandedCourses.delete(cid);
+      } else {
+        // Expand
+        collapseEl.style.maxHeight = collapseEl.scrollHeight + 'px';
+        chevronLeft?.classList.add('rotate-90');
+        chevronRight?.classList.add('rotate-180');
+        state.expandedCourses.add(cid);
+        
+        const transitionHandler = () => {
+          if (state.expandedCourses.has(cid)) {
+            collapseEl.style.maxHeight = 'none';
+          }
+          collapseEl.removeEventListener('transitionend', transitionHandler);
+        };
+        collapseEl.addEventListener('transitionend', transitionHandler);
+      }
     });
   });
 
@@ -233,8 +270,17 @@ export const renderEnrollments = () => {
   container.querySelectorAll('.btn-show-all-students').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      state.showAllStudents.add(btn.dataset.courseId);
+      const cid = btn.dataset.courseId;
+      state.showAllStudents.add(cid);
+      
+      // Re-render to show all rows, but make sure it defaults to open height
       renderEnrollments();
+      
+      const itemEl = container.querySelector(`.enrollment-accordion-item[data-course-id="${cid}"]`);
+      const collapseEl = itemEl?.querySelector('.accordion-collapse-container');
+      if (collapseEl) {
+        collapseEl.style.maxHeight = 'none';
+      }
     });
   });
 
@@ -242,8 +288,43 @@ export const renderEnrollments = () => {
   container.querySelectorAll('.btn-hide-all-students').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      state.showAllStudents.delete(btn.dataset.courseId);
+      const cid = btn.dataset.courseId;
+      state.showAllStudents.delete(cid);
+      
+      // Re-render back to page size
       renderEnrollments();
+      
+      const itemEl = container.querySelector(`.enrollment-accordion-item[data-course-id="${cid}"]`);
+      const collapseEl = itemEl?.querySelector('.accordion-collapse-container');
+      if (collapseEl) {
+        collapseEl.style.maxHeight = 'none';
+      }
+    });
+  });
+
+  // ── Bind view specific student details inside enrollment list ──
+  container.querySelectorAll('.btn-view-enrollment-student').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const enrollmentId = btn.dataset.enrollmentId;
+      const courseId = btn.dataset.courseId;
+      const group = state.enrollments.find(g => String(g.curso_id) === courseId);
+      const student = group?.enrollments?.find(item => String(item.id) === enrollmentId);
+      if (student) {
+        // Open participant modal or details modal
+        const part = await apiFetch(`/api/participantes/${student.participante_id}`);
+        if (part) {
+          el('detail-name').textContent = part.nombres || '—';
+          el('detail-dni').textContent = part.dni || '—';
+          el('detail-email').textContent = part.email || '—';
+          el('detail-cargo').textContent = part.cargo || '—';
+          el('detail-phone').textContent = part.telefono || '—';
+          el('detail-procedencia').textContent = part.procedencia || '—';
+          el('detail-induccion').textContent = part.induccion === 'si' ? 'Sí' : 'No';
+          el('detail-medical').textContent = part.examen_medico === 'si' ? 'Sí' : 'No';
+          openModal('modal-participant-details');
+        }
+      }
     });
   });
 

@@ -850,4 +850,11 @@ body.modal-open {
     position: static;
     width: 100%;
   }
+}
+
+/* Accordion Smooth Height Transition */
+.accordion-collapse-container {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }

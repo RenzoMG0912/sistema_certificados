@@ -220,19 +220,22 @@ export const renderCertificates = () => {
   list.querySelectorAll('.btn-cert-details').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      // Hide menu
       el(`cert-menu-${btn.dataset.id}`)?.classList.add('hidden');
       const cert = state.certificates.find(c => String(c.id) === btn.dataset.id);
       if (cert) {
-        // Populate and show signature preview modal with cert info
-        el('preview-firma-codigo').textContent = cert.codigo || '—';
-        el('preview-firma-alumno').textContent = cert.alumno_nombre || '—';
-        el('preview-firma-dni').textContent = cert.alumno_dni || '—';
-        el('preview-firma-curso').textContent = cert.curso_nombre || '—';
-        el('preview-firma-emision').textContent = formatDate(cert.fecha_emision);
-        el('preview-firma-vencimiento').textContent = formatDate(cert.fecha_vencimiento);
-        el('preview-firma-registrado').textContent = formatDate(cert.created_at);
-        openModal('modal-firma-preview');
+        el('cert-detail-codigo').textContent = cert.codigo || '—';
+        el('cert-detail-hash').textContent = cert.hash || '—';
+        el('cert-detail-alumno').textContent = cert.alumno_nombre || '—';
+        el('cert-detail-dni').textContent = cert.alumno_dni || '—';
+        el('cert-detail-curso').textContent = cert.curso_nombre || '—';
+        el('cert-detail-emision').textContent = formatDateShort(cert.fecha_emision);
+        el('cert-detail-vencimiento').textContent = formatDateShort(cert.fecha_vencimiento);
+        el('cert-detail-created').textContent = formatDateShort(cert.created_at);
+        const status = getCertificateStatus(cert);
+        const badgeClass = status === 'VENCIDO' ? 'bg-red-50 text-red-700' : status === 'POR VENCER' ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700';
+        el('cert-detail-status').innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">${status}</span>`;
+        el('cert-detail-pdf').href = cert.pdf_path || '#';
+        openModal('modal-certificate-detail');
       }
     });
   });

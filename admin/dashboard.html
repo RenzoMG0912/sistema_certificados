@@ -175,6 +175,44 @@
       to { opacity: 1; }
     }
 
+    /* =============================================
+       ANIMATIONS - Smooth transitions
+       ============================================= */
+
+    /* Tab content fade-in */
+    .tab-content {
+      animation: tabFadeIn 0.35s ease-out;
+    }
+    @keyframes tabFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Accordion collapse smooth height transition */
+    .accordion-collapse-container {
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Table row fade-in on load */
+    .certificates-list tr,
+    #enrollments-accordion tr {
+      animation: rowFadeIn 0.3s ease-out;
+    }
+    @keyframes rowFadeIn {
+      from { opacity: 0; transform: translateX(-6px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Stats card hover */
+    .stat-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -5px rgba(0,0,0,0.08);
+    }
+
     /* Badges status */
     .badge-status {
       display: inline-block;
@@ -417,7 +455,7 @@
         <div class="space-y-7">
           <!-- Stats Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">group</span>
@@ -433,7 +471,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">menu_book</span>
@@ -449,7 +487,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-red-50 text-primary flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">verified_user</span>
@@ -506,7 +544,7 @@
         <div class="space-y-7">
           <!-- Stats Grid for Courses -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-red-50 text-primary flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">school</span>
@@ -519,7 +557,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">check_circle</span>
@@ -532,7 +570,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">schedule</span>
@@ -545,7 +583,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">group</span>
@@ -720,7 +758,7 @@
 
           <!-- Stats Grid: 4 tarjetas -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-red-50 text-primary flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">school</span>
@@ -733,7 +771,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">group</span>
@@ -746,7 +784,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">schedule</span>
@@ -759,7 +797,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">calendar_month</span>
@@ -809,7 +847,7 @@
           
           <!-- Stats Grid for Certificates (4 Tarjetas) -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-red-50 text-primary flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">workspace_premium</span>
@@ -822,7 +860,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">verified</span>
@@ -835,7 +873,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">calendar_today</span>
@@ -848,7 +886,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">archive</span>
@@ -888,6 +926,10 @@
                 <button class="h-11 px-4 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors inline-flex items-center gap-2" id="btn-filter-certs">
                   <span class="material-symbols-outlined text-[18px]">filter_alt</span>
                   <span>Filtros</span>
+                </button>
+                <button class="h-11 px-4 rounded-xl bg-primary/10 text-primary text-sm font-bold hover:bg-primary/20 transition-all inline-flex items-center gap-2 border border-primary/20" id="btn-bulk-certificate">
+                  <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
+                  <span>Emisión Masiva</span>
                 </button>
               </div>
             </div>
@@ -931,7 +973,7 @@
         <div class="space-y-7">
           <!-- Stats Grid for Signatures -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">draw</span>
@@ -944,7 +986,7 @@
               </div>
             </article>
 
-            <article class="bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
+            <article class="stat-card bg-white rounded-2xl border border-outline-variant p-5 shadow-sm">
               <div class="flex items-start gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-[24px]">verified</span>
@@ -1331,6 +1373,65 @@
         </div>
         <div class="flex justify-end pt-2">
           <button class="px-5 py-2.5 rounded-xl bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-dark transition-colors" type="button" data-modal-close>Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DETALLE DE CERTIFICADO -->
+  <div class="modal modal-dashboard" id="modal-certificate-detail" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__panel" style="max-width:520px;">
+      <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+      <div class="p-6 border-b border-slate-100">
+        <h3 class="font-title text-base font-bold text-on-surface">Detalle del Certificado</h3>
+      </div>
+      <div class="p-6 space-y-4 text-[13px]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Código</p>
+            <p class="mt-1 font-bold text-on-surface" id="cert-detail-codigo">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Estado</p>
+            <p class="mt-1" id="cert-detail-status">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Alumno</p>
+            <p class="mt-1 font-semibold text-on-surface" id="cert-detail-alumno">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">DNI</p>
+            <p class="mt-1 text-on-surface" id="cert-detail-dni">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Curso</p>
+            <p class="mt-1 text-on-surface" id="cert-detail-curso">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">F. Emisión</p>
+            <p class="mt-1 text-on-surface" id="cert-detail-emision">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Vencimiento</p>
+            <p class="mt-1 text-on-surface" id="cert-detail-vencimiento">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Registrado</p>
+            <p class="mt-1 text-on-surface" id="cert-detail-created">—</p>
+          </div>
+        </div>
+        <div>
+          <p class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-semibold">Hash SHA-256</p>
+          <p class="mt-1 text-xs font-mono text-on-surface break-all select-all" id="cert-detail-hash">—</p>
+        </div>
+        <div class="flex justify-between items-center pt-2 gap-3">
+          <a href="#" target="_blank" rel="noreferrer" class="px-5 py-2.5 rounded-xl bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-dark transition-all inline-flex items-center gap-2" id="cert-detail-pdf">
+            <i class="fa-solid fa-file-pdf"></i> Descargar PDF
+          </a>
+          <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-[13px] hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cerrar</button>
         </div>
       </div>
     </div>

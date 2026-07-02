@@ -23,6 +23,22 @@ const initModalButtons = () => {
     await openEnrollmentCreateModal();
   });
 
+  el('btn-bulk-certificate')?.addEventListener('click', async () => {
+    const cursoId = prompt('Ingresa el ID del curso para emisión masiva:');
+    if (!cursoId) return;
+    if (!confirm('¿Generar certificados para todos los alumnos sin certificado de este curso?')) return;
+    try {
+      await apiFetch('/api/certificados/bulk-generate', {
+        method: 'POST',
+        body: JSON.stringify({ curso_id: Number(cursoId) })
+      });
+      showToast('Certificados emitidos masivamente');
+      await loadCertificates();
+    } catch (err) {
+      showToast(err.message || 'Error en emisión masiva', 'error');
+    }
+  });
+
   el('btn-new-certificate')?.addEventListener('click', async () => {
     resetForm('form-certificate');
     el('modal-certificate-title').textContent = 'Emitir Certificado Oficial';
@@ -234,6 +250,11 @@ const initForms = () => {
     renderEnrollments();
   });
 
+  el('btn-filter-enrollments')?.addEventListener('click', () => {
+    el('search-enrollment-query')?.focus();
+    showToast('Escribe para filtrar por curso, alumno o DNI', 'info');
+  });
+
   el('search-cert-query')?.addEventListener('input', event => {
     state.certQuery = event.target.value || '';
     state.certPage = 1;
@@ -252,6 +273,11 @@ const initForms = () => {
     renderCertificates();
   });
 
+  el('btn-filter-certs')?.addEventListener('click', () => {
+    el('search-cert-query')?.focus();
+    showToast('Usa los filtros de búsqueda, curso y rango de fechas', 'info');
+  });
+
   el('search-sig-query')?.addEventListener('input', () => {
     loadSignatures();
   });
@@ -264,6 +290,7 @@ const init = async () => {
   bindModalClose('modal-enrollment-edit');
   bindModalClose('modal-firma-preview');
   bindModalClose('modal-participant-details');
+  bindModalClose('modal-certificate-detail');
   bindModalClose('modal-certificate');
   bindModalClose('modal-signature');
 

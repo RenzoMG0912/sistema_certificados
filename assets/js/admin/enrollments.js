@@ -314,14 +314,14 @@ export const renderEnrollments = () => {
         // Open participant modal or details modal
         const part = await apiFetch(`/api/participantes/${student.participante_id}`);
         if (part) {
-          el('detail-name').textContent = part.nombres || '—';
-          el('detail-dni').textContent = part.dni || '—';
-          el('detail-email').textContent = part.email || '—';
-          el('detail-cargo').textContent = part.cargo || '—';
-          el('detail-phone').textContent = part.telefono || '—';
-          el('detail-procedencia').textContent = part.procedencia || '—';
-          el('detail-induccion').textContent = part.induccion === 'si' ? 'Sí' : 'No';
-          el('detail-medical').textContent = part.examen_medico === 'si' ? 'Sí' : 'No';
+          el('participant-detail-name').textContent = part.nombres || '—';
+          el('participant-detail-dni').textContent = part.dni || '—';
+          el('participant-detail-email').textContent = part.email || '—';
+          el('participant-detail-cargo').textContent = part.cargo || '—';
+          el('participant-detail-phone').textContent = part.telefono || '—';
+          el('participant-detail-origin').textContent = part.procedencia || '—';
+          el('participant-detail-induccion').textContent = part.induccion || '—';
+          el('participant-detail-examen').textContent = part.examen_medico || '—';
           openModal('modal-participant-details');
         }
       }
@@ -596,6 +596,18 @@ export const openEnrollmentEditModal = async (courseId) => {
       showToast('Alumnos agregados correctamente');
       await openEnrollmentEditModal(courseId);
       await loadEnrollments();
+    };
+  }
+
+  const selectAllEditBtn = document.getElementById('btn-edit-select-all');
+  if (selectAllEditBtn) {
+    selectAllEditBtn.onclick = () => {
+      const container = document.getElementById('enrollment-add-participants-container');
+      if (!container) return;
+      container.querySelectorAll('.enrollment-edit-select').forEach(input => {
+        input.checked = true;
+        state.enrollmentEditSelected.add(String(input.value));
+      });
     };
   }
 

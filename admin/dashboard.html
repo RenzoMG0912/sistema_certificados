@@ -568,10 +568,6 @@
                   <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
                   <input type="text" id="search-participant-dni" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Buscar alumno...">
                 </div>
-                <button type="button" class="h-11 px-4 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors inline-flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[18px]">filter_alt</span>
-                  <span>Filtros</span>
-                </button>
                 <button class="h-11 px-5 rounded-xl bg-primary text-on-primary text-sm font-semibold hover:bg-primary-dark transition-colors inline-flex items-center gap-2 shadow-md shadow-primary/10" id="btn-new-participant">
                   <span class="material-symbols-outlined text-[18px]">add</span>
                   <span>Nuevo Alumno</span>
@@ -583,9 +579,8 @@
               <table class="w-full text-left border-collapse table-fixed">
                 <thead>
                   <tr class="bg-white text-on-surface-variant">
-                    <th class="w-[140px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">DNI / Identificación</th>
+                    <th class="w-[140px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">DNI</th>
                     <th class="w-[200px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Nombre Completo</th>
-                    <th class="w-[150px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Cargo</th>
                     <th class="w-[140px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Teléfono</th>
                     <th class="w-[120px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Procedencia</th>
                     <th class="w-[180px] px-6 py-4 font-semibold text-[11px] uppercase tracking-[0.14em] border-b border-outline-variant whitespace-nowrap">Correo Electrónico</th>
@@ -595,22 +590,18 @@
                 </thead>
                 <tbody id="participants-list" class="divide-y divide-outline-variant/60">
                   <tr>
-                    <td colspan="8" class="px-6 py-10 text-center text-on-surface-variant">Cargando...</td>
+                    <td colspan="7" class="px-6 py-10 text-center text-on-surface-variant">Cargando...</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
             <div class="px-6 py-4 border-t border-outline-variant flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-sm text-on-surface-variant">
-              <p>Mostrando 1 a 5 de 128 alumnos</p>
-              <div class="flex items-center gap-2">
-                <button class="w-10 h-10 rounded-xl border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button" aria-label="Anterior">&lsaquo;</button>
-                <button class="w-10 h-10 rounded-xl border border-primary bg-primary text-white font-semibold" type="button">1</button>
-                <button class="w-10 h-10 rounded-xl border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button">2</button>
-                <button class="w-10 h-10 rounded-xl border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button">3</button>
-                <span class="px-1 text-on-surface-variant">...</span>
-                <button class="w-10 h-10 rounded-xl border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button">26</button>
-                <button class="w-10 h-10 rounded-xl border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button" aria-label="Siguiente">&rsaquo;</button>
+              <p id="participants-count-label">Mostrando 0 de 0 alumnos</p>
+              <div class="flex items-center gap-2" id="participants-pagination">
+                <button class="w-10 h-10 rounded-xl border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button" aria-label="Anterior" id="participants-prev">&lsaquo;</button>
+                <div class="flex items-center gap-2" id="participants-pages"></div>
+                <button class="w-10 h-10 rounded-xl border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors" type="button" aria-label="Siguiente" id="participants-next">&rsaquo;</button>
               </div>
             </div>
           </div>

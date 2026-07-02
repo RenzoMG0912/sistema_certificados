@@ -304,6 +304,184 @@
       color: #ef4444;
       border-color: #fca5a5;
     }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid #f0f1f3;
+      color: #d7a307;
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .theme-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .dark .theme-toggle {
+      background: #1e293b;
+      border-color: #334155;
+      color: #fbbf24;
+    }
+    .dark .theme-toggle:hover {
+      background: #334155;
+    }
+
+    /* Dark mode overrides for dashboard */
+    .dark body {
+      background-color: #0f172a !important;
+      color: #e2e8f0 !important;
+    }
+    .dark .bg-white,
+    .dark .bg-surface {
+      background-color: #1e293b !important;
+    }
+    .dark .bg-\\[\\#fcfcfc\\] {
+      background-color: #0f172a !important;
+    }
+    .dark .bg-surface-container {
+      background-color: #1e293b !important;
+    }
+    .dark .bg-surface-container-low {
+      background-color: #1a2332 !important;
+    }
+    .dark .border-outline-variant,
+    .dark .border-slate-100,
+    .dark .border-slate-200,
+    .dark .divide-outline-variant\\/60 {
+      border-color: #334155 !important;
+    }
+    .dark .divide-outline-variant\\/60 > * {
+      border-color: #334155 !important;
+    }
+    .dark .text-on-surface {
+      color: #f1f5f9 !important;
+    }
+    .dark .text-on-surface-variant,
+    .dark .text-slate-400,
+    .dark .text-slate-500,
+    .dark .text-slate-600 {
+      color: #94a3b8 !important;
+    }
+    .dark .text-slate-700 {
+      color: #cbd5e1 !important;
+    }
+    .dark .text-slate-800 {
+      color: #e2e8f0 !important;
+    }
+    .dark .text-secondary {
+      color: #d5b874 !important;
+    }
+    .dark .shadow-sm,
+    .dark .shadow-md {
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
+    }
+    .dark input,
+    .dark select,
+    .dark textarea {
+      background-color: #0f172a !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    .dark input:focus,
+    .dark select:focus,
+    .dark textarea:focus {
+      border-color: #d5b874 !important;
+      background-color: #0f172a !important;
+    }
+    .dark input::placeholder {
+      color: #64748b !important;
+    }
+    .dark .bg-slate-50 {
+      background-color: #1a2332 !important;
+    }
+    .dark .hover\\:bg-surface-container:hover {
+      background-color: #334155 !important;
+    }
+    .dark .hover\\:bg-slate-50:hover {
+      background-color: #1a2332 !important;
+    }
+    .dark .hover\\:bg-slate-100:hover {
+      background-color: #1a2332 !important;
+    }
+    .dark .sidebar-menu li a.active {
+      background-color: rgba(230, 0, 0, 0.15) !important;
+    }
+    .dark .sidebar-menu li a:hover {
+      background-color: #1a2332 !important;
+    }
+    .dark .stat-card:hover {
+      box-shadow: 0 8px 25px -5px rgba(0,0,0,0.3) !important;
+    }
+    .dark .modal__panel {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    .dark .modal__backdrop {
+      background-color: rgba(0, 0, 0, 0.75) !important;
+    }
+    .dark .text-red-600 {
+      color: #f87171 !important;
+    }
+    .dark .hover\\:bg-red-50:hover {
+      background-color: rgba(220, 38, 38, 0.15) !important;
+    }
+    .dark .hover\\:text-red-700:hover {
+      color: #fca5a5 !important;
+    }
+    .dark table thead tr {
+      background-color: #1e293b !important;
+    }
+    .dark table tbody tr:hover {
+      background-color: #1a2332 !important;
+    }
+    .dark .bg-slate-100 {
+      background-color: #1a2332 !important;
+    }
+    .dark .bg-slate-50\\/30 {
+      background-color: rgba(26, 35, 50, 0.3) !important;
+    }
+    .dark .bg-primary\\/10 {
+      background-color: rgba(230, 0, 0, 0.2) !important;
+    }
+    .dark .bg-primary\\/20:hover {
+      background-color: rgba(230, 0, 0, 0.3) !important;
+    }
+    .dark .text-primary {
+      color: #ff4d57 !important;
+    }
+    .dark .ring-4\\.ring-primary\\/10 {
+      box-shadow: 0 0 0 4px rgba(255, 77, 87, 0.2) !important;
+    }
+    .dark .toast {
+      background-color: #1e293b !important;
+      color: #e2e8f0 !important;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #334155 !important;
+    }
+    .dark .badge-active {
+      background-color: rgba(22, 163, 74, 0.2) !important;
+      color: #4ade80 !important;
+    }
+    .dark .badge-expired {
+      background-color: rgba(220, 38, 38, 0.2) !important;
+      color: #f87171 !important;
+    }
+    .dark .file\\:bg-slate-200::file-selector-button {
+      background-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    .dark .hover\\:file\\:bg-slate-300::file-selector-button:hover {
+      background-color: #475569 !important;
+    }
   </style>
 </head>
 <body class="font-body text-[13px] text-on-surface">
@@ -395,6 +573,9 @@
         </nav>
         
         <div class="flex items-center gap-4 shrink-0">
+          <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">
+            <i class="fa-solid fa-moon"></i>
+          </button>
           <button class="w-11 h-11 rounded-2xl border border-outline-variant bg-white text-on-surface-variant flex items-center justify-center shadow-sm hover:bg-surface-container transition-colors" type="button" aria-label="Notificaciones">
             <span class="relative inline-flex items-center justify-center">
               <span class="material-symbols-outlined text-[21px]">notifications</span>
@@ -1544,6 +1725,34 @@
     </div>
   </div>
 
+  <script>
+    (() => {
+      const html = document.documentElement;
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') html.classList.add('dark');
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.getElementById('theme-toggle');
+      const icon = toggle ? toggle.querySelector('i') : null;
+      const html = document.documentElement;
+
+      if (html.classList.contains('dark')) {
+        if (icon) icon.className = 'fa-solid fa-sun';
+        if (toggle) toggle.title = 'Modo claro';
+      }
+
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          const now = html.classList.contains('dark');
+          html.classList.toggle('dark', !now);
+          localStorage.setItem('theme', now ? 'light' : 'dark');
+          if (icon) icon.className = now ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+          toggle.title = now ? 'Modo oscuro' : 'Modo claro';
+        });
+      }
+    });
+  </script>
   <script type="module" src="/assets/js/admin/main.js"></script>
 </body>
 </html>

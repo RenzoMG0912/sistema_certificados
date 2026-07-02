@@ -6,8 +6,7 @@ document.body.classList.add('js-enabled');
   const toggle = document.getElementById('theme-toggle');
   const icon = toggle ? toggle.querySelector('i') : null;
   const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const isDark = saved ? saved === 'dark' : prefersDark;
+  const isDark = saved === 'dark';
 
   if (isDark) {
     html.setAttribute('data-theme', 'dark');

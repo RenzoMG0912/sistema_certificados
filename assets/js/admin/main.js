@@ -3,7 +3,7 @@ import { initTabs, setActiveTab, loadCurrentSection } from './ui.js';
 import { loadCourses, populateCourseTrainerSelect, renderCourses } from './courses.js';
 import { loadParticipants, openParticipantModal, renderParticipants } from './participants.js';
 import { loadEnrollments, renderEnrollments, openEnrollmentCreateModal, openEnrollmentEditModal } from './enrollments.js';
-import { loadCertificates } from './certificates.js';
+import { loadCertificates, renderCertificates } from './certificates.js';
 import { loadSignatures } from './signatures.js';
 import { state } from './state.js';
 
@@ -234,8 +234,22 @@ const initForms = () => {
     renderEnrollments();
   });
 
-  el('search-cert-query')?.addEventListener('input', () => {
-    loadCertificates();
+  el('search-cert-query')?.addEventListener('input', event => {
+    state.certQuery = event.target.value || '';
+    state.certPage = 1;
+    renderCertificates();
+  });
+
+  el('filter-cert-course')?.addEventListener('change', event => {
+    state.certCourseFilter = event.target.value || '';
+    state.certPage = 1;
+    renderCertificates();
+  });
+
+  el('filter-cert-date')?.addEventListener('change', event => {
+    state.certDateFilter = event.target.value || '';
+    state.certPage = 1;
+    renderCertificates();
   });
 
   el('search-sig-query')?.addEventListener('input', () => {

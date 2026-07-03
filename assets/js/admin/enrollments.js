@@ -679,7 +679,6 @@ export const openEnrollmentEditModal = async (courseId) => {
     };
   }
 
-  const saveButton = document.getElementById('btn-enrollment-edit-save');
   if (saveButton) {
     saveButton.onclick = async () => {
       const hasChanges = state.enrollmentEditToRemove.size > 0 || state.enrollmentEditSelected.size > 0;

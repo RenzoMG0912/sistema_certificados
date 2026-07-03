@@ -482,6 +482,133 @@
     .dark .hover\\:file\\:bg-slate-300::file-selector-button:hover {
       background-color: #475569 !important;
     }
+
+    /* =============================================
+       FIXES - Dark mode overrides for panel background and text
+       ============================================= */
+
+    /* Table cell text */
+    .dark table tbody td {
+      color: #e2e8f0 !important;
+    }
+
+    /* Sidebar active link text */
+    .dark .sidebar-menu li a.active {
+      color: #ff4d57 !important;
+    }
+    .dark .sidebar-menu li a.active span {
+      color: #ff4d57 !important;
+    }
+
+    /* Icon action buttons (btn-icon) */
+    .dark .btn-icon {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #94a3b8 !important;
+    }
+    .dark .btn-icon:hover {
+      background-color: #334155 !important;
+      color: #f1f5f9 !important;
+    }
+    .dark .btn-icon.btn-delete:hover {
+      background-color: rgba(220, 38, 38, 0.15) !important;
+      color: #fca5a5 !important;
+      border-color: rgba(220, 38, 38, 0.3) !important;
+    }
+
+    /* Toast border colors */
+    .dark .toast {
+      border-left-color: #d5b874 !important;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
+    }
+    .dark .toast.success {
+      border-left-color: #34d399 !important;
+    }
+    .dark .toast.error {
+      border-left-color: #f87171 !important;
+    }
+    .dark .toast.info {
+      border-left-color: #60a5fa !important;
+    }
+    .dark .toast.info i {
+      color: #60a5fa !important;
+    }
+    .dark .toast.warning {
+      border-left-color: #fbbf24 !important;
+    }
+    .dark .toast.warning i {
+      color: #fbbf24 !important;
+    }
+
+    /* Modal panel shadow */
+    .dark .modal__panel {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Theme toggle shadow */
+    .dark .theme-toggle {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+    }
+    .dark .theme-toggle:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Stat card icon wrappers */
+    .dark .bg-blue-50 {
+      background-color: rgba(59, 130, 246, 0.15) !important;
+    }
+    .dark .text-blue-600 {
+      color: #60a5fa !important;
+    }
+    .dark .bg-amber-50 {
+      background-color: rgba(245, 158, 11, 0.15) !important;
+    }
+    .dark .text-amber-500 {
+      color: #fbbf24 !important;
+    }
+    .dark .bg-emerald-50 {
+      background-color: rgba(16, 185, 129, 0.15) !important;
+    }
+    .dark .text-emerald-600 {
+      color: #34d399 !important;
+    }
+    .dark .bg-red-50 {
+      background-color: rgba(239, 68, 68, 0.15) !important;
+    }
+
+    /* Primary button */
+    .dark .bg-primary {
+      background-color: #b3000a !important;
+    }
+    .dark .hover\\:bg-primary-dark:hover {
+      background-color: #8c0000 !important;
+    }
+    .dark .text-on-primary {
+      color: #ffffff !important;
+    }
+
+    /* Hover text primary (footer links, etc) */
+    .dark .hover\\:text-primary:hover {
+      color: #ff4d57 !important;
+    }
+    .dark .group:hover .group-hover\\:text-primary {
+      color: #ff4d57 !important;
+    }
+
+    /* Border primary/20 (bulk certificate button) */
+    .dark .border-primary\\/20 {
+      border-color: rgba(255, 77, 87, 0.2) !important;
+    }
+
+    /* Shadow primary/10 */
+    .dark .shadow-primary\\/10 {
+      box-shadow: 0 4px 14px 0 rgba(179, 0, 10, 0.3) !important;
+    }
+
+    /* text-green-600 */
+    .dark .text-green-600 {
+      color: #4ade80 !important;
+    }
   </style>
 </head>
 <body class="font-body text-[13px] text-on-surface">

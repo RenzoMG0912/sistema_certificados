@@ -9,6 +9,7 @@ router.get('/grouped', matriculasController.listGrouped);
 router.get('/by-course/:curso_id', matriculasController.getByCourse);
 router.post('/', matriculasController.create);
 router.post('/bulk', matriculasController.bulkCreate);
+router.delete('/by-course/:curso_id', matriculasController.deleteByCourse);
 router.delete('/:id', matriculasController.delete);
 
 module.exports = router;

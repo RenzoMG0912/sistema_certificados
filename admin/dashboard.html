@@ -1594,13 +1594,12 @@
           <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 max-h-44 overflow-y-auto custom-scrollbar" id="enrollment-add-participants-container">
             <p class="text-sm text-slate-400 text-center py-3">Cargando alumnos disponibles...</p>
           </div>
-          <div class="flex justify-between items-center gap-3 pt-4 mt-2 border-t border-slate-100">
-            <!-- Botón cerrar: permite guardar cambios (quitar alumnos) sin necesitar agregar nuevos -->
-            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" id="btn-enrollment-edit-done" data-modal-close>
-              <i class="fa-solid fa-check mr-1.5 text-green-600"></i>Guardar y Cerrar
+          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close id="btn-enrollment-edit-cancel">
+              Cancelar
             </button>
-            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="btn-enrollment-add-selected">
-              <i class="fa-solid fa-user-plus mr-1.5"></i>Agregar Seleccionados
+            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="btn-enrollment-edit-save">
+              Guardar
             </button>
           </div>
         </div>

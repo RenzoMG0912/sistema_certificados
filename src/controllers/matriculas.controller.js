@@ -247,5 +247,27 @@ module.exports = {
       mockDb.matriculas.splice(index, 1);
       return res.status(200).json({ success: true, message: 'Matrícula eliminada correctamente' });
     }
+  },
+
+  deleteByCourse: async (req, res, next) => {
+    const { curso_id } = req.params;
+    try {
+      const [enrollments] = await db.query('SELECT id FROM matriculas WHERE curso_id = ?', [curso_id]);
+      if (enrollments.length === 0) {
+        return res.status(404).json({ success: false, message: 'No hay alumnos matriculados en este curso' });
+      }
+      await db.query('DELETE FROM matriculas WHERE curso_id = ?', [curso_id]);
+      return res.status(200).json({ success: true, message: 'Todas las matrículas de este curso han sido eliminadas' });
+    } catch (error) {
+      console.warn('[Mock DB] Eliminando matrículas por curso en memoria temporal');
+      const matriculasToDelete = mockDb.matriculas.filter(m => m.curso_id == curso_id);
+      if (matriculasToDelete.length === 0) {
+        return res.status(404).json({ success: false, message: 'No hay alumnos matriculados en este curso' });
+      }
+      const matriculaIdsToDelete = new Set(matriculasToDelete.map(m => m.id));
+      mockDb.matriculas = mockDb.matriculas.filter(m => !matriculaIdsToDelete.has(m.id));
+      mockDb.certificados = mockDb.certificados.filter(c => !matriculaIdsToDelete.has(c.matricula_id));
+      return res.status(200).json({ success: true, message: 'Todas las matrículas de este curso han sido eliminadas' });
+    }
   }
 };

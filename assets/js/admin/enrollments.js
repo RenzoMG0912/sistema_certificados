@@ -170,6 +170,9 @@ export const renderEnrollments = () => {
             <button type="button" class="btn-icon btn-edit-enrollment text-slate-500 hover:text-primary transition-colors border border-slate-200 bg-white hover:bg-slate-50" data-course-id="${courseId}" title="Editar matrícula">
               <i class="fa-solid fa-pen text-[12px]"></i>
             </button>
+            <button type="button" class="btn-icon btn-delete btn-delete-all-enrollments text-slate-500 hover:text-red-600 transition-colors border border-slate-200 bg-white hover:bg-red-50" data-course-id="${courseId}" title="Eliminar todas las matrículas">
+              <i class="fa-solid fa-trash text-[12px]"></i>
+            </button>
             <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-100 transition-all text-slate-500" data-toggle-course="${courseId}" title="${isExpanded ? 'Colapsar' : 'Expandir'}">
               <span class="chevron-right material-symbols-outlined text-[18px] transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}">expand_more</span>
             </button>
@@ -277,6 +280,50 @@ export const renderEnrollments = () => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       openEnrollmentEditModal(btn.dataset.courseId);
+    });
+  });
+
+  // ── Bind delete all enrollments buttons ──
+  container.querySelectorAll('.btn-delete-all-enrollments').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const courseId = btn.dataset.courseId;
+      const group = state.enrollments.find(g => String(g.curso_id) === courseId);
+      if (!group) return;
+
+      const courseName = group.curso_nombre || 'este curso';
+      const studentCount = group.enrollments?.length || 0;
+
+      if (studentCount === 0) {
+        showToast('No hay alumnos matriculados en este curso', 'warning');
+        return;
+      }
+
+      if (!confirm(`¿Está seguro de que desea eliminar COMPLETAMENTE las matrículas de los ${studentCount} alumnos del curso "${courseName}"?\nEsta acción no se puede deshacer y también eliminará los certificados vinculados.`)) {
+        return;
+      }
+
+      btn.disabled = true;
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[12px]"></i>`;
+
+      try {
+        const res = await apiFetch(`/api/matriculas/by-course/${courseId}`, {
+          method: 'DELETE'
+        });
+
+        if (res.success) {
+          showToast(res.message || 'Todas las matrículas han sido eliminadas correctamente');
+          await loadEnrollments();
+        } else {
+          showToast(res.message || 'Error al eliminar matrículas', 'error');
+        }
+      } catch (err) {
+        showToast(err.message || 'Error al eliminar matrículas', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
     });
   });
 
@@ -593,22 +640,31 @@ export const openEnrollmentEditModal = async (courseId) => {
     };
   }
 
-  const addButton = document.getElementById('btn-enrollment-add-selected');
-  if (addButton) {
-    addButton.onclick = async () => {
-      if (state.enrollmentEditSelected.size === 0) {
-        showToast('Selecciona al menos un alumno', 'warning');
-        return;
+  const saveButton = document.getElementById('btn-enrollment-edit-save');
+  if (saveButton) {
+    saveButton.onclick = async () => {
+      if (state.enrollmentEditSelected.size > 0) {
+        saveButton.disabled = true;
+        const originalText = saveButton.textContent;
+        saveButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Guardando...`;
+
+        try {
+          await apiFetch('/api/matriculas/bulk', {
+            method: 'POST',
+            body: JSON.stringify({
+              curso_id: Number(courseId),
+              participante_ids: Array.from(state.enrollmentEditSelected).map(id => Number(id))
+            })
+          });
+          showToast('Alumnos agregados correctamente');
+        } catch (err) {
+          showToast(err.message || 'Error al guardar matrículas', 'error');
+          saveButton.disabled = false;
+          saveButton.textContent = originalText;
+          return;
+        }
       }
-      await apiFetch('/api/matriculas/bulk', {
-        method: 'POST',
-        body: JSON.stringify({
-          curso_id: Number(courseId),
-          participante_ids: Array.from(state.enrollmentEditSelected).map(id => Number(id))
-        })
-      });
-      showToast('Alumnos agregados correctamente');
-      await openEnrollmentEditModal(courseId);
+      closeModal('modal-enrollment-edit');
       await loadEnrollments();
     };
   }
@@ -624,9 +680,6 @@ export const openEnrollmentEditModal = async (courseId) => {
       });
     };
   }
-
-  const doneBtn = document.getElementById('btn-enrollment-edit-done');
-  if (doneBtn) doneBtn.onclick = () => closeModal('modal-enrollment-edit');
 
   openModal('modal-enrollment-edit');
 };

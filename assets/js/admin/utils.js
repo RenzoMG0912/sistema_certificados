@@ -51,7 +51,12 @@ export const apiFetch = async (url, options = {}) => {
   }
 
   const text = await response.text();
-  const data = text ? JSON.parse(text) : null;
+  let data = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch (err) {
+    // Fallback if response is not JSON
+  }
 
   if (!response.ok) {
     throw new Error(data?.message || `Error del servidor (${response.status})`);
@@ -65,6 +70,10 @@ export const closeModal = (modalId) => {
   if (!modal) return;
   modal.classList.remove('is-open');
   modal.setAttribute('aria-hidden', 'true');
+  modal.setAttribute('inert', '');
+  if (modal.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
 };
 
 export const openModal = (modalId) => {
@@ -72,6 +81,7 @@ export const openModal = (modalId) => {
   if (!modal) return;
   modal.classList.add('is-open');
   modal.setAttribute('aria-hidden', 'false');
+  modal.removeAttribute('inert');
 };
 
 export const resetForm = (formId) => {

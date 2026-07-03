@@ -542,14 +542,18 @@ export const openEnrollmentCreateModal = async () => {
 // ─────────────────────────────────────────
 // Edit Enrollment Modal
 // ─────────────────────────────────────────
+// ─────────────────────────────────────────
+// Edit Enrollment Modal
+// ─────────────────────────────────────────
 const renderEnrollmentEditCurrentList = () => {
   const container = document.getElementById('enrollment-current-list');
   if (!container) return;
-  if (state.enrollmentEditCurrent.length === 0) {
+  const activeEnrollments = state.enrollmentEditCurrent.filter(item => !state.enrollmentEditToRemove.has(String(item.id)));
+  if (activeEnrollments.length === 0) {
     container.innerHTML = '<p class="text-sm text-slate-400">No hay alumnos matriculados en este curso.</p>';
     return;
   }
-  container.innerHTML = state.enrollmentEditCurrent.map(item => `
+  container.innerHTML = activeEnrollments.map(item => `
     <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3">
       <div>
         <p class="text-sm font-semibold text-slate-800">${escapeHtml(item.alumno_nombre || '')}</p>
@@ -563,7 +567,11 @@ const renderEnrollmentEditCurrentList = () => {
 const renderEnrollmentEditAvailableList = (query) => {
   const container = document.getElementById('enrollment-add-participants-container');
   if (!container) return;
-  const currentIds = new Set(state.enrollmentEditCurrent.map(item => String(item.participante_id)));
+  const currentIds = new Set(
+    state.enrollmentEditCurrent
+      .filter(item => !state.enrollmentEditToRemove.has(String(item.id)))
+      .map(item => String(item.participante_id))
+  );
   const filtered = state.enrollmentEditAvailable.filter(participant => {
     if (currentIds.has(String(participant.id))) return false;
     if (!query.trim()) return true;
@@ -591,8 +599,24 @@ const renderEnrollmentEditAvailableList = (query) => {
   container.onchange = (event) => {
     const target = event.target;
     if (target && target.classList.contains('enrollment-edit-select')) {
-      if (target.checked) state.enrollmentEditSelected.add(String(target.value));
-      else state.enrollmentEditSelected.delete(String(target.value));
+      const participantId = String(target.value);
+      const originalEnrollment = state.enrollmentEditCurrent.find(item => String(item.participante_id) === participantId);
+      
+      if (target.checked) {
+        if (originalEnrollment) {
+          state.enrollmentEditToRemove.delete(String(originalEnrollment.id));
+        } else {
+          state.enrollmentEditSelected.add(participantId);
+        }
+      } else {
+        if (originalEnrollment) {
+          state.enrollmentEditToRemove.add(String(originalEnrollment.id));
+        } else {
+          state.enrollmentEditSelected.delete(participantId);
+        }
+      }
+      renderEnrollmentEditCurrentList();
+      renderEnrollmentEditAvailableList(state.enrollmentEditQuery || '');
     }
   };
 };
@@ -600,6 +624,8 @@ const renderEnrollmentEditAvailableList = (query) => {
 export const openEnrollmentEditModal = async (courseId) => {
   state.enrollmentEditCourseId = courseId;
   state.enrollmentEditSelected = new Set();
+  state.enrollmentEditToRemove = new Set();
+  state.enrollmentEditQuery = '';
 
   const [course, currentEnrollments, participants] = await Promise.all([
     apiFetch(`/api/cursos/${courseId}`),
@@ -621,6 +647,7 @@ export const openEnrollmentEditModal = async (courseId) => {
 
   const searchInput = document.getElementById('enrollment-edit-search');
   if (searchInput) {
+    searchInput.value = '';
     searchInput.oninput = () => {
       state.enrollmentEditQuery = searchInput.value;
       renderEnrollmentEditAvailableList(state.enrollmentEditQuery);
@@ -629,34 +656,53 @@ export const openEnrollmentEditModal = async (courseId) => {
 
   const currentList = document.getElementById('enrollment-current-list');
   if (currentList) {
-    currentList.onclick = async (event) => {
+    currentList.onclick = (event) => {
       const target = event.target.closest('.btn-remove-enrollment');
       if (!target) return;
-      if (!confirm('¿Desea quitar este alumno de la matrícula?')) return;
-      await apiFetch(`/api/matriculas/${target.dataset.id}`, { method: 'DELETE' });
-      showToast('Matrícula eliminada correctamente');
-      await openEnrollmentEditModal(courseId);
-      await loadEnrollments();
+      const enrollmentId = String(target.dataset.id);
+      state.enrollmentEditToRemove.add(enrollmentId);
+      
+      // If the participant was also in the selected list, remove them from selected too
+      const enrollment = state.enrollmentEditCurrent.find(item => String(item.id) === enrollmentId);
+      if (enrollment) {
+        state.enrollmentEditSelected.delete(String(enrollment.participante_id));
+      }
+
+      renderEnrollmentEditCurrentList();
+      renderEnrollmentEditAvailableList(state.enrollmentEditQuery || '');
     };
   }
 
   const saveButton = document.getElementById('btn-enrollment-edit-save');
   if (saveButton) {
     saveButton.onclick = async () => {
-      if (state.enrollmentEditSelected.size > 0) {
+      const hasChanges = state.enrollmentEditToRemove.size > 0 || state.enrollmentEditSelected.size > 0;
+      if (hasChanges) {
         saveButton.disabled = true;
         const originalText = saveButton.textContent;
         saveButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Guardando...`;
 
         try {
-          await apiFetch('/api/matriculas/bulk', {
-            method: 'POST',
-            body: JSON.stringify({
-              curso_id: Number(courseId),
-              participante_ids: Array.from(state.enrollmentEditSelected).map(id => Number(id))
-            })
-          });
-          showToast('Alumnos agregados correctamente');
+          // 1. Delete staged removals
+          if (state.enrollmentEditToRemove.size > 0) {
+            const deletePromises = Array.from(state.enrollmentEditToRemove).map(id =>
+              apiFetch(`/api/matriculas/${id}`, { method: 'DELETE' })
+            );
+            await Promise.all(deletePromises);
+          }
+
+          // 2. Add staged additions
+          if (state.enrollmentEditSelected.size > 0) {
+            await apiFetch('/api/matriculas/bulk', {
+              method: 'POST',
+              body: JSON.stringify({
+                curso_id: Number(courseId),
+                participante_ids: Array.from(state.enrollmentEditSelected).map(id => Number(id))
+              })
+            });
+          }
+
+          showToast('Matrículas actualizadas correctamente');
         } catch (err) {
           showToast(err.message || 'Error al guardar matrículas', 'error');
           saveButton.disabled = false;
@@ -675,9 +721,19 @@ export const openEnrollmentEditModal = async (courseId) => {
       const container = document.getElementById('enrollment-add-participants-container');
       if (!container) return;
       container.querySelectorAll('.enrollment-edit-select').forEach(input => {
-        input.checked = true;
-        state.enrollmentEditSelected.add(String(input.value));
+        if (!input.checked) {
+          input.checked = true;
+          const participantId = String(input.value);
+          const originalEnrollment = state.enrollmentEditCurrent.find(item => String(item.participante_id) === participantId);
+          if (originalEnrollment) {
+            state.enrollmentEditToRemove.delete(String(originalEnrollment.id));
+          } else {
+            state.enrollmentEditSelected.add(participantId);
+          }
+        }
       });
+      renderEnrollmentEditCurrentList();
+      renderEnrollmentEditAvailableList(state.enrollmentEditQuery || '');
     };
   }
 

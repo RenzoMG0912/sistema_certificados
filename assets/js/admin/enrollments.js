@@ -18,29 +18,7 @@ const isEnrollmentActive = (enrollment) => {
   return new Date(enrollment.fecha_fin) >= new Date();
 };
 
-// Descarga CSV de alumnos de un grupo
-const downloadGroupCSV = (group) => {
-  const header = ['N°', 'Alumno', 'DNI', 'Fecha Inicio', 'Fecha Fin', 'Estado'].join(',');
-  const rows = (group.enrollments || []).map((item, idx) => {
-    const active = isEnrollmentActive(item) ? 'Activa' : 'Vencida';
-    return [
-      idx + 1,
-      `"${item.alumno_nombre || ''}"`,
-      item.alumno_dni || '',
-      formatDateShort(item.fecha_inicio),
-      formatDateShort(item.fecha_fin),
-      active
-    ].join(',');
-  });
-  const csv = [header, ...rows].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `matriculas-${(group.curso_nombre || 'curso').replace(/\s+/g, '-').toLowerCase()}.csv`;
-  link.click();
-  URL.revokeObjectURL(url);
-};
+
 
 // ─────────────────────────────────────────
 // Render accordeon completo con Animaciones
@@ -186,8 +164,8 @@ export const renderEnrollments = () => {
 
           <!-- Action buttons -->
           <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
-            <button type="button" class="btn-icon btn-download-enrollment text-slate-500 hover:text-primary transition-colors border border-slate-200 bg-white hover:bg-slate-50" data-course-id="${courseId}" title="Descargar lista de alumnos">
-              <span class="material-symbols-outlined text-[18px]">download</span>
+            <button type="button" class="btn-icon btn-bulk-generate-certs text-slate-500 hover:text-primary transition-colors border border-slate-200 bg-white hover:bg-slate-50" data-course-id="${courseId}" title="Emitir certificados y enviar">
+              <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
             </button>
             <button type="button" class="btn-icon btn-edit-enrollment text-slate-500 hover:text-primary transition-colors border border-slate-200 bg-white hover:bg-slate-50" data-course-id="${courseId}" title="Editar matrícula">
               <i class="fa-solid fa-pen text-[12px]"></i>
@@ -249,12 +227,48 @@ export const renderEnrollments = () => {
     });
   });
 
-  // ── Bind download buttons ──
-  container.querySelectorAll('.btn-download-enrollment').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+  // ── Bind bulk generate certificates buttons ──
+  container.querySelectorAll('.btn-bulk-generate-certs').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      const group = state.enrollments.find(g => String(g.curso_id) === btn.dataset.courseId);
-      if (group) downloadGroupCSV(group);
+      const courseId = btn.dataset.courseId;
+      const group = state.enrollments.find(g => String(g.curso_id) === courseId);
+      if (!group) return;
+
+      const courseName = group.curso_nombre || 'este curso';
+      const studentCount = group.enrollments?.length || 0;
+      
+      if (studentCount === 0) {
+        showToast('No hay alumnos matriculados en este curso', 'warning');
+        return;
+      }
+
+      if (!confirm(`¿Generar y enviar certificados para todos los alumnos sin certificado del curso "${courseName}"?`)) {
+        return;
+      }
+
+      // Deshabilitar y mostrar spinner
+      btn.disabled = true;
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[14px]"></i>`;
+
+      try {
+        const res = await apiFetch('/api/certificados/bulk-generate', {
+          method: 'POST',
+          body: JSON.stringify({ curso_id: Number(courseId) })
+        });
+
+        if (res.success) {
+          showToast(res.message || 'Certificados emitidos y enviados correctamente');
+        } else {
+          showToast(res.message || 'Error al emitir certificados', 'error');
+        }
+      } catch (err) {
+        showToast(err.message || 'Error en emisión masiva', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
     });
   });
 

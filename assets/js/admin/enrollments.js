@@ -622,6 +622,12 @@ const renderEnrollmentEditAvailableList = (query) => {
 };
 
 export const openEnrollmentEditModal = async (courseId) => {
+  const saveButton = document.getElementById('btn-enrollment-edit-save');
+  if (saveButton) {
+    saveButton.disabled = false;
+    saveButton.textContent = 'Guardar';
+  }
+
   state.enrollmentEditCourseId = courseId;
   state.enrollmentEditSelected = new Set();
   state.enrollmentEditToRemove = new Set();

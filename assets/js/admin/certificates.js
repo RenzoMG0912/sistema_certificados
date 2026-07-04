@@ -127,6 +127,11 @@ export const renderCertificates = () => {
               <i class="fa-solid fa-file-pdf text-[15px]"></i>
             </a>
 
+            <!-- Send email button -->
+            <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center ${cert.alumno_email ? 'text-blue-600 hover:bg-blue-50' : 'text-slate-300 cursor-not-allowed'} transition-all btn-send-certificate" data-id="${cert.id}" title="${cert.alumno_email ? 'Enviar por correo' : 'Sin correo registrado'}" ${cert.alumno_email ? '' : 'disabled'}>
+              <i class="fa-solid fa-envelope text-[15px]"></i>
+            </button>
+
             <!-- Action dropdown toggle -->
             <div class="relative cert-actions-container">
               <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-100 transition-all text-slate-400 btn-cert-menu-toggle" data-id="${cert.id}">
@@ -252,6 +257,32 @@ export const renderCertificates = () => {
         await loadCertificates();
       } catch (err) {
         showToast(err.message || 'Error al eliminar certificado', 'error');
+      }
+    });
+  });
+
+  // Bind send email buttons
+  list.querySelectorAll('.btn-send-certificate').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const certId = button.dataset.id;
+      const cert = state.certificates.find(c => String(c.id) === certId);
+      if (!cert) return;
+      if (!cert.alumno_email) {
+        showToast('Este participante no tiene correo registrado', 'error');
+        return;
+      }
+      if (!confirm(`Enviar certificado a ${cert.alumno_email}?`)) return;
+      button.disabled = true;
+      button.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[15px]"></i>';
+      try {
+        await apiFetch(`/api/certificados/${certId}/send`, { method: 'POST' });
+        showToast(`Certificado enviado a ${cert.alumno_email}`);
+      } catch (err) {
+        showToast(err.message || 'Error al enviar correo', 'error');
+      } finally {
+        button.disabled = false;
+        button.innerHTML = '<i class="fa-solid fa-envelope text-[15px]"></i>';
       }
     });
   });

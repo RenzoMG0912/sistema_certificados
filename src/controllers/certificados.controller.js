@@ -51,7 +51,7 @@ module.exports = {
     try {
       const query = `
         SELECT c.id, c.codigo, c.hash, c.fecha_emision, c.fecha_vencimiento, c.pdf_path,
-               p.nombres AS alumno_nombre, p.dni AS alumno_dni,
+               p.nombres AS alumno_nombre, p.dni AS alumno_dni, p.email AS alumno_email,
                cur.nombre AS curso_nombre
         FROM certificados c
         JOIN matriculas m ON c.matricula_id = m.id
@@ -74,6 +74,7 @@ module.exports = {
           pdf_path: c.pdf_path,
           alumno_nombre: c.alumno_nombre || 'Alumno',
           alumno_dni: c.alumno_dni || '00000000',
+          alumno_email: c.alumno_email || '',
           curso_nombre: c.curso_nombre || 'Curso'
         };
       }).reverse();
@@ -601,6 +602,58 @@ module.exports = {
         count: results.length,
         certificados: results
       });
+    }
+  },
+
+  send: async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+      const query = `
+        SELECT cert.codigo, cert.pdf_path,
+               p.nombres AS alumno_nombre, p.dni AS alumno_dni, p.email AS alumno_email,
+               c.nombre AS curso_nombre
+        FROM certificados cert
+        JOIN matriculas m ON cert.matricula_id = m.id
+        JOIN participantes p ON m.participante_id = p.id
+        JOIN cursos c ON m.curso_id = c.id
+        WHERE cert.id = ?
+      `;
+      const [rows] = await db.query(query, [id]);
+      if (rows.length === 0) {
+        return res.status(404).json({ success: false, message: 'Certificado no encontrado' });
+      }
+
+      const cert = rows[0];
+      if (!cert.alumno_email) {
+        return res.status(400).json({ success: false, message: 'El participante no tiene correo registrado' });
+      }
+
+      if (!cert.pdf_path) {
+        return res.status(400).json({ success: false, message: 'El certificado no tiene archivo PDF asociado' });
+      }
+
+      const absolutePdfPath = path.join(__dirname, '..', '..', 'public', cert.pdf_path);
+      if (!fs.existsSync(absolutePdfPath)) {
+        return res.status(404).json({ success: false, message: 'El archivo PDF no se encuentra en el servidor' });
+      }
+
+      const emailResult = await emailService.sendCertificateEmail({
+        email: cert.alumno_email,
+        alumno_nombre: cert.alumno_nombre,
+        curso_nombre: cert.curso_nombre,
+        codigo: cert.codigo,
+        pdf_path: cert.pdf_path
+      }, absolutePdfPath);
+
+      if (emailResult.success) {
+        return res.status(200).json({ success: true, message: `Certificado enviado a ${cert.alumno_email}` });
+      } else {
+        return res.status(500).json({ success: false, message: emailResult.message || 'Error al enviar el correo' });
+      }
+    } catch (error) {
+      console.error('[Send Certificate] Error:', error);
+      next(error);
     }
   },
 

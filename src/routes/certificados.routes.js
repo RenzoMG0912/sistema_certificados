@@ -9,6 +9,7 @@ router.use(authMiddleware);
 router.get('/', certificadosController.list);
 router.post('/', certificadosController.create);
 router.post('/bulk-generate', certificadosController.bulkGenerate);
+router.post('/:id/send', certificadosController.send);
 router.delete('/:id', certificadosController.delete);
 
 module.exports = router;

@@ -23,21 +23,7 @@ const initModalButtons = () => {
     await openEnrollmentCreateModal();
   });
 
-  el('btn-bulk-certificate')?.addEventListener('click', async () => {
-    const cursoId = prompt('Ingresa el ID del curso para emisión masiva:');
-    if (!cursoId) return;
-    if (!confirm('¿Generar certificados para todos los alumnos sin certificado de este curso?')) return;
-    try {
-      await apiFetch('/api/certificados/bulk-generate', {
-        method: 'POST',
-        body: JSON.stringify({ curso_id: Number(cursoId) })
-      });
-      showToast('Certificados emitidos masivamente');
-      await loadCertificates();
-    } catch (err) {
-      showToast(err.message || 'Error en emisión masiva', 'error');
-    }
-  });
+
 
   el('btn-new-certificate')?.addEventListener('click', async () => {
     resetForm('form-certificate');
@@ -273,10 +259,7 @@ const initForms = () => {
     renderCertificates();
   });
 
-  el('btn-filter-certs')?.addEventListener('click', () => {
-    el('search-cert-query')?.focus();
-    showToast('Usa los filtros de búsqueda, curso y rango de fechas', 'info');
-  });
+
 
   el('search-sig-query')?.addEventListener('input', () => {
     loadSignatures();

@@ -1,23 +1,35 @@
 import { el, escapeHtml, formatDate, apiFetch, showToast, openModal, closeModal } from './utils.js';
 import { state } from './state.js';
 
+// Helper to parse date avoiding UTC offset issue (Peru UTC-5)
+const parseLocalDate = (value) => {
+  if (!value) return null;
+  const str = String(value).trim();
+  const match = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  }
+  const d = new Date(str);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+
 // Helper to format date short (e.g. 30/06/2026)
 const formatDateShort = (value) => {
-  if (!value) return '—';
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return '—';
+  const d = parseLocalDate(value);
+  if (!d) return '—';
   return d.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
 // Calculate status for each certificate
 const getCertificateStatus = (cert) => {
-  if (!cert.fecha_vencimiento) return 'VIGENTE';
-  const now = new Date();
-  const expiry = new Date(cert.fecha_vencimiento);
-  if (expiry < now) return 'VENCIDO';
+  const expiry = parseLocalDate(cert.fecha_vencimiento);
+  if (!expiry) return 'VIGENTE';
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (expiry < today) return 'VENCIDO';
 
-  const thirtyDaysFromNow = new Date();
-  thirtyDaysFromNow.setDate(now.getDate() + 30);
+  const thirtyDaysFromNow = new Date(today);
+  thirtyDaysFromNow.setDate(today.getDate() + 30);
   if (expiry <= thirtyDaysFromNow) return 'POR VENCER';
 
   return 'VIGENTE';
@@ -63,15 +75,16 @@ export const renderCertificates = () => {
 
   // Date range dropdown filter
   if (dateFilter) {
-    const now = new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const daysAgo = Number(dateFilter);
-    const limitDate = new Date();
-    limitDate.setDate(now.getDate() - daysAgo);
+    const limitDate = new Date(today);
+    limitDate.setDate(today.getDate() - daysAgo);
 
     filtered = filtered.filter(cert => {
-      if (!cert.fecha_emision) return false;
-      const issue = new Date(cert.fecha_emision);
-      return issue >= limitDate && issue <= now;
+      const issue = parseLocalDate(cert.fecha_emision);
+      if (!issue) return false;
+      return issue >= limitDate && issue <= today;
     });
   }
 
@@ -306,23 +319,25 @@ export const loadCertificates = async () => {
   const total = state.certificates.length;
   
   const now = new Date();
-  const thirtyDaysFromNow = new Date();
+  now.setHours(0, 0, 0, 0);
+  const thirtyDaysFromNow = new Date(now);
   thirtyDaysFromNow.setDate(now.getDate() + 30);
 
   const expiredCount = state.certificates.filter(cert => {
-    if (!cert.fecha_vencimiento) return false;
-    return new Date(cert.fecha_vencimiento) < now;
+    const expiry = parseLocalDate(cert.fecha_vencimiento);
+    if (!expiry) return false;
+    return expiry < now;
   }).length;
 
   const soonCount = state.certificates.filter(cert => {
-    if (!cert.fecha_vencimiento) return false;
-    const expiry = new Date(cert.fecha_vencimiento);
+    const expiry = parseLocalDate(cert.fecha_vencimiento);
+    if (!expiry) return false;
     return expiry >= now && expiry <= thirtyDaysFromNow;
   }).length;
 
   const activeCount = state.certificates.filter(cert => {
-    if (!cert.fecha_vencimiento) return true;
-    const expiry = new Date(cert.fecha_vencimiento);
+    const expiry = parseLocalDate(cert.fecha_vencimiento);
+    if (!expiry) return true;
     return expiry > thirtyDaysFromNow;
   }).length;
 

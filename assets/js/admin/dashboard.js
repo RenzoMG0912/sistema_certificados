@@ -18,7 +18,17 @@ export const loadDashboardStats = async () => {
   }
 
   recentList.innerHTML = stats.recientes.map(cert => {
-    const isExpired = cert.fecha_vencimiento && new Date(cert.fecha_vencimiento) < new Date();
+    const parseLocal = (v) => {
+      if (!v) return null;
+      const m = String(v).trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+      const d = new Date(v);
+      return Number.isNaN(d.getTime()) ? null : d;
+    };
+    const expiry = parseLocal(cert.fecha_vencimiento);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const isExpired = expiry && expiry < today;
     return `
       <tr>
         <td class="px-6 py-4"><strong>${escapeHtml(cert.codigo)}</strong></td>

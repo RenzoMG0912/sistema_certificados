@@ -7,11 +7,21 @@ export const escapeHtml = (value) => String(value ?? '')
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#39;');
 
+const parseLocalDate = (value) => {
+  if (!value) return null;
+  const str = String(value).trim();
+  const match = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  }
+  const d = new Date(str);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+
 export const formatDate = (value) => {
-  if (!value) return 'N/A';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return 'N/A';
-  return date.toLocaleDateString('es-ES');
+  const date = parseLocalDate(value);
+  if (!date) return 'N/A';
+  return date.toLocaleDateString('es-PE');
 };
 
 export const showToast = (message, type = 'success', duration = 3500) => {

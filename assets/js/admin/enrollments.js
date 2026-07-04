@@ -6,16 +6,30 @@ import { state } from './state.js';
 // ─────────────────────────────────────────
 const PAGE_SIZE = 5; // alumnos visibles por curso antes del "ver todos"
 
+const parseLocalDate = (value) => {
+  if (!value) return null;
+  const str = String(value).trim();
+  const match = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  }
+  const d = new Date(str);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+
 const formatDateShort = (value) => {
-  if (!value) return '—';
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return '—';
+  const d = parseLocalDate(value);
+  if (!d) return '—';
   return d.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
 const isEnrollmentActive = (enrollment) => {
   if (!enrollment.fecha_fin) return true;
-  return new Date(enrollment.fecha_fin) >= new Date();
+  const fin = parseLocalDate(enrollment.fecha_fin);
+  if (!fin) return true;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return fin >= today;
 };
 
 

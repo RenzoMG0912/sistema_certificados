@@ -126,9 +126,12 @@ const initForms = () => {
       return;
     }
 
+    const fechaInicio = el('enrollment-fecha-inicio')?.value || null;
+    const fechaFin = el('enrollment-fecha-fin')?.value || null;
+
     await apiFetch('/api/matriculas/bulk', {
       method: 'POST',
-      body: JSON.stringify({ curso_id: cursoId, participante_ids: selected })
+      body: JSON.stringify({ curso_id: cursoId, participante_ids: selected, fecha_inicio: fechaInicio, fecha_fin: fechaFin })
     });
 
     showToast('Matrícula registrada correctamente');

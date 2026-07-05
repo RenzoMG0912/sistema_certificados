@@ -56,7 +56,7 @@ export const apiFetch = async (url, options = {}) => {
   if (response.status === 401 || response.status === 403) {
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_user');
-    window.location.href = '/admin/login.html';
+    window.location.href = '/login.html';
     return null;
   }
 

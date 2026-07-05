@@ -23,6 +23,6 @@ INSERT IGNORE INTO firmas (nombre, cargo, firma_url, cip) VALUES
 ('Ing. Angel G. Baldeon Icochea', 'Gerente de Operaciones', '/assets/img/firmas/firma_gerente.png', '86277'),
 ('Ing. Gregorio A. Escajadillo Sarmiento', 'Entrenador', '/assets/img/firmas/firma_gregorio.png', '050142');
 
--- 4. Participante Demo
-INSERT IGNORE INTO participantes (nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico) VALUES
-('Usuario Demo', '00000000', 'demo@teamhsec.local', 'ING. SUPERVISOR', '964680064', 'HUANCAYO', 'APTO', 'APTO');
+-- 4. Participante Demo (contraseña por defecto = DNI: 00000000)
+INSERT IGNORE INTO participantes (nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico, password) VALUES
+('Usuario Demo', '00000000', 'demo@teamhsec.local', 'ING. SUPERVISOR', '964680064', 'HUANCAYO', 'APTO', 'APTO', '$2a$10$Y5L3kWD9zdf/jqiMWB4D1evozZM05WCikRLVWOgasIaQa./BGiqr6');

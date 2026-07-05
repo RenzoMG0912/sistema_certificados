@@ -23,6 +23,7 @@ app.use(morgan('dev'));
 // Enrutar recursos estáticos
 app.use(express.static('public'));
 app.use('/admin', express.static('admin'));
+app.use('/student', express.static('student'));
 app.use('/assets', express.static('assets'));
 
 // Rutas de la API

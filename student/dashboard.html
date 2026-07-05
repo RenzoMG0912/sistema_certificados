@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEAM HSEC | Portal Estudiantil</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Google Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#002045",
+            "primary-dark": "#001630",
+            "secondary": "#be0000",
+            "secondary-light": "#ffdad7",
+            "on-primary": "#ffffff",
+            "surface": "#f9f9ff",
+            "surface-container-low": "#f0f3ff",
+            "surface-container": "#e7eeff",
+            "surface-container-high": "#dee8ff",
+            "surface-container-highest": "#d8e3fa",
+            "outline-variant": "#c4c6cf",
+            "outline": "#74777f",
+            "on-surface": "#111c2c",
+            "on-surface-variant": "#43474e",
+            "tertiary": "#d5b874",
+            "tertiary-container": "#ffddba",
+            "error": "#ba1a1a",
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "2xl": "1.25rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "title": ["Plus Jakarta Sans", "sans-serif"],
+            "body": ["Inter", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f9f9ff;
+      color: #111c2c;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+
+    /* Sidebar active state */
+    .sidebar-nav a.active {
+      background-color: #e7eeff;
+      color: #002045;
+      font-weight: 600;
+    }
+    .sidebar-nav a.active .material-symbols-outlined {
+      color: #002045;
+      font-variation-settings: 'FILL' 1;
+    }
+
+    /* Toast */
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast {
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideIn 0.3s ease-out;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .toast.success {
+      background-color: #f0fdf4;
+      border: 1px solid #dcfce7;
+      color: #166534;
+    }
+    .toast.error {
+      background-color: #fef2f2;
+      border: 1px solid #fee2e2;
+      color: #991b1b;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Tab content */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Mobile nav */
+    .mobile-nav a.active { color: #002045; }
+    .mobile-nav a.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+  </style>
+</head>
+<body class="font-body overflow-x-hidden">
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Shell Layout -->
+  <div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="hidden md:flex flex-col h-screen w-64 sticky top-0 bg-white border-r border-outline-variant p-5 gap-4 z-40">
+      <!-- Logo -->
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+          <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">school</span>
+        </div>
+        <div>
+          <h1 class="font-title text-lg font-bold text-primary">TeamHSEC</h1>
+          <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Portal Estudiantil</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav flex flex-col gap-1 flex-grow">
+        <a class="sidebar-link flex items-center gap-3 bg-surface-container rounded-xl px-4 py-2.5 transition-all duration-150 text-sm font-medium" href="#" data-tab="inicio">
+          <span class="material-symbols-outlined text-[20px]">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-2.5 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="cursos">
+          <span class="material-symbols-outlined text-[20px]">auto_stories</span>
+          <span>Mis Cursos</span>
+        </a>
+        <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-2.5 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="certificados">
+          <span class="material-symbols-outlined text-[20px]">workspace_premium</span>
+          <span>Certificados</span>
+        </a>
+        <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-2.5 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="perfil">
+          <span class="material-symbols-outlined text-[20px]">person</span>
+          <span>Mi Perfil</span>
+        </a>
+      </nav>
+
+      <!-- Bottom Actions -->
+      <div class="mt-auto pt-4 border-t border-outline-variant">
+        <a href="/" class="flex items-center gap-3 text-on-surface-variant px-4 py-2.5 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium mb-1">
+          <span class="material-symbols-outlined text-[20px]">home</span>
+          <span>Página Principal</span>
+        </a>
+        <button id="logout-btn" class="w-full flex items-center gap-3 text-secondary px-4 py-2.5 hover:bg-secondary-light rounded-xl transition-all duration-150 text-sm font-medium">
+          <span class="material-symbols-outlined text-[20px]">logout</span>
+          <span>Cerrar Sesión</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full">
+
+      <!-- Top Bar -->
+      <header class="sticky top-0 z-30 flex justify-between items-center w-full px-6 py-3 bg-white border-b border-outline-variant">
+        <!-- Mobile Menu -->
+        <div class="md:hidden flex items-center gap-2">
+          <button id="mobile-menu-btn" class="text-on-surface-variant">
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          <span class="font-title text-lg font-bold text-primary">TeamHSEC</span>
+        </div>
+
+        <!-- Search (Desktop) -->
+        <div class="hidden md:flex flex-grow max-w-md bg-surface-container-low rounded-xl px-4 py-2 border border-outline-variant">
+          <span class="material-symbols-outlined text-on-surface-variant mr-2 text-[20px]">search</span>
+          <input id="global-search" class="bg-transparent border-none focus:ring-0 text-sm w-full outline-none" placeholder="Buscar cursos o certificados..." type="text"/>
+        </div>
+
+        <!-- Right Side -->
+        <div class="flex items-center gap-4">
+          <button class="relative text-on-surface-variant hover:text-secondary transition-colors">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full"></span>
+          </button>
+          <div class="flex items-center gap-3 cursor-pointer">
+            <div class="text-right hidden sm:block">
+              <p id="user-name-display" class="text-sm font-bold text-on-surface">Estudiante</p>
+              <p id="user-role-display" class="text-[10px] text-on-surface-variant uppercase tracking-wider">Estudiante</p>
+            </div>
+            <div id="user-avatar" class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm border-2 border-white shadow-sm">
+              E
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Canvas -->
+      <div class="p-6 max-w-7xl mx-auto space-y-6">
+
+        <!-- ==================== TAB: INICIO ==================== -->
+        <div id="tab-inicio" class="tab-content active">
+          
+          <!-- Bienvenida -->
+          <section>
+            <h2 id="welcome-title" class="font-title text-2xl md:text-3xl font-bold text-primary">Hola, Estudiante</h2>
+            <p id="welcome-subtitle" class="text-on-surface-variant text-sm mt-1 max-w-2xl">Bienvenido de nuevo a tu panel de control. Aquí puedes ver tus cursos y certificados.</p>
+          </section>
+
+          <!-- Stats Cards -->
+          <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            <div class="bg-white border border-outline-variant p-5 rounded-xl flex items-center justify-between hover:border-primary transition-all group">
+              <div>
+                <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Cursos Inscritos</p>
+                <p id="stat-cursos" class="text-2xl font-bold text-primary">0</p>
+              </div>
+              <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined">auto_stories</span>
+              </div>
+            </div>
+            <div class="bg-white border border-outline-variant p-5 rounded-xl flex items-center justify-between hover:border-tertiary transition-all group">
+              <div>
+                <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Certificados Obtenidos</p>
+                <p id="stat-certificados" class="text-2xl font-bold" style="color: #d5b874;">0</p>
+              </div>
+              <div class="w-12 h-12 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform" style="background-color: #ffddba;">
+                <span class="material-symbols-outlined" style="color: #d5b874; font-variation-settings: 'FILL' 1;">emoji_events</span>
+              </div>
+            </div>
+            <div class="bg-white border border-outline-variant p-5 rounded-xl flex items-center justify-between hover:border-secondary transition-all group">
+              <div>
+                <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Progreso General</p>
+                <p id="stat-progreso" class="text-2xl font-bold text-secondary">0%</p>
+              </div>
+              <div class="w-12 h-12 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform" style="background-color: #ffdad7;">
+                <span class="material-symbols-outlined" style="color: #be0000;">trending_up</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Two Column Layout -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+
+            <!-- Mis Cursos (Left) -->
+            <section class="lg:col-span-2 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-title text-lg font-bold text-primary flex items-center gap-2">
+                  <span class="material-symbols-outlined text-secondary">import_contacts</span>
+                  Mis Cursos Inscritos
+                </h3>
+                <button class="text-secondary text-xs font-semibold hover:underline" onclick="switchTab('cursos')">Ver todos</button>
+              </div>
+              <div id="home-courses-list" class="space-y-3">
+                <!-- Cursos cargados dinámicamente -->
+                <div class="bg-white border border-outline-variant rounded-xl p-4 text-center text-on-surface-variant text-sm">
+                  <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
+                  Cargando cursos...
+                </div>
+              </div>
+            </section>
+
+            <!-- Instructores (Right) -->
+            <section class="space-y-4">
+              <h3 class="font-title text-lg font-bold text-primary">Mis Instructores</h3>
+              <div id="home-instructors-list" class="bg-white border border-outline-variant rounded-xl p-4 space-y-4">
+                <div class="text-center text-on-surface-variant text-sm">
+                  <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
+                  Cargando...
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Certificados Recientes -->
+          <section class="mt-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-title text-lg font-bold text-primary flex items-center gap-2">
+                <span class="material-symbols-outlined" style="color: #d5b874; font-variation-settings: 'FILL' 1;">verified</span>
+                Certificados Recientes
+              </h3>
+            </div>
+            <div id="home-certificates-table" class="bg-white border border-outline-variant rounded-xl overflow-hidden">
+              <div class="p-6 text-center text-on-surface-variant text-sm">
+                <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
+                Cargando certificados...
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- ==================== TAB: CURSOS ==================== -->
+        <div id="tab-cursos" class="tab-content">
+          <section>
+            <h2 class="font-title text-2xl font-bold text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary">auto_stories</span>
+              Mis Cursos
+            </h2>
+            <p class="text-on-surface-variant text-sm mt-1">Todos los cursos en los que estás inscrito.</p>
+          </section>
+          <div id="courses-full-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div class="bg-white border border-outline-variant rounded-xl p-6 text-center text-on-surface-variant text-sm col-span-full">
+              <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
+              Cargando cursos...
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB: CERTIFICADOS ==================== -->
+        <div id="tab-certificados" class="tab-content">
+          <section>
+            <h2 class="font-title text-2xl font-bold text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined" style="color: #d5b874; font-variation-settings: 'FILL' 1;">workspace_premium</span>
+              Mis Certificados
+            </h2>
+            <p class="text-on-surface-variant text-sm mt-1">Todos los certificados que has obtenido.</p>
+          </section>
+          <div id="certificates-full-list" class="bg-white border border-outline-variant rounded-xl overflow-hidden mt-4">
+            <div class="p-6 text-center text-on-surface-variant text-sm">
+              <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
+              Cargando certificados...
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB: PERFIL ==================== -->
+        <div id="tab-perfil" class="tab-content">
+          <section>
+            <h2 class="font-title text-2xl font-bold text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary">person</span>
+              Mi Perfil
+            </h2>
+            <p class="text-on-surface-variant text-sm mt-1">Información personal registrada en el sistema.</p>
+          </section>
+          <div id="profile-card" class="bg-white border border-outline-variant rounded-xl p-6 mt-4">
+            <div class="text-center text-on-surface-variant text-sm">
+              <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
+              Cargando perfil...
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <footer class="p-6 border-t border-outline-variant mt-8 text-center">
+        <p class="text-on-surface-variant text-xs">&copy; 2024 TeamHSEC Academy. Todos los derechos reservados.</p>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-nav md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-outline-variant flex justify-around py-2 z-50">
+    <a class="mobile-nav-link active flex flex-col items-center gap-0.5 text-primary" href="#" data-tab="inicio">
+      <span class="material-symbols-outlined text-[22px]">dashboard</span>
+      <span class="text-[10px] font-semibold">Inicio</span>
+    </a>
+    <a class="mobile-nav-link flex flex-col items-center gap-0.5 text-on-surface-variant" href="#" data-tab="cursos">
+      <span class="material-symbols-outlined text-[22px]">auto_stories</span>
+      <span class="text-[10px] font-semibold">Cursos</span>
+    </a>
+    <a class="mobile-nav-link flex flex-col items-center gap-0.5 text-on-surface-variant" href="#" data-tab="certificados">
+      <span class="material-symbols-outlined text-[22px]">workspace_premium</span>
+      <span class="text-[10px] font-semibold">Diplomas</span>
+    </a>
+    <a class="mobile-nav-link flex flex-col items-center gap-0.5 text-on-surface-variant" href="#" data-tab="perfil">
+      <span class="material-symbols-outlined text-[22px]">person</span>
+      <span class="text-[10px] font-semibold">Perfil</span>
+    </a>
+  </nav>
+
+  <script src="/assets/js/student/dashboard.js"></script>
+</body>
+</html>

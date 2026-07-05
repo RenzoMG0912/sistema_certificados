@@ -13,6 +13,8 @@ const certificadosRoutes = require('./certificados.routes');
 const verificarRoutes = require('./verificar.routes');
 const firmasRoutes = require('./firmas.routes');
 const smtpTestRoutes = require('./smtp-test.routes');
+const studentAuthRoutes = require('./studentAuth.routes');
+const studentRoutes = require('./student.routes');
 
 // Vincular rutas a la API
 router.use('/auth', authRoutes);
@@ -23,6 +25,8 @@ router.use('/certificados', certificadosRoutes);
 router.use('/verificar', verificarRoutes);
 router.use('/firmas', firmasRoutes);
 router.use('/smtp-test', smtpTestRoutes);
+router.use('/student/auth', studentAuthRoutes);
+router.use('/student', studentRoutes);
 
 // Ruta adicional: Estadísticas del Dashboard Administrativo
 router.get('/admin/dashboard', authMiddleware, async (req, res, next) => {

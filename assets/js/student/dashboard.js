@@ -1,0 +1,464 @@
+// Archivo: assets/js/student/dashboard.js
+(function() {
+  const TOKEN_KEY = 'student_token';
+  const USER_KEY = 'student_user';
+
+  // ========== UTILITIES ==========
+  const el = (id) => document.getElementById(id);
+
+  const escapeHtml = (value) => String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+
+  const parseLocalDate = (value) => {
+    if (!value) return null;
+    const str = String(value).trim();
+    const match = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    const d = new Date(str);
+    return Number.isNaN(d.getTime()) ? null : d;
+  };
+
+  const formatDate = (value) => {
+    const date = parseLocalDate(value);
+    if (!date) return 'N/A';
+    return date.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+  };
+
+  const showToast = (message, type = 'success') => {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icons = { error: 'error', warning: 'warning', info: 'info', success: 'check_circle' };
+    toast.innerHTML = `<span class="material-symbols-outlined text-[18px]">${icons[type] || 'check_circle'}</span><span>${escapeHtml(message)}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.25s'; setTimeout(() => toast.remove(), 250); }, 3500);
+  };
+
+  const apiFetch = async (url, options = {}) => {
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await fetch(url, { ...options, headers });
+    if (response.status === 401 || response.status === 403) {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      window.location.href = '/student/login.html';
+      return null;
+    }
+    const text = await response.text();
+    let data = null;
+    try { data = text ? JSON.parse(text) : null; } catch {}
+    if (!response.ok) throw new Error(data?.message || `Error del servidor (${response.status})`);
+    return data;
+  };
+
+  const getInitials = (name) => {
+    if (!name) return 'E';
+    const parts = name.trim().split(/\s+/);
+    return parts.length >= 2
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : parts[0].substring(0, 2).toUpperCase();
+  };
+
+  // ========== STATE ==========
+  let studentProfile = null;
+  let studentCourses = [];
+  let studentCertificates = [];
+  let studentStats = null;
+
+  // ========== AUTH CHECK ==========
+  if (!localStorage.getItem(TOKEN_KEY)) {
+    window.location.href = '/student/login.html';
+    return;
+  }
+
+  // ========== TAB SWITCHING ==========
+  const switchTab = (tabName) => {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.mobile-nav-link').forEach(l => l.classList.remove('active'));
+
+    const tab = el(`tab-${tabName}`);
+    if (tab) tab.classList.add('active');
+
+    document.querySelectorAll(`.sidebar-link[data-tab="${tabName}"]`).forEach(l => l.classList.add('active'));
+    document.querySelectorAll(`.mobile-nav-link[data-tab="${tabName}"]`).forEach(l => l.classList.add('active'));
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Bind tab links
+  document.querySelectorAll('[data-tab]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchTab(link.dataset.tab);
+    });
+  });
+
+  // Mobile menu toggle
+  const mobileMenuBtn = el('mobile-menu-btn');
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+      const sidebar = el('sidebar');
+      if (sidebar) {
+        sidebar.classList.toggle('hidden');
+        sidebar.classList.toggle('fixed');
+        sidebar.classList.toggle('inset-0');
+        sidebar.classList.toggle('z-50');
+        sidebar.classList.toggle('w-full');
+      }
+    });
+  }
+
+  // Make switchTab global for inline onclick
+  window.switchTab = switchTab;
+
+  // ========== RENDER FUNCTIONS ==========
+  const renderProfile = () => {
+    if (!studentProfile) return;
+    
+    // Update header
+    const nameDisplay = el('user-name-display');
+    const roleDisplay = el('user-role-display');
+    const avatar = el('user-avatar');
+    const welcomeTitle = el('welcome-title');
+    const welcomeSubtitle = el('welcome-subtitle');
+
+    if (nameDisplay) nameDisplay.textContent = studentProfile.nombres || 'Estudiante';
+    if (roleDisplay) roleDisplay.textContent = studentProfile.cargo || 'Estudiante';
+    if (avatar) avatar.textContent = getInitials(studentProfile.nombres);
+    if (welcomeTitle) welcomeTitle.textContent = `Hola, ${studentProfile.nombres || 'Estudiante'}`;
+    if (welcomeSubtitle) {
+      const cursosCount = studentStats ? studentStats.totalCursos : 0;
+      const certCount = studentStats ? studentStats.totalCertificados : 0;
+      welcomeSubtitle.textContent = `Bienvenido de nuevo a tu panel de control. Tienes ${cursosCount} curso(s) inscrito(s) y ${certCount} certificado(s) obtenido(s).`;
+    }
+
+    // Profile card
+    const profileCard = el('profile-card');
+    if (profileCard) {
+      profileCard.innerHTML = `
+        <div class="flex items-center gap-4 mb-6 pb-6 border-b border-outline-variant">
+          <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl">
+            ${getInitials(studentProfile.nombres)}
+          </div>
+          <div>
+            <h3 class="font-title text-xl font-bold text-on-surface">${escapeHtml(studentProfile.nombres)}</h3>
+            <p class="text-sm text-on-surface-variant">${escapeHtml(studentProfile.email || 'Sin correo')}</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">DNI</label>
+            <p class="text-sm font-medium text-on-surface bg-surface-container-low rounded-lg px-3 py-2">${escapeHtml(studentProfile.dni)}</p>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Cargo / Puesto</label>
+            <p class="text-sm font-medium text-on-surface bg-surface-container-low rounded-lg px-3 py-2">${escapeHtml(studentProfile.cargo || 'No registrado')}</p>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Teléfono</label>
+            <p class="text-sm font-medium text-on-surface bg-surface-container-low rounded-lg px-3 py-2">${escapeHtml(studentProfile.telefono || 'No registrado')}</p>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Procedencia</label>
+            <p class="text-sm font-medium text-on-surface bg-surface-container-low rounded-lg px-3 py-2">${escapeHtml(studentProfile.procedencia || 'No registrado')}</p>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Inducción</label>
+            <p class="text-sm font-medium text-on-surface bg-surface-container-low rounded-lg px-3 py-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${studentProfile.induccion === 'APTO' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                ${escapeHtml(studentProfile.induccion || 'N/A')}
+              </span>
+            </p>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Examen Médico</label>
+            <p class="text-sm font-medium text-on-surface bg-surface-container-low rounded-lg px-3 py-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${studentProfile.examen_medico === 'APTO' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                ${escapeHtml(studentProfile.examen_medico || 'N/A')}
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="mt-4 space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Fecha de Registro</label>
+          <p class="text-sm font-medium text-on-surface bg-surface-container-low rounded-lg px-3 py-2">${formatDate(studentProfile.created_at)}</p>
+        </div>
+      `;
+    }
+  };
+
+  const renderStats = () => {
+    if (!studentStats) return;
+    el('stat-cursos').textContent = String(studentStats.totalCursos).padStart(2, '0');
+    el('stat-certificados').textContent = String(studentStats.totalCertificados).padStart(2, '0');
+    el('stat-progreso').textContent = `${studentStats.porcentajeCompletado}%`;
+  };
+
+  const renderHomeCourses = () => {
+    const container = el('home-courses-list');
+    if (!container) return;
+
+    if (studentCourses.length === 0) {
+      container.innerHTML = `
+        <div class="bg-white border border-outline-variant rounded-xl p-6 text-center text-on-surface-variant text-sm">
+          <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">school</span>
+          No estás inscrito en ningún curso actualmente.
+        </div>`;
+      return;
+    }
+
+    // Show max 3 courses on home
+    const displayCourses = studentCourses.slice(0, 3);
+    container.innerHTML = displayCourses.map(course => {
+      const tieneCert = course.tiene_certificado === 1;
+      const progressPercent = tieneCert ? 100 : 50;
+      return `
+        <div class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col sm:flex-row gap-4 items-center group hover:shadow-sm transition-all">
+          <div class="w-full sm:w-28 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-3xl text-primary">auto_stories</span>
+          </div>
+          <div class="flex-grow space-y-2 w-full">
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="font-title text-sm font-bold text-on-surface">${escapeHtml(course.curso_nombre)}</h4>
+                <p class="text-xs text-on-surface-variant">${escapeHtml(course.entrenador || '')} &middot; ${escapeHtml(course.duracion || '')}</p>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-xs font-semibold ${tieneCert ? 'bg-green-100 text-green-700' : 'bg-surface-container text-primary'}">
+                ${tieneCert ? 'Completado' : 'En curso'}
+              </span>
+            </div>
+            <div class="w-full bg-surface-container-low rounded-full h-1.5">
+              <div class="h-1.5 rounded-full transition-all duration-500 ${tieneCert ? 'bg-green-500' : 'bg-secondary'}" style="width: ${progressPercent}%"></div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  };
+
+  const renderHomeInstructors = () => {
+    const container = el('home-instructors-list');
+    if (!container) return;
+
+    const instructors = new Map();
+    studentCourses.forEach(c => {
+      if (c.entrenador && !instructors.has(c.entrenador)) {
+        instructors.set(c.entrenador, c.categoria || 'Instructor');
+      }
+    });
+
+    if (instructors.size === 0) {
+      container.innerHTML = `<div class="text-center text-on-surface-variant text-sm py-4">No hay instructores asignados.</div>`;
+      return;
+    }
+
+    const colors = ['bg-primary', 'bg-secondary', 'bg-tertiary'];
+    let idx = 0;
+    container.innerHTML = Array.from(instructors.entries()).map(([name, role]) => {
+      const colorClass = colors[idx++ % colors.length];
+      return `
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full ${colorClass} flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+            ${getInitials(name)}
+          </div>
+          <div class="flex-grow min-w-0">
+            <h4 class="text-sm font-bold text-on-surface truncate">${escapeHtml(name)}</h4>
+            <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">${escapeHtml(role)}</p>
+          </div>
+        </div>`;
+    }).join('');
+  };
+
+  const renderHomeCertificates = () => {
+    const container = el('home-certificates-table');
+    if (!container) return;
+
+    if (studentCertificates.length === 0) {
+      container.innerHTML = `
+        <div class="p-6 text-center text-on-surface-variant text-sm">
+          <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">workspace_premium</span>
+          Aún no tienes certificados emitidos.
+        </div>`;
+      return;
+    }
+
+    const displayCerts = studentCertificates.slice(0, 5);
+    container.innerHTML = `
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-surface-container-low border-b border-outline-variant">
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Curso</th>
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden sm:table-cell">Fecha Emisión</th>
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden md:table-cell">Código</th>
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant text-right">Acción</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline-variant">
+          ${displayCerts.map((cert, i) => `
+            <tr class="${i % 2 === 1 ? 'bg-surface-container-low' : ''} hover:bg-surface-container transition-colors">
+              <td class="px-4 py-3 flex items-center gap-2">
+                <span class="material-symbols-outlined" style="color: #d5b874; font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                <span class="text-sm font-medium">${escapeHtml(cert.curso_nombre)}</span>
+              </td>
+              <td class="px-4 py-3 text-sm text-on-surface-variant hidden sm:table-cell">${formatDate(cert.fecha_emision)}</td>
+              <td class="px-4 py-3 text-sm text-on-surface-variant font-mono hidden md:table-cell">${escapeHtml(cert.codigo)}</td>
+              <td class="px-4 py-3 text-right">
+                ${cert.pdf_path ? `<a href="${escapeHtml(cert.pdf_path)}" target="_blank" class="inline-flex items-center gap-1 text-secondary text-xs font-semibold hover:opacity-70">
+                  <span class="material-symbols-outlined text-[16px]">download</span> Descargar
+                </a>` : '<span class="text-xs text-on-surface-variant">Sin PDF</span>'}
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+  };
+
+  const renderFullCourses = () => {
+    const container = el('courses-full-list');
+    if (!container) return;
+
+    if (studentCourses.length === 0) {
+      container.innerHTML = `
+        <div class="bg-white border border-outline-variant rounded-xl p-8 text-center text-on-surface-variant text-sm col-span-full">
+          <span class="material-symbols-outlined text-4xl text-outline-variant mb-3 block">school</span>
+          <p class="font-medium">No estás inscrito en ningún curso.</p>
+          <p class="text-xs mt-1">Contacta al administrador para inscribirte.</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = studentCourses.map(course => {
+      const tieneCert = course.tiene_certificado === 1;
+      return `
+        <div class="bg-white border border-outline-variant rounded-xl p-5 hover:shadow-sm transition-all">
+          <div class="flex items-start justify-between mb-3">
+            <div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary">auto_stories</span>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${tieneCert ? 'bg-green-100 text-green-700' : 'bg-surface-container text-primary'}">
+              ${tieneCert ? 'Completado' : 'En curso'}
+            </span>
+          </div>
+          <h4 class="font-title text-base font-bold text-on-surface mb-1">${escapeHtml(course.curso_nombre)}</h4>
+          <p class="text-xs text-on-surface-variant mb-3">${escapeHtml(course.codigo_curso)}</p>
+          <div class="space-y-2 text-xs text-on-surface-variant">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">person</span>
+              <span>${escapeHtml(course.entrenador || 'Sin asignar')}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">schedule</span>
+              <span>${escapeHtml(course.duracion || 'N/A')}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">category</span>
+              <span>${escapeHtml(course.categoria || 'Sin categoría')}</span>
+            </div>
+            ${course.fecha_inicio ? `<div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+              <span>Inicio: ${formatDate(course.fecha_inicio)}</span>
+            </div>` : ''}
+          </div>
+          ${tieneCert ? `
+            <div class="mt-4 pt-3 border-t border-outline-variant">
+              <div class="flex items-center gap-2 text-xs">
+                <span class="material-symbols-outlined text-[16px]" style="color: #d5b874; font-variation-settings: 'FILL' 1;">verified</span>
+                <span class="font-semibold text-on-surface">Certificado: ${escapeHtml(course.certificado_codigo)}</span>
+              </div>
+              <p class="text-[10px] text-on-surface-variant mt-1">Emitido: ${formatDate(course.certificado_fecha)}</p>
+            </div>
+          ` : ''}
+        </div>`;
+    }).join('');
+  };
+
+  const renderFullCertificates = () => {
+    const container = el('certificates-full-list');
+    if (!container) return;
+
+    if (studentCertificates.length === 0) {
+      container.innerHTML = `
+        <div class="p-8 text-center text-on-surface-variant text-sm">
+          <span class="material-symbols-outlined text-4xl text-outline-variant mb-3 block">workspace_premium</span>
+          <p class="font-medium">No tienes certificados emitidos aún.</p>
+          <p class="text-xs mt-1">Completa tus cursos para obtener certificados.</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-surface-container-low border-b border-outline-variant">
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Curso / Especialidad</th>
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden sm:table-cell">Fecha Emisión</th>
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden md:table-cell">Vencimiento</th>
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden md:table-cell">Código</th>
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant text-right">Acción</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-outline-variant">
+          ${studentCertificates.map((cert, i) => `
+            <tr class="${i % 2 === 1 ? 'bg-surface-container-low' : ''} hover:bg-surface-container transition-colors">
+              <td class="px-4 py-3 flex items-center gap-2">
+                <span class="material-symbols-outlined" style="color: #d5b874; font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                <span class="text-sm font-medium">${escapeHtml(cert.curso_nombre)}</span>
+              </td>
+              <td class="px-4 py-3 text-sm text-on-surface-variant hidden sm:table-cell">${formatDate(cert.fecha_emision)}</td>
+              <td class="px-4 py-3 text-sm text-on-surface-variant hidden md:table-cell">${formatDate(cert.fecha_vencimiento)}</td>
+              <td class="px-4 py-3 text-sm text-on-surface-variant font-mono hidden md:table-cell">${escapeHtml(cert.codigo)}</td>
+              <td class="px-4 py-3 text-right">
+                ${cert.pdf_path ? `<a href="${escapeHtml(cert.pdf_path)}" target="_blank" class="inline-flex items-center gap-1 text-secondary text-xs font-semibold hover:opacity-70">
+                  <span class="material-symbols-outlined text-[16px]">download</span> Descargar
+                </a>` : '<span class="text-xs text-on-surface-variant">Sin PDF</span>'}
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+  };
+
+  // ========== DATA LOADING ==========
+  const loadAllData = async () => {
+    try {
+      const [profile, stats, courses, certificates] = await Promise.all([
+        apiFetch('/api/student/profile').catch(() => null),
+        apiFetch('/api/student/stats').catch(() => null),
+        apiFetch('/api/student/courses').catch(() => []),
+        apiFetch('/api/student/certificates').catch(() => [])
+      ]);
+
+      studentProfile = profile;
+      studentStats = stats;
+      studentCourses = Array.isArray(courses) ? courses : [];
+      studentCertificates = Array.isArray(certificates) ? certificates : [];
+
+      renderStats();
+      renderProfile();
+      renderHomeCourses();
+      renderHomeInstructors();
+      renderHomeCertificates();
+      renderFullCourses();
+      renderFullCertificates();
+    } catch (error) {
+      console.error('Error loading student data:', error);
+      showToast('Error al cargar los datos del estudiante', 'error');
+    }
+  };
+
+  // ========== LOGOUT ==========
+  el('logout-btn')?.addEventListener('click', () => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    window.location.href = '/student/login.html';
+  });
+
+  // ========== INIT ==========
+  loadAllData();
+})();

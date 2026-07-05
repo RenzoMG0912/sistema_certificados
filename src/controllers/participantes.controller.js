@@ -1,4 +1,5 @@
 // Archivo: src/controllers/participantes.controller.js
+const bcrypt = require('bcryptjs');
 const db = require('../config/db');
 const mockDb = require('../config/mockDb');
 
@@ -39,11 +40,12 @@ module.exports = {
         return res.status(400).json({ success: false, message: 'Ya existe un alumno registrado con este DNI' });
       }
 
+      const hashedPassword = await bcrypt.hash(dni, 10);
       const query = `
-        INSERT INTO participantes (nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO participantes (nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico, password)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
-      const [result] = await db.query(query, [nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico]);
+      const [result] = await db.query(query, [nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico, hashedPassword]);
       const [newRow] = await db.query('SELECT * FROM participantes WHERE id = ?', [result.insertId]);
       return res.status(201).json({ success: true, participante: newRow[0] });
     } catch (error) {
@@ -62,6 +64,7 @@ module.exports = {
         procedencia,
         induccion,
         examen_medico,
+        password: dni,
         created_at: new Date().toISOString()
       };
       mockDb.participantes.push(newP);
@@ -78,12 +81,26 @@ module.exports = {
         return res.status(400).json({ success: false, message: 'Ya existe otro alumno registrado con este DNI' });
       }
 
-      const query = `
-        UPDATE participantes
-        SET nombres = ?, dni = ?, email = ?, cargo = ?, telefono = ?, procedencia = ?, induccion = ?, examen_medico = ?
-        WHERE id = ?
-      `;
-      await db.query(query, [nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico, id]);
+      // Si el DNI cambió, re-hash el password
+      const [current] = await db.query('SELECT dni FROM participantes WHERE id = ?', [id]);
+      let query, params;
+      if (current.length > 0 && current[0].dni !== dni) {
+        const hashedPassword = await bcrypt.hash(dni, 10);
+        query = `
+          UPDATE participantes
+          SET nombres = ?, dni = ?, email = ?, cargo = ?, telefono = ?, procedencia = ?, induccion = ?, examen_medico = ?, password = ?
+          WHERE id = ?
+        `;
+        params = [nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico, hashedPassword, id];
+      } else {
+        query = `
+          UPDATE participantes
+          SET nombres = ?, dni = ?, email = ?, cargo = ?, telefono = ?, procedencia = ?, induccion = ?, examen_medico = ?
+          WHERE id = ?
+        `;
+        params = [nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico, id];
+      }
+      await db.query(query, params);
       const [updatedRow] = await db.query('SELECT * FROM participantes WHERE id = ?', [id]);
       return res.status(200).json({ success: true, participante: updatedRow[0] });
     } catch (error) {
@@ -96,6 +113,7 @@ module.exports = {
       if (exists) {
         return res.status(400).json({ success: false, message: 'Ya existe otro alumno registrado con este DNI' });
       }
+      const passwordChanged = mockDb.participantes[index].dni !== dni;
       mockDb.participantes[index] = {
         ...mockDb.participantes[index],
         nombres,
@@ -105,7 +123,8 @@ module.exports = {
         telefono,
         procedencia,
         induccion,
-        examen_medico
+        examen_medico,
+        ...(passwordChanged ? { password: dni } : {})
       };
       return res.status(200).json({ success: true, participante: mockDb.participantes[index] });
     }

@@ -354,6 +354,8 @@
     // Check if already logged in
     if (localStorage.getItem('admin_token')) {
       window.location.href = '/admin/dashboard.html';
+    } else if (localStorage.getItem('student_token')) {
+      window.location.href = '/student/dashboard.html';
     }
 
     form.addEventListener('submit', async (e) => {

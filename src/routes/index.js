@@ -15,9 +15,11 @@ const firmasRoutes = require('./firmas.routes');
 const smtpTestRoutes = require('./smtp-test.routes');
 const studentAuthRoutes = require('./studentAuth.routes');
 const studentRoutes = require('./student.routes');
+const unifiedAuthRoutes = require('./unifiedAuth.routes');
 
 // Vincular rutas a la API
 router.use('/auth', authRoutes);
+router.use('/unified-auth', unifiedAuthRoutes);
 router.use('/cursos', cursosRoutes);
 router.use('/participantes', participantesRoutes);
 router.use('/matriculas', matriculasRoutes);

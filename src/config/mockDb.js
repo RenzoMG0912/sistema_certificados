@@ -50,9 +50,14 @@ const certificados = [
   }
 ];
 
+const usuarios = [
+  { id: 1, nombre: 'Administrador', email: 'admin@teamhsec.com', password: 'Admin123!', rol: 'admin' }
+];
+
 const verificaciones = [];
 
 module.exports = {
+  usuarios,
   cursos,
   participantes,
   firmas,

@@ -396,18 +396,18 @@ function drawBackPage(doc, certificadoData, pageSize) {
     .text('EMPRESA \u2013 TEAM HSEC E.I.R.L.', 0, 265, { width, align: 'center' });
 
   // TEMARIO heading
-  const temarioStartY = 320;
+  const temarioStartY = 330;
   doc.font('Times-Bold')
     .fontSize(22)
-    .fillColor(COLORS.muted)
+    .fillColor('#222222')
     .text('TEMARIO', 0, temarioStartY, { width, align: 'center' });
 
-  // Temario items - centered, bold, blue
+  // Temario items - left-aligned at x=250
   const temario = certificadoData.curso_temario || '';
   const lines = temario.split('\n').filter(line => line.trim());
 
-  let y = temarioStartY + 45;
-  const lineHeight = 30;
+  let y = 385;
+  const lineHeight = 32;
   let itemCount = 0;
 
   for (const line of lines) {
@@ -418,9 +418,9 @@ function drawBackPage(doc, certificadoData, pageSize) {
     const text = `${itemCount}.    ${cleanLine}`;
 
     doc.font('Helvetica-Bold')
-      .fontSize(17)
+      .fontSize(18)
       .fillColor('#1a5276')
-      .text(text, 0, y, { width, align: 'center', lineBreak: false });
+      .text(text, 250, y, { width: width - 350, lineBreak: false });
 
     y += lineHeight;
   }

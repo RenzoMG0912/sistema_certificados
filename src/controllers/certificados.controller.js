@@ -90,7 +90,7 @@ module.exports = {
       const matQuery = `
         SELECT m.id, p.nombres AS alumno_nombres, p.dni AS alumno_dni, p.email AS alumno_email,
                c.nombre AS curso_nombre, c.duracion AS curso_duracion, 
-               c.entrenador AS curso_entrenador, c.codigo_curso
+               c.entrenador AS curso_entrenador, c.codigo_curso, c.temario AS curso_temario
         FROM matriculas m
         JOIN participantes p ON m.participante_id = p.id
         JOIN cursos c ON m.curso_id = c.id
@@ -159,6 +159,7 @@ module.exports = {
         alumno_dni: matData.alumno_dni,
         curso_nombre: matData.curso_nombre,
         curso_duracion: matData.curso_duracion,
+        curso_temario: matData.curso_temario,
         fecha_realizacion: fecha_realizacion || formattedIssueDate,
         fecha_emision: formattedIssueDate,
         fecha_vencimiento: vigencia_anos === 0 ? null : formattedExpiryDate,
@@ -295,6 +296,7 @@ module.exports = {
           alumno_dni: alumno.dni,
           curso_nombre: curso.nombre,
           curso_duracion: curso.duracion,
+          curso_temario: curso.temario || null,
           fecha_realizacion: fecha_realizacion || formattedIssue,
           fecha_emision: formattedIssue,
           fecha_vencimiento: vigencia_anos === 0 ? null : formattedExpiry,
@@ -374,7 +376,8 @@ module.exports = {
         SELECT m.id AS matricula_id, m.fecha_inicio,
                p.nombres AS alumno_nombres, p.dni AS alumno_dni, p.email AS alumno_email,
                c.nombre AS curso_nombre, c.duracion AS curso_duracion,
-               c.entrenador AS curso_entrenador, c.codigo_curso, c.firma_id AS curso_firma_id
+               c.entrenador AS curso_entrenador, c.codigo_curso, c.firma_id AS curso_firma_id,
+               c.temario AS curso_temario
         FROM matriculas m
         JOIN participantes p ON m.participante_id = p.id
         JOIN cursos c ON m.curso_id = c.id
@@ -438,6 +441,7 @@ module.exports = {
           alumno_dni: row.alumno_dni,
           curso_nombre: row.curso_nombre,
           curso_duracion: row.curso_duracion,
+          curso_temario: row.curso_temario || null,
           fecha_realizacion,
           fecha_emision,
           fecha_vencimiento: formattedExpiry,
@@ -543,6 +547,7 @@ module.exports = {
           alumno_dni: alumno.dni,
           curso_nombre: curso.nombre,
           curso_duracion: curso.duracion,
+          curso_temario: curso.temario || null,
           fecha_realizacion, fecha_emision,
           fecha_vencimiento: formattedExpiry,
           firma_1: { nombre: gerente.nombre, cargo: gerente.cargo, firma_url: gerente.firma_url, cip: gerente.cip },

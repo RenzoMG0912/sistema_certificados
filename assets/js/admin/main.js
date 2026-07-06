@@ -79,7 +79,8 @@ const initForms = () => {
       duracion: el('course-duration').value.trim(),
       categoria: el('course-category').value.trim(),
       entrenador: trainerName,
-      firma_id: firmaId
+      firma_id: firmaId,
+      temario: el('course-syllabus').value.trim() || null
     };
 
     await apiFetch(id ? `/api/cursos/${id}` : '/api/cursos', {

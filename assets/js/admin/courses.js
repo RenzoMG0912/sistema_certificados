@@ -121,6 +121,7 @@ export const renderCourses = () => {
       el('course-duration').value = course.duracion || '';
       el('course-category').value = course.categoria || '';
       el('course-trainer').value = course.firma_id || '';
+      el('course-syllabus').value = course.temario || '';
       openModal('modal-course');
     });
   });

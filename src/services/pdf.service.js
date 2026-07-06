@@ -6,6 +6,8 @@ const { generarQR } = require('./qr.service');
 
 const ROOT_DIR = path.join(__dirname, '..', '..');
 const TEMPLATE_PATH = path.join(ROOT_DIR, 'assets', 'img', 'Formato_fondo.png');
+const LOGO_TEAMHSEC = path.join(ROOT_DIR, 'public', 'img', 'logo_RV.png');
+const LOGO_CIP = path.join(ROOT_DIR, 'public', 'img', 'cip.webp');
 const PDF_ASSET_CACHE_DIR = path.join(ROOT_DIR, '.cache', 'pdf-assets');
 let sharp = null;
 try {
@@ -294,6 +296,150 @@ async function drawQrSection(doc, certificadoData) {
     .text(certificadoData.codigo, 1175, 926, { width: 300, align: 'center' });
 }
 
+function drawGoldBorder(doc, width, height) {
+  const borderColor = COLORS.gold;
+  const borderWidth = 3;
+  const cornerSize = 40;
+  const margin = 25;
+
+  doc.save();
+  doc.lineWidth(borderWidth);
+  doc.strokeColor(borderColor);
+
+  // Main rectangle border
+  doc.rect(margin, margin, width - margin * 2, height - margin * 2).stroke();
+
+  // Inner thin line
+  doc.lineWidth(1);
+  doc.rect(margin + 8, margin + 8, width - (margin + 8) * 2, height - (margin + 8) * 2).stroke();
+
+  // Corner decorations (L-shapes)
+  doc.lineWidth(2.5);
+  const corners = [
+    { x: margin, y: margin, dx: cornerSize, dy: 0, dx2: 0, dy2: cornerSize },
+    { x: width - margin, y: margin, dx: -cornerSize, dy: 0, dx2: 0, dy2: cornerSize },
+    { x: margin, y: height - margin, dx: cornerSize, dy: 0, dx2: 0, dy2: -cornerSize },
+    { x: width - margin, y: height - margin, dx: -cornerSize, dy: 0, dx2: 0, dy2: -cornerSize },
+  ];
+
+  for (const c of corners) {
+    doc.moveTo(c.x, c.y).lineTo(c.x + c.dx, c.y + c.dy).stroke();
+    doc.moveTo(c.x, c.y).lineTo(c.x + c.dx2, c.y + c.dy2).stroke();
+  }
+
+  doc.restore();
+}
+
+function drawGoldDivider(doc, y, width) {
+  const centerX = width / 2;
+  const lineHalf = 180;
+  const diamondSize = 8;
+
+  doc.save();
+  doc.strokeColor(COLORS.gold);
+  doc.lineWidth(1.5);
+
+  // Left line
+  doc.moveTo(centerX - lineHalf - diamondSize * 2, y).lineTo(centerX - diamondSize, y).stroke();
+
+  // Right line
+  doc.moveTo(centerX + diamondSize, y).lineTo(centerX + lineHalf + diamondSize * 2, y).stroke();
+
+  // Center diamond
+  doc.save();
+  doc.translate(centerX, y);
+  doc.rotate(45);
+  doc.rect(-diamondSize / 2, -diamondSize / 2, diamondSize, diamondSize).fill(COLORS.gold);
+  doc.restore();
+
+  doc.restore();
+}
+
+function drawBackPage(doc, certificadoData, pageSize) {
+  const width = pageSize[0];
+  const height = pageSize[1];
+
+  // White background
+  doc.save();
+  doc.rect(0, 0, width, height).fill('#ffffff');
+  doc.restore();
+
+  // Gold decorative border
+  drawGoldBorder(doc, width, height);
+
+  // Logos at top
+  const logoSize = 70;
+  const logoY = 50;
+  tryImage(doc, LOGO_CIP, 60, logoY, { width: logoSize, height: logoSize });
+  tryImage(doc, LOGO_TEAMHSEC, width - 60 - logoSize, logoY, { width: logoSize, height: logoSize });
+
+  // Title
+  doc.font('Times-Bold')
+    .fontSize(36)
+    .fillColor(COLORS.muted)
+    .text('CONTENIDO DEL CURSO', 0, 145, { width, align: 'center' });
+
+  // Gold divider below title
+  drawGoldDivider(doc, 195, width);
+
+  // Course name
+  const courseName = String(certificadoData.curso_nombre || 'Curso').toUpperCase();
+  doc.font('Times-Bold')
+    .fontSize(26)
+    .fillColor(COLORS.red)
+    .text(`CURSO: ${courseName}`, 0, 220, { width, align: 'center' });
+
+  // Company info
+  doc.font('Helvetica')
+    .fontSize(18)
+    .fillColor(COLORS.muted)
+    .text('EMPRESA \u2013 TEAM HSEC E.I.R.L.', 0, 265, { width, align: 'center' });
+
+  // TEMARIO heading
+  const temarioStartY = 320;
+  doc.font('Times-Bold')
+    .fontSize(22)
+    .fillColor(COLORS.muted)
+    .text('TEMARIO', 100, temarioStartY);
+
+  // Temario items
+  const temario = certificadoData.curso_temario || '';
+  const lines = temario.split('\n').filter(line => line.trim());
+
+  let y = temarioStartY + 40;
+  const lineHeight = 28;
+  const maxWidth = width - 200;
+  let itemCount = 0;
+
+  for (const line of lines) {
+    if (y > height - 100) break; // Don't overflow past bottom
+
+    itemCount++;
+    const cleanLine = line.replace(/^\d+[\.\)\s]+/, '').trim();
+    const text = `${itemCount}.    ${cleanLine}`;
+
+    doc.font('Helvetica')
+      .fontSize(16)
+      .fillColor(COLORS.muted)
+      .text(text, 100, y, { width: maxWidth, lineBreak: false });
+
+    y += lineHeight;
+  }
+
+  // Gold divider near bottom
+  drawGoldDivider(doc, height - 75, width);
+
+  // Vigencia text
+  const vigenciaYears = certificadoData.fecha_vencimiento
+    ? Math.max(1, Math.round((new Date(certificadoData.fecha_vencimiento) - new Date(certificadoData.fecha_emision)) / (365.25 * 24 * 60 * 60 * 1000)))
+    : 1;
+
+  doc.font('Helvetica')
+    .fontSize(14)
+    .fillColor(COLORS.muted)
+    .text(`VIGENCIA: ${String(vigenciaYears).padStart(2, '0')} A\u00d1O${vigenciaYears > 1 ? 'S' : ''} DESDE LA FECHA DE EMISI\u00d3N.`, 0, height - 55, { width, align: 'center' });
+}
+
 /**
  * Genera un archivo PDF de certificado usando assets/img/Formato_fondo.png como plantilla.
  * @param {object} certificadoData - Datos del certificado, estudiante, curso y firmas.
@@ -332,11 +478,22 @@ async function generarCertificadoPDF(certificadoData, savePath) {
       doc.on('error', (err) => reject(err));
       doc.pipe(writeStream);
 
+      // === PÁGINA 1: FRENTE DEL CERTIFICADO ===
       doc.image(TEMPLATE_PATH, 0, 0, { width: templateSize.width, height: templateSize.height });
 
       drawVariableText(doc, certificadoData);
       await drawSignatures(doc, certificadoData);
       await drawQrSection(doc, certificadoData);
+
+      // === PÁGINA 2: REVERSO CON TEMARIO ===
+      if (certificadoData.curso_temario && certificadoData.curso_temario.trim()) {
+        doc.addPage({
+          size: pageSize,
+          margin: 0,
+        });
+
+        drawBackPage(doc, certificadoData, pageSize);
+      }
 
       doc.end();
     } catch (err) {

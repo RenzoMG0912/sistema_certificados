@@ -22,23 +22,22 @@
       theme: {
         extend: {
           colors: {
-            "primary": "#002045",
-            "primary-dark": "#001630",
-            "secondary": "#be0000",
-            "secondary-light": "#ffdad7",
+            "primary": "#e60000",
+            "primary-dark": "#b3000a",
+            "secondary": "#d5b874",
+            "secondary-light": "#ffddba",
             "on-primary": "#ffffff",
-            "surface": "#f9f9ff",
-            "surface-container-low": "#f0f3ff",
-            "surface-container": "#e7eeff",
-            "surface-container-high": "#dee8ff",
-            "surface-container-highest": "#d8e3fa",
-            "outline-variant": "#c4c6cf",
-            "outline": "#74777f",
-            "on-surface": "#111c2c",
-            "on-surface-variant": "#43474e",
-            "tertiary": "#d5b874",
-            "tertiary-container": "#ffddba",
-            "error": "#ba1a1a",
+            "background": "#fcfcfc",
+            "surface": "#ffffff",
+            "surface-container-low": "#fafafa",
+            "surface-container": "#f8f9fa",
+            "surface-container-high": "#f0f1f3",
+            "outline-variant": "#f0f1f3",
+            "outline": "#d1d5db",
+            "on-surface": "#111827",
+            "on-surface-variant": "#6b7280",
+            "primary-container": "#fef2f2",
+            "on-primary-container": "#991b1b",
           },
           borderRadius: {
             "DEFAULT": "0.5rem",
@@ -58,8 +57,8 @@
 
   <style>
     body {
-      background-color: #f9f9ff;
-      color: #111c2c;
+      background-color: #fcfcfc;
+      color: #111827;
       -webkit-font-smoothing: antialiased;
     }
     
@@ -70,12 +69,12 @@
 
     /* Sidebar active state */
     .sidebar-nav a.active {
-      background-color: #e7eeff;
-      color: #002045;
+      background-color: #fef2f2;
+      color: #e60000;
       font-weight: 600;
     }
     .sidebar-nav a.active .material-symbols-outlined {
-      color: #002045;
+      color: #e60000;
       font-variation-settings: 'FILL' 1;
     }
 
@@ -121,7 +120,7 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
     /* Mobile nav */
-    .mobile-nav a.active { color: #002045; }
+    .mobile-nav a.active { color: #e60000; }
     .mobile-nav a.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
   </style>
 </head>
@@ -235,26 +234,26 @@
                 <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Cursos Inscritos</p>
                 <p id="stat-cursos" class="text-2xl font-bold text-primary">0</p>
               </div>
-              <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+              <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                 <span class="material-symbols-outlined">auto_stories</span>
-              </div>
-            </div>
-            <div class="bg-white border border-outline-variant p-5 rounded-xl flex items-center justify-between hover:border-tertiary transition-all group">
-              <div>
-                <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Certificados Obtenidos</p>
-                <p id="stat-certificados" class="text-2xl font-bold" style="color: #d5b874;">0</p>
-              </div>
-              <div class="w-12 h-12 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform" style="background-color: #ffddba;">
-                <span class="material-symbols-outlined" style="color: #d5b874; font-variation-settings: 'FILL' 1;">emoji_events</span>
               </div>
             </div>
             <div class="bg-white border border-outline-variant p-5 rounded-xl flex items-center justify-between hover:border-secondary transition-all group">
               <div>
-                <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Progreso General</p>
-                <p id="stat-progreso" class="text-2xl font-bold text-secondary">0%</p>
+                <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Certificados Obtenidos</p>
+                <p id="stat-certificados" class="text-2xl font-bold text-secondary">0</p>
               </div>
-              <div class="w-12 h-12 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform" style="background-color: #ffdad7;">
-                <span class="material-symbols-outlined" style="color: #be0000;">trending_up</span>
+              <div class="w-12 h-12 rounded-full bg-secondary-light flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+              </div>
+            </div>
+            <div class="bg-white border border-outline-variant p-5 rounded-xl flex items-center justify-between hover:border-primary-dark transition-all group">
+              <div>
+                <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Progreso General</p>
+                <p id="stat-progreso" class="text-2xl font-bold text-primary-dark">0%</p>
+              </div>
+              <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined">trending_up</span>
               </div>
             </div>
           </section>
@@ -296,7 +295,7 @@
           <section class="mt-6">
             <div class="flex items-center justify-between mb-4">
               <h3 class="font-title text-lg font-bold text-primary flex items-center gap-2">
-                <span class="material-symbols-outlined" style="color: #d5b874; font-variation-settings: 'FILL' 1;">verified</span>
+                <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
                 Certificados Recientes
               </h3>
             </div>
@@ -330,7 +329,7 @@
         <div id="tab-certificados" class="tab-content">
           <section>
             <h2 class="font-title text-2xl font-bold text-primary flex items-center gap-2">
-              <span class="material-symbols-outlined" style="color: #d5b874; font-variation-settings: 'FILL' 1;">workspace_premium</span>
+              <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
               Mis Certificados
             </h2>
             <p class="text-on-surface-variant text-sm mt-1">Todos los certificados que has obtenido.</p>

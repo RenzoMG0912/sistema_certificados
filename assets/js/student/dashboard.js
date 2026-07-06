@@ -303,7 +303,7 @@
           ${displayCerts.map((cert, i) => `
             <tr class="${i % 2 === 1 ? 'bg-surface-container-low' : ''} hover:bg-surface-container transition-colors">
               <td class="px-4 py-3 flex items-center gap-2">
-                <span class="material-symbols-outlined" style="color: #d5b874; font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                <span class="material-symbols-outlined" class="text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
                 <span class="text-sm font-medium">${escapeHtml(cert.curso_nombre)}</span>
               </td>
               <td class="px-4 py-3 text-sm text-on-surface-variant hidden sm:table-cell">${formatDate(cert.fecha_emision)}</td>
@@ -368,7 +368,7 @@
           ${tieneCert ? `
             <div class="mt-4 pt-3 border-t border-outline-variant">
               <div class="flex items-center gap-2 text-xs">
-                <span class="material-symbols-outlined text-[16px]" style="color: #d5b874; font-variation-settings: 'FILL' 1;">verified</span>
+                <span class="material-symbols-outlined text-[16px]" class="text-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
                 <span class="font-semibold text-on-surface">Certificado: ${escapeHtml(course.certificado_codigo)}</span>
               </div>
               <p class="text-[10px] text-on-surface-variant mt-1">Emitido: ${formatDate(course.certificado_fecha)}</p>
@@ -407,7 +407,7 @@
           ${studentCertificates.map((cert, i) => `
             <tr class="${i % 2 === 1 ? 'bg-surface-container-low' : ''} hover:bg-surface-container transition-colors">
               <td class="px-4 py-3 flex items-center gap-2">
-                <span class="material-symbols-outlined" style="color: #d5b874; font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                <span class="material-symbols-outlined" class="text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
                 <span class="text-sm font-medium">${escapeHtml(cert.curso_nombre)}</span>
               </td>
               <td class="px-4 py-3 text-sm text-on-surface-variant hidden sm:table-cell">${formatDate(cert.fecha_emision)}</td>

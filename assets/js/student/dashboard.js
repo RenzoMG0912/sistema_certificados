@@ -79,15 +79,45 @@
 
   // ========== TAB SWITCHING ==========
   const switchTab = (tabName) => {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-    document.querySelectorAll('.mobile-nav-link').forEach(l => l.classList.remove('active'));
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(t => {
+      t.classList.remove('active');
+      t.style.display = 'none';
+    });
+    
+    // Remove active from all sidebar links and reset styles
+    document.querySelectorAll('.sidebar-link').forEach(l => {
+      l.classList.remove('active');
+      l.classList.remove('bg-primary-container', 'text-primary', 'font-semibold');
+      l.classList.add('text-on-surface-variant');
+    });
+    
+    // Remove active from mobile nav links
+    document.querySelectorAll('.mobile-nav-link').forEach(l => {
+      l.classList.remove('active');
+      l.classList.add('text-on-surface-variant');
+    });
 
+    // Show selected tab
     const tab = el(`tab-${tabName}`);
-    if (tab) tab.classList.add('active');
+    if (tab) {
+      tab.classList.add('active');
+      tab.style.display = 'block';
+    }
 
-    document.querySelectorAll(`.sidebar-link[data-tab="${tabName}"]`).forEach(l => l.classList.add('active'));
-    document.querySelectorAll(`.mobile-nav-link[data-tab="${tabName}"]`).forEach(l => l.classList.add('active'));
+    // Activate selected sidebar link
+    document.querySelectorAll(`.sidebar-link[data-tab="${tabName}"]`).forEach(l => {
+      l.classList.add('active');
+      l.classList.remove('text-on-surface-variant');
+      l.classList.add('bg-primary-container', 'text-primary', 'font-semibold');
+    });
+    
+    // Activate selected mobile nav link
+    document.querySelectorAll(`.mobile-nav-link[data-tab="${tabName}"]`).forEach(l => {
+      l.classList.add('active');
+      l.classList.remove('text-on-surface-variant');
+      l.classList.add('text-primary');
+    });
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

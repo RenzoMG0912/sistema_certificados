@@ -77,6 +77,12 @@
       color: #e60000;
       font-variation-settings: 'FILL' 1;
     }
+    .sidebar-nav a:not(.active) {
+      color: #6b7280;
+    }
+    .sidebar-nav a:not(.active):hover {
+      background-color: #f0f1f3;
+    }
 
     /* Toast */
     #toast-container {
@@ -136,9 +142,7 @@
     <aside id="sidebar" class="hidden md:flex flex-col h-screen w-64 sticky top-0 bg-white border-r border-outline-variant p-5 gap-4 z-40">
       <!-- Logo -->
       <div class="flex items-center gap-3 mb-6">
-        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-          <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1;">school</span>
-        </div>
+        <img src="/public/img/logo_RV.png" alt="TeamHSEC" class="w-10 h-10 rounded-xl object-contain">
         <div>
           <h1 class="font-title text-lg font-bold text-primary">TeamHSEC</h1>
           <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Portal Estudiantil</p>
@@ -147,7 +151,7 @@
 
       <!-- Navigation -->
       <nav class="sidebar-nav flex flex-col gap-1 flex-grow">
-        <a class="sidebar-link flex items-center gap-3 bg-primary-container rounded-xl px-4 py-3 transition-all duration-150 text-sm font-semibold text-primary" href="#" data-tab="inicio">
+        <a class="sidebar-link active flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-150 text-sm font-medium" href="#" data-tab="inicio">
           <span class="material-symbols-outlined text-[20px]">dashboard</span>
           <span>Dashboard</span>
         </a>
@@ -224,7 +228,7 @@
 
           <!-- Stats Cards -->
           <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-            <div class="bg-white border border-outline-variant p-5 rounded-2xl flex items-center justify-between hover:shadow-md transition-all cursor-pointer group">
+            <div class="bg-white border border-outline-variant p-5 rounded-2xl flex items-center justify-between hover:shadow-md transition-all cursor-pointer group" onclick="switchTab('cursos')">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center text-primary">
                   <span class="material-symbols-outlined text-2xl">auto_stories</span>
@@ -237,7 +241,7 @@
               </div>
               <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
             </div>
-            <div class="bg-white border border-outline-variant p-5 rounded-2xl flex items-center justify-between hover:shadow-md transition-all cursor-pointer group">
+            <div class="bg-white border border-outline-variant p-5 rounded-2xl flex items-center justify-between hover:shadow-md transition-all cursor-pointer group" onclick="switchTab('certificados')">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-secondary-light flex items-center justify-center text-secondary">
                   <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
@@ -250,7 +254,7 @@
               </div>
               <span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary transition-colors">chevron_right</span>
             </div>
-            <div class="bg-white border border-outline-variant p-5 rounded-2xl flex items-center justify-between hover:shadow-md transition-all cursor-pointer group">
+            <div class="bg-white border border-outline-variant p-5 rounded-2xl flex items-center justify-between hover:shadow-md transition-all cursor-pointer group" onclick="switchTab('cursos')">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center text-green-600">
                   <span class="material-symbols-outlined text-2xl">trending_up</span>

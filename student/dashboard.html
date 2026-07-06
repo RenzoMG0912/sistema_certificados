@@ -135,9 +135,9 @@
     <!-- Sidebar -->
     <aside id="sidebar" class="hidden md:flex flex-col h-screen w-64 sticky top-0 bg-white border-r border-outline-variant p-5 gap-4 z-40">
       <!-- Logo -->
-      <div class="flex items-center gap-3 mb-4">
+      <div class="flex items-center gap-3 mb-6">
         <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-          <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">school</span>
+          <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1;">school</span>
         </div>
         <div>
           <h1 class="font-title text-lg font-bold text-primary">TeamHSEC</h1>
@@ -147,19 +147,19 @@
 
       <!-- Navigation -->
       <nav class="sidebar-nav flex flex-col gap-1 flex-grow">
-        <a class="sidebar-link flex items-center gap-3 bg-surface-container rounded-xl px-4 py-2.5 transition-all duration-150 text-sm font-medium" href="#" data-tab="inicio">
+        <a class="sidebar-link flex items-center gap-3 bg-primary-container rounded-xl px-4 py-3 transition-all duration-150 text-sm font-semibold text-primary" href="#" data-tab="inicio">
           <span class="material-symbols-outlined text-[20px]">dashboard</span>
           <span>Dashboard</span>
         </a>
-        <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-2.5 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="cursos">
+        <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="cursos">
           <span class="material-symbols-outlined text-[20px]">auto_stories</span>
           <span>Mis Cursos</span>
         </a>
-        <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-2.5 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="certificados">
+        <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="certificados">
           <span class="material-symbols-outlined text-[20px]">workspace_premium</span>
           <span>Certificados</span>
         </a>
-        <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-2.5 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="perfil">
+        <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="perfil">
           <span class="material-symbols-outlined text-[20px]">person</span>
           <span>Mi Perfil</span>
         </a>
@@ -171,7 +171,7 @@
           <span class="material-symbols-outlined text-[20px]">home</span>
           <span>Página Principal</span>
         </a>
-        <button id="logout-btn" class="w-full flex items-center gap-3 text-secondary px-4 py-2.5 hover:bg-secondary-light rounded-xl transition-all duration-150 text-sm font-medium">
+        <button id="logout-btn" class="w-full flex items-center gap-3 text-primary px-4 py-2.5 hover:bg-primary-container rounded-xl transition-all duration-150 text-sm font-medium">
           <span class="material-symbols-outlined text-[20px]">logout</span>
           <span>Cerrar Sesión</span>
         </button>
@@ -182,7 +182,7 @@
     <main class="flex-grow w-full">
 
       <!-- Top Bar -->
-      <header class="sticky top-0 z-30 flex justify-between items-center w-full px-6 py-3 bg-white border-b border-outline-variant">
+      <header class="sticky top-0 z-30 flex justify-between items-center w-full px-6 py-4 bg-white border-b border-outline-variant">
         <!-- Mobile Menu -->
         <div class="md:hidden flex items-center gap-2">
           <button id="mobile-menu-btn" class="text-on-surface-variant">
@@ -191,25 +191,20 @@
           <span class="font-title text-lg font-bold text-primary">TeamHSEC</span>
         </div>
 
-        <!-- Search (Desktop) -->
-        <div class="hidden md:flex flex-grow max-w-md bg-surface-container-low rounded-xl px-4 py-2 border border-outline-variant">
-          <span class="material-symbols-outlined text-on-surface-variant mr-2 text-[20px]">search</span>
-          <input id="global-search" class="bg-transparent border-none focus:ring-0 text-sm w-full outline-none" placeholder="Buscar cursos o certificados..." type="text"/>
-        </div>
-
         <!-- Right Side -->
-        <div class="flex items-center gap-4">
-          <button class="relative text-on-surface-variant hover:text-secondary transition-colors">
+        <div class="flex items-center gap-4 ml-auto">
+          <button class="relative text-on-surface-variant hover:text-primary transition-colors">
             <span class="material-symbols-outlined">notifications</span>
-            <span class="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full"></span>
+            <span class="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">3</span>
           </button>
           <div class="flex items-center gap-3 cursor-pointer">
             <div class="text-right hidden sm:block">
               <p id="user-name-display" class="text-sm font-bold text-on-surface">Estudiante</p>
               <p id="user-role-display" class="text-[10px] text-on-surface-variant uppercase tracking-wider">Estudiante</p>
             </div>
-            <div id="user-avatar" class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm border-2 border-white shadow-sm">
+            <div id="user-avatar" class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm border-2 border-white shadow-sm relative">
               E
+              <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
             </div>
           </div>
         </div>
@@ -223,38 +218,50 @@
           
           <!-- Bienvenida -->
           <section>
-            <h2 id="welcome-title" class="font-title text-2xl md:text-3xl font-bold text-primary">Hola, Estudiante</h2>
-            <p id="welcome-subtitle" class="text-on-surface-variant text-sm mt-1 max-w-2xl">Bienvenido de nuevo a tu panel de control. Aquí puedes ver tus cursos y certificados.</p>
+            <h2 id="welcome-title" class="font-title text-2xl md:text-3xl font-bold text-on-surface">Hola, Estudiante 👋</h2>
+            <p id="welcome-subtitle" class="text-on-surface-variant text-sm mt-1 max-w-2xl">Bienvenido a tu panel de control. Aquí puedes ver tu progreso y gestionar tus cursos y certificados.</p>
           </section>
 
           <!-- Stats Cards -->
-          <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-            <div class="bg-white border border-outline-variant p-5 rounded-xl flex items-center justify-between hover:border-primary transition-all group">
-              <div>
-                <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Cursos Inscritos</p>
-                <p id="stat-cursos" class="text-2xl font-bold text-primary">0</p>
+          <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+            <div class="bg-white border border-outline-variant p-5 rounded-2xl flex items-center justify-between hover:shadow-md transition-all cursor-pointer group">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined text-2xl">auto_stories</span>
+                </div>
+                <div>
+                  <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Cursos Inscritos</p>
+                  <p id="stat-cursos" class="text-2xl font-bold text-on-surface mt-0.5">0</p>
+                  <p class="text-on-surface-variant text-xs mt-0.5">Curso en progreso</p>
+                </div>
               </div>
-              <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined">auto_stories</span>
-              </div>
+              <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
             </div>
-            <div class="bg-white border border-outline-variant p-5 rounded-xl flex items-center justify-between hover:border-secondary transition-all group">
-              <div>
-                <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Certificados Obtenidos</p>
-                <p id="stat-certificados" class="text-2xl font-bold text-secondary">0</p>
+            <div class="bg-white border border-outline-variant p-5 rounded-2xl flex items-center justify-between hover:shadow-md transition-all cursor-pointer group">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-secondary-light flex items-center justify-center text-secondary">
+                  <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+                </div>
+                <div>
+                  <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Certificados Obtenidos</p>
+                  <p id="stat-certificados" class="text-2xl font-bold text-on-surface mt-0.5">0</p>
+                  <p class="text-on-surface-variant text-xs mt-0.5">¡Sigue así!</p>
+                </div>
               </div>
-              <div class="w-12 h-12 rounded-full bg-secondary-light flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
-              </div>
+              <span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary transition-colors">chevron_right</span>
             </div>
-            <div class="bg-white border border-outline-variant p-5 rounded-xl flex items-center justify-between hover:border-primary-dark transition-all group">
-              <div>
-                <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Progreso General</p>
-                <p id="stat-progreso" class="text-2xl font-bold text-primary-dark">0%</p>
+            <div class="bg-white border border-outline-variant p-5 rounded-2xl flex items-center justify-between hover:shadow-md transition-all cursor-pointer group">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center text-green-600">
+                  <span class="material-symbols-outlined text-2xl">trending_up</span>
+                </div>
+                <div>
+                  <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Progreso General</p>
+                  <p id="stat-progreso" class="text-2xl font-bold text-on-surface mt-0.5">0%</p>
+                  <p class="text-on-surface-variant text-xs mt-0.5">Completado</p>
+                </div>
               </div>
-              <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined">trending_up</span>
-              </div>
+              <span class="material-symbols-outlined text-on-surface-variant group-hover:text-green-600 transition-colors">chevron_right</span>
             </div>
           </section>
 
@@ -262,17 +269,17 @@
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
 
             <!-- Mis Cursos (Left) -->
-            <section class="lg:col-span-2 space-y-4">
-              <div class="flex items-center justify-between">
-                <h3 class="font-title text-lg font-bold text-primary flex items-center gap-2">
-                  <span class="material-symbols-outlined text-secondary">import_contacts</span>
+            <section class="lg:col-span-2">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-title text-lg font-bold text-on-surface flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary">menu_book</span>
                   Mis Cursos Inscritos
                 </h3>
-                <button class="text-secondary text-xs font-semibold hover:underline" onclick="switchTab('cursos')">Ver todos</button>
+                <button class="text-primary text-xs font-semibold hover:underline flex items-center gap-1" onclick="switchTab('cursos')">Ver todos <span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
               </div>
               <div id="home-courses-list" class="space-y-3">
                 <!-- Cursos cargados dinámicamente -->
-                <div class="bg-white border border-outline-variant rounded-xl p-4 text-center text-on-surface-variant text-sm">
+                <div class="bg-white border border-outline-variant rounded-2xl p-6 text-center text-on-surface-variant text-sm">
                   <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
                   Cargando cursos...
                 </div>
@@ -280,9 +287,12 @@
             </section>
 
             <!-- Instructores (Right) -->
-            <section class="space-y-4">
-              <h3 class="font-title text-lg font-bold text-primary">Mis Instructores</h3>
-              <div id="home-instructors-list" class="bg-white border border-outline-variant rounded-xl p-4 space-y-4">
+            <section>
+              <h3 class="font-title text-lg font-bold text-on-surface flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-primary">groups</span>
+                Mi Instructor
+              </h3>
+              <div id="home-instructors-list" class="bg-white border border-outline-variant rounded-2xl p-4 space-y-4">
                 <div class="text-center text-on-surface-variant text-sm">
                   <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
                   Cargando...
@@ -294,12 +304,13 @@
           <!-- Certificados Recientes -->
           <section class="mt-6">
             <div class="flex items-center justify-between mb-4">
-              <h3 class="font-title text-lg font-bold text-primary flex items-center gap-2">
+              <h3 class="font-title text-lg font-bold text-on-surface flex items-center gap-2">
                 <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
                 Certificados Recientes
               </h3>
+              <button class="text-primary text-xs font-semibold hover:underline flex items-center gap-1" onclick="switchTab('certificados')">Ver todos <span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
             </div>
-            <div id="home-certificates-table" class="bg-white border border-outline-variant rounded-xl overflow-hidden">
+            <div id="home-certificates-table" class="bg-white border border-outline-variant rounded-2xl overflow-hidden">
               <div class="p-6 text-center text-on-surface-variant text-sm">
                 <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
                 Cargando certificados...
@@ -311,14 +322,14 @@
         <!-- ==================== TAB: CURSOS ==================== -->
         <div id="tab-cursos" class="tab-content">
           <section>
-            <h2 class="font-title text-2xl font-bold text-primary flex items-center gap-2">
-              <span class="material-symbols-outlined text-secondary">auto_stories</span>
+            <h2 class="font-title text-2xl font-bold text-on-surface flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">auto_stories</span>
               Mis Cursos
             </h2>
             <p class="text-on-surface-variant text-sm mt-1">Todos los cursos en los que estás inscrito.</p>
           </section>
-          <div id="courses-full-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div class="bg-white border border-outline-variant rounded-xl p-6 text-center text-on-surface-variant text-sm col-span-full">
+          <div id="courses-full-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <div class="bg-white border border-outline-variant rounded-2xl p-6 text-center text-on-surface-variant text-sm col-span-full">
               <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
               Cargando cursos...
             </div>
@@ -328,13 +339,13 @@
         <!-- ==================== TAB: CERTIFICADOS ==================== -->
         <div id="tab-certificados" class="tab-content">
           <section>
-            <h2 class="font-title text-2xl font-bold text-primary flex items-center gap-2">
+            <h2 class="font-title text-2xl font-bold text-on-surface flex items-center gap-2">
               <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
               Mis Certificados
             </h2>
             <p class="text-on-surface-variant text-sm mt-1">Todos los certificados que has obtenido.</p>
           </section>
-          <div id="certificates-full-list" class="bg-white border border-outline-variant rounded-xl overflow-hidden mt-4">
+          <div id="certificates-full-list" class="bg-white border border-outline-variant rounded-2xl overflow-hidden mt-6">
             <div class="p-6 text-center text-on-surface-variant text-sm">
               <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
               Cargando certificados...
@@ -345,13 +356,13 @@
         <!-- ==================== TAB: PERFIL ==================== -->
         <div id="tab-perfil" class="tab-content">
           <section>
-            <h2 class="font-title text-2xl font-bold text-primary flex items-center gap-2">
-              <span class="material-symbols-outlined text-secondary">person</span>
+            <h2 class="font-title text-2xl font-bold text-on-surface flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">person</span>
               Mi Perfil
             </h2>
             <p class="text-on-surface-variant text-sm mt-1">Información personal registrada en el sistema.</p>
           </section>
-          <div id="profile-card" class="bg-white border border-outline-variant rounded-xl p-6 mt-4">
+          <div id="profile-card" class="bg-white border border-outline-variant rounded-2xl p-6 mt-6">
             <div class="text-center text-on-surface-variant text-sm">
               <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
               Cargando perfil...
@@ -369,7 +380,7 @@
   </div>
 
   <!-- Mobile Bottom Nav -->
-  <nav class="mobile-nav md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-outline-variant flex justify-around py-2 z-50">
+  <nav class="mobile-nav md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-outline-variant flex justify-around py-3 z-50">
     <a class="mobile-nav-link active flex flex-col items-center gap-0.5 text-primary" href="#" data-tab="inicio">
       <span class="material-symbols-outlined text-[22px]">dashboard</span>
       <span class="text-[10px] font-semibold">Inicio</span>

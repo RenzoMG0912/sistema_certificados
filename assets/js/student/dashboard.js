@@ -131,12 +131,14 @@
 
     if (nameDisplay) nameDisplay.textContent = studentProfile.nombres || 'Estudiante';
     if (roleDisplay) roleDisplay.textContent = studentProfile.cargo || 'Estudiante';
-    if (avatar) avatar.textContent = getInitials(studentProfile.nombres);
-    if (welcomeTitle) welcomeTitle.textContent = `Hola, ${studentProfile.nombres || 'Estudiante'}`;
+    if (avatar) {
+      avatar.innerHTML = `${getInitials(studentProfile.nombres)}<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>`;
+    }
+    if (welcomeTitle) welcomeTitle.innerHTML = `Hola, ${escapeHtml(studentProfile.nombres || 'Estudiante')} 👋`;
     if (welcomeSubtitle) {
       const cursosCount = studentStats ? studentStats.totalCursos : 0;
       const certCount = studentStats ? studentStats.totalCertificados : 0;
-      welcomeSubtitle.textContent = `Bienvenido de nuevo a tu panel de control. Tienes ${cursosCount} curso(s) inscrito(s) y ${certCount} certificado(s) obtenido(s).`;
+      welcomeSubtitle.textContent = `Bienvenido a tu panel de control. Aquí puedes ver tu progreso y gestionar tus cursos y certificados.`;
     }
 
     // Profile card
@@ -207,7 +209,7 @@
 
     if (studentCourses.length === 0) {
       container.innerHTML = `
-        <div class="bg-white border border-outline-variant rounded-xl p-6 text-center text-on-surface-variant text-sm">
+        <div class="bg-white border border-outline-variant rounded-2xl p-6 text-center text-on-surface-variant text-sm">
           <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">school</span>
           No estás inscrito en ningún curso actualmente.
         </div>`;
@@ -220,22 +222,31 @@
       const tieneCert = course.tiene_certificado === 1;
       const progressPercent = tieneCert ? 100 : 50;
       return `
-        <div class="bg-white border border-outline-variant rounded-xl p-4 flex flex-col sm:flex-row gap-4 items-center group hover:shadow-sm transition-all">
-          <div class="w-full sm:w-28 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container flex items-center justify-center">
-            <span class="material-symbols-outlined text-3xl text-primary">auto_stories</span>
-          </div>
-          <div class="flex-grow space-y-2 w-full">
-            <div class="flex justify-between items-start">
-              <div>
-                <h4 class="font-title text-sm font-bold text-on-surface">${escapeHtml(course.curso_nombre)}</h4>
-                <p class="text-xs text-on-surface-variant">${escapeHtml(course.entrenador || '')} &middot; ${escapeHtml(course.duracion || '')}</p>
-              </div>
-              <span class="px-2 py-0.5 rounded-full text-xs font-semibold ${tieneCert ? 'bg-green-100 text-green-700' : 'bg-surface-container text-primary'}">
-                ${tieneCert ? 'Completado' : 'En curso'}
-              </span>
+        <div class="bg-white border border-outline-variant rounded-2xl p-5 hover:shadow-md transition-all">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-xl bg-primary-container flex items-center justify-center text-primary flex-shrink-0">
+              <span class="material-symbols-outlined text-2xl">auto_stories</span>
             </div>
-            <div class="w-full bg-surface-container-low rounded-full h-1.5">
-              <div class="h-1.5 rounded-full transition-all duration-500 ${tieneCert ? 'bg-green-500' : 'bg-secondary'}" style="width: ${progressPercent}%"></div>
+            <div class="flex-grow min-w-0">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <h4 class="font-title text-sm font-bold text-on-surface truncate">${escapeHtml(course.curso_nombre)}</h4>
+                  <p class="text-xs text-on-surface-variant mt-0.5">Instructor: ${escapeHtml(course.entrenador || 'Sin asignar')}</p>
+                  <p class="text-xs text-on-surface-variant flex items-center gap-1 mt-0.5">
+                    <span class="material-symbols-outlined text-[14px]">schedule</span>
+                    ${escapeHtml(course.duracion || 'N/A')}
+                  </p>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold flex-shrink-0 ${tieneCert ? 'bg-green-100 text-green-700' : 'bg-surface-container text-on-surface-variant'}">
+                  ${tieneCert ? 'Completado' : 'En curso'}
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="w-full bg-surface-container rounded-full h-2">
+                  <div class="h-2 rounded-full transition-all duration-500 ${tieneCert ? 'bg-green-500' : 'bg-primary'}" style="width: ${progressPercent}%"></div>
+                </div>
+                <p class="text-right text-xs text-on-surface-variant mt-1">${progressPercent}%</p>
+              </div>
             </div>
           </div>
         </div>`;
@@ -258,19 +269,18 @@
       return;
     }
 
-    const colors = ['bg-primary', 'bg-secondary', 'bg-tertiary'];
-    let idx = 0;
     container.innerHTML = Array.from(instructors.entries()).map(([name, role]) => {
-      const colorClass = colors[idx++ % colors.length];
       return `
-        <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-full ${colorClass} flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+        <div class="flex flex-col items-center text-center py-2">
+          <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg mb-3">
             ${getInitials(name)}
           </div>
-          <div class="flex-grow min-w-0">
-            <h4 class="text-sm font-bold text-on-surface truncate">${escapeHtml(name)}</h4>
-            <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">${escapeHtml(role)}</p>
-          </div>
+          <h4 class="text-sm font-bold text-on-surface">${escapeHtml(name)}</h4>
+          <p class="text-[11px] text-on-surface-variant uppercase tracking-wider mb-3">${escapeHtml(role)}</p>
+          <button class="inline-flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container transition-colors">
+            <span class="material-symbols-outlined text-[18px]">mail</span>
+            Enviar mensaje
+          </button>
         </div>`;
     }).join('');
   };
@@ -296,25 +306,33 @@
             <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant">Curso</th>
             <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden sm:table-cell">Fecha Emisión</th>
             <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden md:table-cell">Código</th>
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden md:table-cell">Estado</th>
             <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant text-right">Acción</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-outline-variant">
-          ${displayCerts.map((cert, i) => `
+          ${displayCerts.map((cert, i) => {
+            const isVigente = !cert.fecha_vencimiento || new Date(cert.fecha_vencimiento) > new Date();
+            return `
             <tr class="${i % 2 === 1 ? 'bg-surface-container-low' : ''} hover:bg-surface-container transition-colors">
               <td class="px-4 py-3 flex items-center gap-2">
-                <span class="material-symbols-outlined" class="text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
                 <span class="text-sm font-medium">${escapeHtml(cert.curso_nombre)}</span>
               </td>
               <td class="px-4 py-3 text-sm text-on-surface-variant hidden sm:table-cell">${formatDate(cert.fecha_emision)}</td>
               <td class="px-4 py-3 text-sm text-on-surface-variant font-mono hidden md:table-cell">${escapeHtml(cert.codigo)}</td>
+              <td class="px-4 py-3 hidden md:table-cell">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${isVigente ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                  ${isVigente ? 'Vigente' : 'Vencido'}
+                </span>
+              </td>
               <td class="px-4 py-3 text-right">
-                ${cert.pdf_path ? `<a href="${escapeHtml(cert.pdf_path)}" target="_blank" class="inline-flex items-center gap-1 text-secondary text-xs font-semibold hover:opacity-70">
+                ${cert.pdf_path ? `<a href="${escapeHtml(cert.pdf_path)}" target="_blank" class="inline-flex items-center gap-1 text-primary text-xs font-semibold hover:opacity-70">
                   <span class="material-symbols-outlined text-[16px]">download</span> Descargar
                 </a>` : '<span class="text-xs text-on-surface-variant">Sin PDF</span>'}
               </td>
-            </tr>
-          `).join('')}
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>`;
   };
@@ -325,7 +343,7 @@
 
     if (studentCourses.length === 0) {
       container.innerHTML = `
-        <div class="bg-white border border-outline-variant rounded-xl p-8 text-center text-on-surface-variant text-sm col-span-full">
+        <div class="bg-white border border-outline-variant rounded-2xl p-8 text-center text-on-surface-variant text-sm col-span-full">
           <span class="material-symbols-outlined text-4xl text-outline-variant mb-3 block">school</span>
           <p class="font-medium">No estás inscrito en ningún curso.</p>
           <p class="text-xs mt-1">Contacta al administrador para inscribirte.</p>
@@ -336,12 +354,12 @@
     container.innerHTML = studentCourses.map(course => {
       const tieneCert = course.tiene_certificado === 1;
       return `
-        <div class="bg-white border border-outline-variant rounded-xl p-5 hover:shadow-sm transition-all">
+        <div class="bg-white border border-outline-variant rounded-2xl p-5 hover:shadow-md transition-all">
           <div class="flex items-start justify-between mb-3">
-            <div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center">
-              <span class="material-symbols-outlined text-primary">auto_stories</span>
+            <div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary text-xl">auto_stories</span>
             </div>
-            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${tieneCert ? 'bg-green-100 text-green-700' : 'bg-surface-container text-primary'}">
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${tieneCert ? 'bg-green-100 text-green-700' : 'bg-surface-container text-on-surface-variant'}">
               ${tieneCert ? 'Completado' : 'En curso'}
             </span>
           </div>
@@ -368,7 +386,7 @@
           ${tieneCert ? `
             <div class="mt-4 pt-3 border-t border-outline-variant">
               <div class="flex items-center gap-2 text-xs">
-                <span class="material-symbols-outlined text-[16px]" class="text-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
+                <span class="material-symbols-outlined text-secondary text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
                 <span class="font-semibold text-on-surface">Certificado: ${escapeHtml(course.certificado_codigo)}</span>
               </div>
               <p class="text-[10px] text-on-surface-variant mt-1">Emitido: ${formatDate(course.certificado_fecha)}</p>
@@ -400,26 +418,34 @@
             <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden sm:table-cell">Fecha Emisión</th>
             <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden md:table-cell">Vencimiento</th>
             <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden md:table-cell">Código</th>
+            <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hidden md:table-cell">Estado</th>
             <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-on-surface-variant text-right">Acción</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-outline-variant">
-          ${studentCertificates.map((cert, i) => `
+          ${studentCertificates.map((cert, i) => {
+            const isVigente = !cert.fecha_vencimiento || new Date(cert.fecha_vencimiento) > new Date();
+            return `
             <tr class="${i % 2 === 1 ? 'bg-surface-container-low' : ''} hover:bg-surface-container transition-colors">
               <td class="px-4 py-3 flex items-center gap-2">
-                <span class="material-symbols-outlined" class="text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
                 <span class="text-sm font-medium">${escapeHtml(cert.curso_nombre)}</span>
               </td>
               <td class="px-4 py-3 text-sm text-on-surface-variant hidden sm:table-cell">${formatDate(cert.fecha_emision)}</td>
               <td class="px-4 py-3 text-sm text-on-surface-variant hidden md:table-cell">${formatDate(cert.fecha_vencimiento)}</td>
               <td class="px-4 py-3 text-sm text-on-surface-variant font-mono hidden md:table-cell">${escapeHtml(cert.codigo)}</td>
+              <td class="px-4 py-3 hidden md:table-cell">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${isVigente ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                  ${isVigente ? 'Vigente' : 'Vencido'}
+                </span>
+              </td>
               <td class="px-4 py-3 text-right">
-                ${cert.pdf_path ? `<a href="${escapeHtml(cert.pdf_path)}" target="_blank" class="inline-flex items-center gap-1 text-secondary text-xs font-semibold hover:opacity-70">
+                ${cert.pdf_path ? `<a href="${escapeHtml(cert.pdf_path)}" target="_blank" class="inline-flex items-center gap-1 text-primary text-xs font-semibold hover:opacity-70">
                   <span class="material-symbols-outlined text-[16px]">download</span> Descargar
                 </a>` : '<span class="text-xs text-on-surface-variant">Sin PDF</span>'}
               </td>
-            </tr>
-          `).join('')}
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>`;
   };

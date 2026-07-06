@@ -6,7 +6,7 @@ const { generarQR } = require('./qr.service');
 
 const ROOT_DIR = path.join(__dirname, '..', '..');
 const TEMPLATE_PATH = path.join(ROOT_DIR, 'assets', 'img', 'Formato_fondo.png');
-const LOGO_TEAMHSEC = path.join(ROOT_DIR, 'public', 'img', 'logo_RV.png');
+const LOGO_TEAMHSEC = path.join(ROOT_DIR, 'public', 'img', 'logo_teamhsec.webp');
 const LOGO_CIP = path.join(ROOT_DIR, 'public', 'img', 'cip.webp');
 const PDF_ASSET_CACHE_DIR = path.join(ROOT_DIR, '.cache', 'pdf-assets');
 let sharp = null;
@@ -400,44 +400,33 @@ function drawBackPage(doc, certificadoData, pageSize) {
   doc.font('Times-Bold')
     .fontSize(22)
     .fillColor(COLORS.muted)
-    .text('TEMARIO', 100, temarioStartY);
+    .text('TEMARIO', 0, temarioStartY, { width, align: 'center' });
 
-  // Temario items
+  // Temario items - centered, bold, blue
   const temario = certificadoData.curso_temario || '';
   const lines = temario.split('\n').filter(line => line.trim());
 
-  let y = temarioStartY + 40;
-  const lineHeight = 28;
-  const maxWidth = width - 200;
+  let y = temarioStartY + 45;
+  const lineHeight = 30;
   let itemCount = 0;
 
   for (const line of lines) {
-    if (y > height - 100) break; // Don't overflow past bottom
+    if (y > height - 80) break;
 
     itemCount++;
     const cleanLine = line.replace(/^\d+[\.\)\s]+/, '').trim();
     const text = `${itemCount}.    ${cleanLine}`;
 
-    doc.font('Helvetica')
-      .fontSize(16)
-      .fillColor(COLORS.muted)
-      .text(text, 100, y, { width: maxWidth, lineBreak: false });
+    doc.font('Helvetica-Bold')
+      .fontSize(17)
+      .fillColor('#1a5276')
+      .text(text, 0, y, { width, align: 'center', lineBreak: false });
 
     y += lineHeight;
   }
 
   // Gold divider near bottom
-  drawGoldDivider(doc, height - 75, width);
-
-  // Vigencia text
-  const vigenciaYears = certificadoData.fecha_vencimiento
-    ? Math.max(1, Math.round((new Date(certificadoData.fecha_vencimiento) - new Date(certificadoData.fecha_emision)) / (365.25 * 24 * 60 * 60 * 1000)))
-    : 1;
-
-  doc.font('Helvetica')
-    .fontSize(14)
-    .fillColor(COLORS.muted)
-    .text(`VIGENCIA: ${String(vigenciaYears).padStart(2, '0')} A\u00d1O${vigenciaYears > 1 ? 'S' : ''} DESDE LA FECHA DE EMISI\u00d3N.`, 0, height - 55, { width, align: 'center' });
+  drawGoldDivider(doc, height - 55, width);
 }
 
 /**

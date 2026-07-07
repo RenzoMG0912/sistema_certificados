@@ -116,6 +116,9 @@
       color: #fbbf24;
     }
 
+    .theme-transition, .theme-transition * {
+      transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    }
     .dark body {
       background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('/assets/img/fondo_login.jpg') center/cover no-repeat fixed;
     }
@@ -281,6 +284,9 @@
       const toggle = document.getElementById('theme-toggle');
       const html = document.documentElement;
       
+      // Enable smooth transitions after initial theme is set
+      setTimeout(() => html.classList.add('theme-transition'), 50);
+
       if (toggle) {
         toggle.addEventListener('click', () => {
           const now = html.classList.contains('dark');

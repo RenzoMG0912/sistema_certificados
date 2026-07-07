@@ -6,6 +6,7 @@ import { loadEnrollments, renderEnrollments, openEnrollmentCreateModal, openEnro
 import { loadCertificates, renderCertificates } from './certificates.js';
 import { loadSignatures } from './signatures.js';
 import { state } from './state.js';
+import { initNotifications } from './notifications.js';
 
 const initModalButtons = () => {
   el('btn-new-course')?.addEventListener('click', async () => {
@@ -308,6 +309,8 @@ const init = async () => {
 
   setActiveTab('inicio');
   await loadCurrentSection('inicio');
+
+  initNotifications();
 };
 
 document.addEventListener('DOMContentLoaded', init);

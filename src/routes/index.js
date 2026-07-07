@@ -16,6 +16,7 @@ const smtpTestRoutes = require('./smtp-test.routes');
 const studentAuthRoutes = require('./studentAuth.routes');
 const studentRoutes = require('./student.routes');
 const unifiedAuthRoutes = require('./unifiedAuth.routes');
+const notificacionesRoutes = require('./notificaciones.routes');
 
 // Vincular rutas a la API
 router.use('/auth', authRoutes);
@@ -27,11 +28,15 @@ router.use('/certificados', certificadosRoutes);
 router.use('/verificar', verificarRoutes);
 router.use('/firmas', firmasRoutes);
 router.use('/smtp-test', smtpTestRoutes);
+router.use('/notificaciones', notificacionesRoutes);
 router.use('/student/auth', studentAuthRoutes);
 router.use('/student', studentRoutes);
 
+const { checkExpiringCertificates } = require('../controllers/notificaciones.controller');
+
 // Ruta adicional: Estadísticas del Dashboard Administrativo
 router.get('/admin/dashboard', authMiddleware, async (req, res, next) => {
+  checkExpiringCertificates().catch(() => {});
   try {
     const [pRows] = await db.query('SELECT COUNT(*) AS count FROM participantes');
     const [cRows] = await db.query('SELECT COUNT(*) AS count FROM cursos');

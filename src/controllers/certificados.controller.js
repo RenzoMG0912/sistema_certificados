@@ -7,6 +7,7 @@ const { generarHash } = require('../services/hash.service');
 const { generarCodigoCertificado } = require('../services/codigo.service');
 const { generarCertificadoPDF } = require('../services/pdf.service');
 const emailService = require('../services/email.service');
+const { crearNotificacion, TYPES } = require('./notificaciones.controller');
 
 
 // Función helper para sincronizar el index.json estático con los PDFs en disco
@@ -221,6 +222,26 @@ module.exports = {
         emailMessage = ' (Error al enviar el correo)';
       }
 
+      // Notificar al alumno
+      const [pFromMat] = await db.query('SELECT participante_id FROM matriculas WHERE id = ?', [matricula_id]);
+      const participanteId = pFromMat[0]?.participante_id;
+      if (participanteId) {
+        await crearNotificacion({
+          usuario_tipo: 'alumno',
+          usuario_id: participanteId,
+          titulo: 'Nuevo certificado emitido',
+          mensaje: `Tu certificado para "${matData.curso_nombre}" (código: ${codigo}) ha sido emitido.`,
+          tipo: TYPES.SUCCESS
+        });
+      }
+      await crearNotificacion({
+        usuario_tipo: 'admin',
+        usuario_id: 1,
+        titulo: 'Certificado emitido',
+        mensaje: `Certificado ${codigo} emitido para ${matData.alumno_nombres} - "${matData.curso_nombre}".`,
+        tipo: TYPES.INFO
+      });
+
       return res.status(201).json({
         success: true,
         message: `Certificado emitido con éxito${emailMessage}`,
@@ -332,6 +353,10 @@ module.exports = {
       };
       mockDb.certificados.push(mockCert);
 
+      // Notificar en modo mock
+      mockDb.notificaciones.push({ id: mockDb.notificaciones.length + 1, usuario_tipo: 'alumno', usuario_id: alumno.id, titulo: 'Nuevo certificado emitido', mensaje: `Tu certificado para "${curso.nombre}" (código: ${codigo}) ha sido emitido.`, tipo: TYPES.SUCCESS, leida: 0, created_at: new Date().toISOString() });
+      mockDb.notificaciones.push({ id: mockDb.notificaciones.length + 1, usuario_tipo: 'admin', usuario_id: 1, titulo: 'Certificado emitido', mensaje: `Certificado ${codigo} emitido para ${alumno.nombres} - "${curso.nombre}".`, tipo: TYPES.INFO, leida: 0, created_at: new Date().toISOString() });
+
       // Sincronizar index.json
       syncIndexStatic();
 
@@ -374,7 +399,7 @@ module.exports = {
       // 1. Find all pending enrollments (no certificate yet) for this curso
       const pendQuery = `
         SELECT m.id AS matricula_id, m.fecha_inicio,
-               p.nombres AS alumno_nombres, p.dni AS alumno_dni, p.email AS alumno_email,
+               p.id AS participante_id, p.nombres AS alumno_nombres, p.dni AS alumno_dni, p.email AS alumno_email,
                c.nombre AS curso_nombre, c.duracion AS curso_duracion,
                c.entrenador AS curso_entrenador, c.codigo_curso, c.firma_id AS curso_firma_id,
                c.temario AS curso_temario
@@ -459,6 +484,9 @@ module.exports = {
 
         results.push({ matricula_id: row.matricula_id, certificado_id: insertResult.insertId, codigo });
 
+        // Notificar alumno
+        await crearNotificacion({ usuario_tipo: 'alumno', usuario_id: row.participante_id, titulo: 'Nuevo certificado emitido', mensaje: `Tu certificado para "${row.curso_nombre}" (código: ${codigo}) ha sido emitido.`, tipo: TYPES.SUCCESS });
+
         // Guardamos la promesa del correo para esperarla al final
         emailPromises.push(
           emailService.sendCertificateEmail({
@@ -470,6 +498,9 @@ module.exports = {
           }, absoluteSavePath).then(res => ({ success: res.success }))
         );
       }
+
+      // Notificar admin
+      await crearNotificacion({ usuario_tipo: 'admin', usuario_id: 1, titulo: 'Certificados generados masivamente', mensaje: `Se generaron ${results.length} certificado(s) para el curso "${pendRows[0]?.curso_nombre || ''}".`, tipo: TYPES.INFO });
 
       // Esperar a que se completen todos los envíos
       const emailStatuses = await Promise.all(emailPromises);
@@ -652,6 +683,7 @@ module.exports = {
       }, absolutePdfPath);
 
       if (emailResult.success) {
+        await crearNotificacion({ usuario_tipo: 'admin', usuario_id: 1, titulo: 'Certificado enviado por correo', mensaje: `Certificado ${cert.codigo} enviado a ${cert.alumno_email} (${cert.alumno_nombre}).`, tipo: TYPES.SUCCESS });
         return res.status(200).json({ success: true, message: `Certificado enviado a ${cert.alumno_email}` });
       } else {
         return res.status(500).json({ success: false, message: emailResult.message || 'Error al enviar el correo' });

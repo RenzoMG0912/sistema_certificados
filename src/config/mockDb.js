@@ -56,6 +56,8 @@ const usuarios = [
 
 const verificaciones = [];
 
+const notificaciones = [];
+
 module.exports = {
   usuarios,
   cursos,
@@ -63,5 +65,6 @@ module.exports = {
   firmas,
   matriculas,
   certificados,
-  verificaciones
+  verificaciones,
+  notificaciones
 };

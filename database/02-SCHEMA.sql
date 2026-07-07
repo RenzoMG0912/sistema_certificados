@@ -79,6 +79,19 @@ CREATE TABLE IF NOT EXISTS certificados (
   CONSTRAINT fk_cert_firma_2 FOREIGN KEY (firma_id_2) REFERENCES firmas(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Tabla de Notificaciones
+CREATE TABLE IF NOT EXISTS notificaciones (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_tipo ENUM('admin', 'alumno') NOT NULL,
+  usuario_id INT NOT NULL,
+  titulo VARCHAR(200) NOT NULL,
+  mensaje TEXT,
+  tipo VARCHAR(50) DEFAULT 'info',
+  leida TINYINT(1) DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_noti_usuario (usuario_tipo, usuario_id, leida)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Tabla de Historial de Verificaciones
 CREATE TABLE IF NOT EXISTS verificaciones (
   id INT AUTO_INCREMENT PRIMARY KEY,

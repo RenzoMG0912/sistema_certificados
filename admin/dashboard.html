@@ -703,12 +703,23 @@
           <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">
             <i class="fa-solid fa-moon"></i>
           </button>
-          <button class="w-11 h-11 rounded-2xl border border-outline-variant bg-white text-on-surface-variant flex items-center justify-center shadow-sm hover:bg-surface-container transition-colors" type="button" aria-label="Notificaciones">
-            <span class="relative inline-flex items-center justify-center">
-              <span class="material-symbols-outlined text-[21px]">notifications</span>
-              <span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">3</span>
-            </span>
-          </button>
+          <div class="relative">
+            <button id="notif-btn" class="w-11 h-11 rounded-2xl border border-outline-variant bg-white text-on-surface-variant flex items-center justify-center shadow-sm hover:bg-surface-container transition-colors" type="button" aria-label="Notificaciones">
+              <span class="relative inline-flex items-center justify-center">
+                <span class="material-symbols-outlined text-[21px]">notifications</span>
+                <span id="notif-badge" class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center hidden">0</span>
+              </span>
+            </button>
+            <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-outline-variant rounded-2xl shadow-xl z-50 overflow-hidden">
+              <div class="flex items-center justify-between px-4 py-3 border-b border-outline-variant bg-surface-container-low">
+                <h3 class="font-title text-sm font-bold text-on-surface">Notificaciones</h3>
+                <button id="notif-mark-all-read" class="text-xs text-primary font-semibold hover:underline">Marcar todas leídas</button>
+              </div>
+              <div id="notif-list" class="max-h-80 overflow-y-auto divide-y divide-outline-variant">
+                <div class="p-6 text-center text-sm text-on-surface-variant">Cargando...</div>
+              </div>
+            </div>
+          </div>
           <div class="flex items-center gap-3">
             <div class="text-right leading-tight hidden sm:block">
               <p class="text-sm font-semibold text-on-surface">Administrador TEAM HSEC</p>

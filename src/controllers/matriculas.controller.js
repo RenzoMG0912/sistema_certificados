@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const mockDb = require('../config/mockDb');
+const { crearNotificacion, TYPES } = require('./notificaciones.controller');
 
 module.exports = {
   list: async (req, res, next) => {
@@ -164,6 +165,16 @@ module.exports = {
       `;
       const [result] = await db.query(query, [participante_id, curso_id, fecha_inicio || null, fecha_fin || null]);
       const [newRow] = await db.query('SELECT * FROM matriculas WHERE id = ?', [result.insertId]);
+
+      // Notificaciones
+      const [cursoRows] = await db.query('SELECT nombre FROM cursos WHERE id = ?', [curso_id]);
+      const [participanteRows] = await db.query('SELECT nombres, id FROM participantes WHERE id = ?', [participante_id]);
+      const cursoNombre = cursoRows[0]?.nombre || 'Curso';
+      const alumnoNombre = participanteRows[0]?.nombres || 'Alumno';
+
+      await crearNotificacion({ usuario_tipo: 'alumno', usuario_id: participante_id, titulo: 'Nueva matrícula', mensaje: `Has sido matriculado en el curso "${cursoNombre}".`, tipo: TYPES.SUCCESS });
+      await crearNotificacion({ usuario_tipo: 'admin', usuario_id: 1, titulo: 'Nueva matrícula', mensaje: `${alumnoNombre} fue matriculado en "${cursoNombre}".`, tipo: TYPES.INFO });
+
       return res.status(201).json({ success: true, matricula: newRow[0] });
     } catch (error) {
       console.warn('[Mock DB] Creando matrícula en memoria temporal');
@@ -181,6 +192,15 @@ module.exports = {
         created_at: new Date().toISOString()
       };
       mockDb.matriculas.push(newM);
+
+      const cursoMock = mockDb.cursos.find(c => c.id == curso_id);
+      const participanteMock = mockDb.participantes.find(p => p.id == participante_id);
+      const cursoNombre = cursoMock?.nombre || 'Curso';
+      const alumnoNombre = participanteMock?.nombres || 'Alumno';
+
+      mockDb.notificaciones.push({ id: mockDb.notificaciones.length + 1, usuario_tipo: 'alumno', usuario_id: participante_id, titulo: 'Nueva matrícula', mensaje: `Has sido matriculado en el curso "${cursoNombre}".`, tipo: TYPES.SUCCESS, leida: 0, created_at: new Date().toISOString() });
+      mockDb.notificaciones.push({ id: mockDb.notificaciones.length + 1, usuario_tipo: 'admin', usuario_id: 1, titulo: 'Nueva matrícula', mensaje: `${alumnoNombre} fue matriculado en "${cursoNombre}".`, tipo: TYPES.INFO, leida: 0, created_at: new Date().toISOString() });
+
       return res.status(201).json({ success: true, matricula: newM });
     }
   },
@@ -193,6 +213,9 @@ module.exports = {
 
     try {
       const inserted = [];
+      const [cursoInfo] = await db.query('SELECT nombre FROM cursos WHERE id = ?', [curso_id]);
+      const cursoNombre = cursoInfo[0]?.nombre || 'Curso';
+
       for (const pid of participante_ids) {
         const [check] = await db.query(
           'SELECT id FROM matriculas WHERE participante_id = ? AND curso_id = ?',
@@ -204,12 +227,21 @@ module.exports = {
             [pid, curso_id, fecha_inicio || null, fecha_fin || null]
           );
           inserted.push({ id: result.insertId, participante_id: pid, curso_id, fecha_inicio, fecha_fin });
+
+          const [pRows] = await db.query('SELECT nombres, id FROM participantes WHERE id = ?', [pid]);
+          const alumnoNombre = pRows[0]?.nombres || 'Alumno';
+          // eslint-disable-next-line no-await-in-loop
+          await crearNotificacion({ usuario_tipo: 'alumno', usuario_id: pid, titulo: 'Nueva matrícula', mensaje: `Has sido matriculado en el curso "${cursoNombre}".`, tipo: TYPES.SUCCESS });
+          await crearNotificacion({ usuario_tipo: 'admin', usuario_id: 1, titulo: 'Nueva matrícula', mensaje: `${alumnoNombre} fue matriculado en "${cursoNombre}".`, tipo: TYPES.INFO });
         }
       }
       return res.status(201).json({ success: true, message: `${inserted.length} matrícula(s) creada(s)`, matriculas: inserted });
     } catch (error) {
       console.warn('[Mock DB] Creando matrículas masivas en memoria temporal');
       const inserted = [];
+      const cursoMock = mockDb.cursos.find(c => c.id == curso_id);
+      const cursoNombre = cursoMock?.nombre || 'Curso';
+
       for (const pid of participante_ids) {
         const exists = mockDb.matriculas.some(m => m.participante_id == pid && m.curso_id == curso_id);
         if (!exists) {
@@ -223,6 +255,11 @@ module.exports = {
           };
           mockDb.matriculas.push(newM);
           inserted.push(newM);
+
+          const participanteMock = mockDb.participantes.find(p => p.id == pid);
+          const alumnoNombre = participanteMock?.nombres || 'Alumno';
+          mockDb.notificaciones.push({ id: mockDb.notificaciones.length + 1, usuario_tipo: 'alumno', usuario_id: pid, titulo: 'Nueva matrícula', mensaje: `Has sido matriculado en el curso "${cursoNombre}".`, tipo: TYPES.SUCCESS, leida: 0, created_at: new Date().toISOString() });
+          mockDb.notificaciones.push({ id: mockDb.notificaciones.length + 1, usuario_tipo: 'admin', usuario_id: 1, titulo: 'Nueva matrícula', mensaje: `${alumnoNombre} fue matriculado en "${cursoNombre}".`, tipo: TYPES.INFO, leida: 0, created_at: new Date().toISOString() });
         }
       }
       return res.status(201).json({ success: true, message: `${inserted.length} matrícula(s) creada(s)`, matriculas: inserted });

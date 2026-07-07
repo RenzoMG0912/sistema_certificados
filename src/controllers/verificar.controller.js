@@ -1,6 +1,7 @@
 // Archivo: src/controllers/verificar.controller.js
 const db = require('../config/db');
 const mockDb = require('../config/mockDb');
+const { crearNotificacion, TYPES } = require('./notificaciones.controller');
 
 // Función helper para registrar auditoría de verificación
 async function registrarVerificacion(certId, req) {
@@ -13,6 +14,25 @@ async function registrarVerificacion(certId, req) {
       VALUES (?, ?, ?)
     `;
     await db.query(query, [certId, ip, userAgent]);
+
+    // Notificar al admin
+    const [certInfo] = await db.query(`
+      SELECT c.codigo, p.nombres AS alumno_nombre, c2.nombre AS curso_nombre
+      FROM certificados c
+      JOIN matriculas m ON c.matricula_id = m.id
+      JOIN participantes p ON m.participante_id = p.id
+      JOIN cursos c2 ON m.curso_id = c2.id
+      WHERE c.id = ?
+    `, [certId]);
+    if (certInfo.length > 0) {
+      await crearNotificacion({
+        usuario_tipo: 'admin',
+        usuario_id: 1,
+        titulo: 'Certificado verificado',
+        mensaje: `El certificado ${certInfo[0].codigo} de ${certInfo[0].alumno_nombre} (${certInfo[0].curso_nombre}) fue verificado.`,
+        tipo: TYPES.INFO
+      });
+    }
   } catch (error) {
     console.warn('[Mock DB] No se pudo registrar la auditoría en la base de datos MySQL (Bypass activo).');
   }
@@ -89,6 +109,7 @@ module.exports = {
           message: 'Certificado no válido o no registrado en nuestro sistema.'
         });
       }
+      mockDb.notificaciones.push({ id: mockDb.notificaciones.length + 1, usuario_tipo: 'admin', usuario_id: 1, titulo: 'Certificado verificado', mensaje: `El certificado ${cert.codigo} fue verificado.`, tipo: TYPES.INFO, leida: 0, created_at: new Date().toISOString() });
       return res.status(200).json({
         valid: true,
         certificado: cert
@@ -188,6 +209,7 @@ module.exports = {
           message: 'Certificado no encontrado. Por favor verifique el código y DNI ingresados.'
         });
       }
+      mockDb.notificaciones.push({ id: mockDb.notificaciones.length + 1, usuario_tipo: 'admin', usuario_id: 1, titulo: 'Certificado verificado', mensaje: `El certificado ${cert.codigo} fue verificado.`, tipo: TYPES.INFO, leida: 0, created_at: new Date().toISOString() });
       return res.status(200).json({
         valid: true,
         certificado: cert

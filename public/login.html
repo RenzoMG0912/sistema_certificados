@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TEAM HSEC | Iniciar Sesion</title>
-  
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  
+
   <!-- Fonts: Plus Jakarta Sans & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
   <!-- Google Material Symbols -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
@@ -43,7 +47,7 @@
       opacity: 0;
       transition: opacity 0.35s ease;
     }
-    
+
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
@@ -61,11 +65,13 @@
       border: 1px solid transparent;
       font-weight: 500;
     }
+
     .alert-danger {
       background-color: #fef2f2;
       border-color: #fee2e2;
       color: #991b1b;
     }
+
     .alert-success {
       background-color: #f0fdf4;
       border-color: #dcfce7;
@@ -73,19 +79,32 @@
     }
 
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-4px); }
-      75% { transform: translateX(4px); }
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-4px);
+      }
+
+      75% {
+        transform: translateX(4px);
+      }
     }
+
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
-    
+
     .spinner {
       display: none;
       width: 20px;
       height: 20px;
-      border: 2px solid rgba(255,255,255,0.3);
+      border: 2px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
       border-top-color: white;
       animation: spin 0.8s linear infinite;
@@ -106,107 +125,146 @@
       transition: all 0.3s ease;
       flex-shrink: 0;
     }
+
     .theme-toggle:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
+
     .dark .theme-toggle {
       background: #1e293b;
       border-color: #334155;
       color: #fbbf24;
     }
 
-    .theme-transition, .theme-transition * {
+    .theme-transition,
+    .theme-transition * {
       transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
     }
+
     .dark body {
       background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('/assets/img/fondo_login.jpg') center/cover no-repeat fixed;
     }
+
     .dark .bg-white {
       background-color: #1e293b !important;
     }
+
     .dark .text-slate-800 {
       color: #e2e8f0 !important;
     }
+
     .dark .text-slate-500,
     .dark .text-slate-400 {
       color: #94a3b8 !important;
     }
+
     .dark .border-slate-100,
     .dark .border-slate-200,
     .dark .border-slate-300 {
       border-color: #334155 !important;
     }
+
     .dark .shadow-xl {
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.4) !important;
     }
-    .dark input {
-      background-color: #0f172a !important;
-      border-color: #334155 !important;
-      color: #e2e8f0 !important;
-    }
-    .dark input:focus {
-      border-color: #d5b874 !important;
-      background-color: #0f172a !important;
-    }
+
     .dark input::placeholder {
       color: #64748b !important;
     }
+
     .dark .alert-danger {
       background-color: rgba(220, 38, 38, 0.15) !important;
       border-color: rgba(220, 38, 38, 0.3) !important;
       color: #fca5a5 !important;
     }
+
     .dark .alert-success {
       background-color: rgba(22, 163, 74, 0.15) !important;
       border-color: rgba(22, 163, 74, 0.3) !important;
       color: #4ade80 !important;
     }
 
-    /* Premium floating label styles */
-    .wrap { position: relative; }
+    /* ============================================================
+       Premium floating label — icono y texto alineados con flexbox
+       (el centrado vertical usa transform: translateY(-50%), que
+       se recalcula solo según la altura real del elemento, así el
+       icono y el label SIEMPRE quedan en el mismo eje sin importar
+       el font-size o el navegador)
+       ============================================================ */
+    .wrap {
+      position: relative;
+    }
 
     .premium {
       position: relative;
       border: 1.5px solid transparent;
       border-radius: 12px;
       background: #f3f4f6;
-      padding: 14px 16px 14px 48px;
-      transition: border-color .2s, background .2s;
+      padding: 15px 16px;
+      transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
     }
 
-    .premium.has-right {
-      padding-right: 48px;
+    .premium .row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .premium.has-right .row {
+      padding-right: 28px;
+    }
+
+    .premium .icon-left {
+      flex-shrink: 0;
+      font-size: 20px;
+      line-height: 1;
+      color: #9ca3af;
+      transition: color .2s ease;
     }
 
     .premium input {
-      width: 100%;
+      flex: 1;
+      min-width: 0;
       box-sizing: border-box;
-      border: none;
-      outline: none;
+      border: none !important;
       background: transparent;
       font-size: 14px;
+      line-height: 1.2;
+      color: inherit;
+      padding: 0;
+      outline: none !important;
+      box-shadow: none !important;
+      --tw-ring-shadow: 0 0 #0000 !important;
+      --tw-ring-color: transparent !important;
+    }
+
+    /* Anula el ring azul por defecto de @tailwindcss/forms en cualquier estado */
+    .premium input:focus,
+    .premium input:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+      --tw-ring-shadow: 0 0 #0000 !important;
+    }
+
+    /* Autofill de Chrome no debe reintroducir fondo azul/amarillo */
+    .premium input:-webkit-autofill,
+    .premium input:-webkit-autofill:hover,
+    .premium input:-webkit-autofill:focus {
+      -webkit-text-fill-color: inherit;
+      -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+      transition: background-color 9999s ease-in-out 0s;
     }
 
     .premium label {
       position: absolute;
       left: 48px;
-      top: 14px;
+      top: 50%;
+      transform: translateY(-50%);
       font-size: 14px;
       color: #9ca3af;
       pointer-events: none;
-      transition: top .2s ease, font-size .2s ease, color .2s ease;
-    }
-
-    .premium .icon-left {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 20px;
-      color: #9ca3af;
-      pointer-events: none;
-      transition: color .2s ease;
+      transition: top .2s ease, left .2s ease, font-size .2s ease, color .2s ease;
     }
 
     .premium .premium-toggle {
@@ -230,16 +288,18 @@
       color: #e60000;
     }
 
+    /* Estado activo: focus o con contenido -> label sube y "corta" el borde */
     .wrap:has(input:focus) .premium,
     .wrap:has(input:not(:placeholder-shown)) .premium {
       border-color: #e60000;
       background: transparent;
+      box-shadow: 0 0 0 3px rgba(230, 0, 0, 0.08);
     }
 
     .wrap:has(input:focus) label,
     .wrap:has(input:not(:placeholder-shown)) label {
-      top: -9px;
-      left: 40px;
+      top: 0;
+      left: 16px;
       font-size: 11px;
       color: #e60000;
       background: #fff;
@@ -250,6 +310,30 @@
       color: #e60000;
     }
 
+    .forgot-link {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #9ca3af;
+      transition: color .2s ease;
+    }
+
+    .forgot-link:hover {
+      color: #e60000;
+    }
+
+    /* Halo decorativo detrás del logo, estilo "spotlight" */
+    .logo-glow {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(230, 0, 0, 0.10) 0%, rgba(230, 0, 0, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
     /* Dark mode premium overrides */
     .dark .premium {
       background: #1e293b;
@@ -257,13 +341,13 @@
 
     .dark .premium input {
       background: transparent !important;
-      border-color: transparent !important;
     }
 
     .dark .wrap:has(input:focus) .premium,
     .dark .wrap:has(input:not(:placeholder-shown)) .premium {
       border-color: #d5b874;
       background: transparent;
+      box-shadow: 0 0 0 3px rgba(213, 184, 116, 0.12);
     }
 
     .dark .wrap:has(input:focus) label,
@@ -279,65 +363,88 @@
     .dark .premium .premium-toggle:hover {
       color: #d5b874;
     }
+
+    .dark .forgot-link:hover {
+      color: #d5b874;
+    }
+
+    .dark .logo-glow {
+      background: radial-gradient(circle, rgba(213, 184, 116, 0.14) 0%, rgba(213, 184, 116, 0) 70%);
+    }
   </style>
   <noscript>
     <style>
-      body { opacity: 1 !important; }
+      body {
+        opacity: 1 !important;
+      }
     </style>
   </noscript>
 </head>
+
 <body class="font-body min-h-screen flex flex-col items-center justify-between p-6 text-slate-800">
 
   <div class="hidden md:block"></div>
 
   <div class="w-full max-w-[440px] flex flex-col items-center">
-    
+
     <!-- Login Card -->
-    <div class="w-full bg-white rounded-[1.5rem] p-8 md:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 text-center">
-      
+    <div
+      class="relative w-full bg-white rounded-[1.5rem] p-8 md:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 text-center overflow-hidden">
+
+      <div class="logo-glow"></div>
+
       <!-- Logo -->
-      <div class="flex items-center justify-center mb-4">
+      <div class="relative flex items-center justify-center mb-4">
         <img src="/img/logo_RV.png" alt="TEAM HSEC" class="h-20 w-auto object-contain">
       </div>
 
-      <h2 class="font-title text-2xl font-bold tracking-tight text-primary mt-2">
+      <h2 class="relative font-title text-2xl font-bold tracking-tight text-primary mt-2">
         TEAM HSEC
       </h2>
-      <p class="text-slate-400 text-sm mt-1 mb-8">Ingrese sus credenciales para acceder</p>
+      <p class="relative text-slate-400 text-sm mt-1 mb-8">Ingrese sus credenciales para acceder</p>
 
       <!-- Alert Message -->
-      <div class="alert alert-danger" id="login-alert">
+      <div class="alert alert-danger relative" id="login-alert">
         <span class="material-symbols-outlined text-[18px]">error</span>
         <span id="alert-msg">Error de credenciales</span>
       </div>
 
       <!-- Form -->
-      <form id="login-form" class="space-y-6">
+      <form id="login-form" class="relative space-y-5">
         <div class="wrap">
           <div class="premium">
-            <input type="email" id="email" placeholder=" " required autocomplete="username">
+            <div class="row">
+              <span class="material-symbols-outlined icon-left">mail</span>
+              <input type="email" id="email" placeholder=" " required autocomplete="username">
+            </div>
             <label for="email">Correo Electrónico</label>
-            <span class="material-symbols-outlined icon-left">mail</span>
           </div>
         </div>
 
         <div class="wrap">
           <div class="premium has-right">
-            <input type="password" id="password" placeholder=" " required autocomplete="current-password">
+            <div class="row">
+              <span class="material-symbols-outlined icon-left">lock</span>
+              <input type="password" id="password" placeholder=" " required autocomplete="current-password">
+            </div>
             <label for="password">Contraseña</label>
-            <span class="material-symbols-outlined icon-left">lock</span>
-            <button type="button" id="toggle-password" class="premium-toggle" aria-label="Ver contraseña" aria-pressed="false">
+            <button type="button" id="toggle-password" class="premium-toggle" aria-label="Ver contraseña"
+              aria-pressed="false">
               <span class="material-symbols-outlined">visibility</span>
             </button>
           </div>
         </div>
 
-        <div class="flex items-center gap-2 text-left">
-          <input type="checkbox" id="remember" class="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary">
-          <label for="remember" class="text-slate-500 text-sm font-medium select-none">Recordar mi sesion</label>
+        <div class="flex items-center justify-between text-left -mt-1">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" id="remember"
+              class="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary">
+            <span class="text-slate-500 text-sm font-medium">Recordar mi sesion</span>
+          </label>
+          <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
         </div>
 
-        <button type="submit" id="submit-btn" 
+        <button type="submit" id="submit-btn"
           class="w-full bg-primary hover:bg-primary-dark active:bg-[#8a0000] text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg shadow-red-950/10 hover:shadow-red-950/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-2">
           <span id="btn-text" class="flex items-center gap-2">
             Iniciar Sesion <span class="material-symbols-outlined text-[20px]">login</span>
@@ -347,7 +454,8 @@
       </form>
 
       <div class="mt-8 border-t border-slate-100 pt-6 flex items-center justify-between">
-        <a href="/" id="back-link" class="inline-flex items-center gap-2 text-xs text-slate-400 hover:text-slate-600 transition-colors font-semibold">
+        <a href="/" id="back-link"
+          class="inline-flex items-center gap-2 text-xs text-slate-400 hover:text-slate-600 transition-colors font-semibold">
           <span class="material-symbols-outlined text-[16px]">arrow_back</span> Volver a la pagina principal
         </a>
         <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">
@@ -366,7 +474,8 @@
   </div>
 
   <!-- Footer -->
-  <div class="w-full max-w-[800px] mt-12 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 font-medium px-4 text-center md:text-left">
+  <div
+    class="w-full max-w-[800px] mt-12 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 font-medium px-4 text-center md:text-left">
     <div>
       &copy; 2026 TeamHSEC Academy. Todos los derechos reservados.
     </div>
@@ -377,20 +486,20 @@
   </div>
 
   <script>
-    // Dark mode toggle (runs immediately)
-    (() => {
-      const html = document.documentElement;
-      const saved = localStorage.getItem('theme');
-      if (saved === 'dark') html.classList.add('dark');
-    })();
+      // Dark mode toggle (runs immediately)
+      (() => {
+        const html = document.documentElement;
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') html.classList.add('dark');
+      })();
 
     // Fade in body on load
     window.addEventListener('DOMContentLoaded', () => {
       document.body.style.opacity = '1';
-      
+
       const toggle = document.getElementById('theme-toggle');
       const html = document.documentElement;
-      
+
       // Enable smooth transitions after initial theme is set
       setTimeout(() => html.classList.add('theme-transition'), 50);
 
@@ -451,7 +560,7 @@
       if (form) {
         form.addEventListener('submit', async (e) => {
           e.preventDefault();
-          
+
           alertBox.style.display = 'none';
           submitBtn.disabled = true;
           btnText.style.display = 'none';
@@ -478,7 +587,7 @@
                 localStorage.setItem('student_token', data.token);
                 localStorage.setItem('student_user', JSON.stringify(data.estudiante || { email }));
               }
-              
+
               alertBox.className = 'alert alert-success';
               alertBox.innerHTML = `<span class="material-symbols-outlined text-[18px]">check_circle</span><span>Acceso autorizado. Redirigiendo...</span>`;
               alertBox.style.display = 'flex';
@@ -502,7 +611,7 @@
             alertBox.className = 'alert alert-danger';
             alertBox.innerHTML = `<span class="material-symbols-outlined text-[18px]">error</span><span>${err.message}</span>`;
             alertBox.style.display = 'flex';
-            
+
             submitBtn.disabled = false;
             btnText.style.display = 'inline';
             btnSpinner.style.display = 'none';
@@ -512,4 +621,5 @@
     });
   </script>
 </body>
+
 </html>

@@ -162,6 +162,123 @@
       border-color: rgba(22, 163, 74, 0.3) !important;
       color: #4ade80 !important;
     }
+
+    /* Premium floating label styles */
+    .wrap { position: relative; }
+
+    .premium {
+      position: relative;
+      border: 1.5px solid transparent;
+      border-radius: 12px;
+      background: #f3f4f6;
+      padding: 14px 16px 14px 48px;
+      transition: border-color .2s, background .2s;
+    }
+
+    .premium.has-right {
+      padding-right: 48px;
+    }
+
+    .premium input {
+      width: 100%;
+      box-sizing: border-box;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 14px;
+    }
+
+    .premium label {
+      position: absolute;
+      left: 48px;
+      top: 14px;
+      font-size: 14px;
+      color: #9ca3af;
+      pointer-events: none;
+      transition: top .2s ease, font-size .2s ease, color .2s ease;
+    }
+
+    .premium .icon-left {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: #9ca3af;
+      pointer-events: none;
+      transition: color .2s ease;
+    }
+
+    .premium .premium-toggle {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: none;
+      transition: color .2s ease;
+    }
+
+    .premium .premium-toggle:hover {
+      color: #e60000;
+    }
+
+    .wrap:has(input:focus) .premium,
+    .wrap:has(input:not(:placeholder-shown)) .premium {
+      border-color: #e60000;
+      background: transparent;
+    }
+
+    .wrap:has(input:focus) label,
+    .wrap:has(input:not(:placeholder-shown)) label {
+      top: -9px;
+      left: 40px;
+      font-size: 11px;
+      color: #e60000;
+      background: #fff;
+      padding: 0 6px;
+    }
+
+    .wrap:has(input:focus) .icon-left {
+      color: #e60000;
+    }
+
+    /* Dark mode premium overrides */
+    .dark .premium {
+      background: #1e293b;
+    }
+
+    .dark .premium input {
+      background: transparent !important;
+      border-color: transparent !important;
+    }
+
+    .dark .wrap:has(input:focus) .premium,
+    .dark .wrap:has(input:not(:placeholder-shown)) .premium {
+      border-color: #d5b874;
+      background: transparent;
+    }
+
+    .dark .wrap:has(input:focus) label,
+    .dark .wrap:has(input:not(:placeholder-shown)) label {
+      background: #1e293b;
+      color: #d5b874;
+    }
+
+    .dark .wrap:has(input:focus) .icon-left {
+      color: #d5b874;
+    }
+
+    .dark .premium .premium-toggle:hover {
+      color: #d5b874;
+    }
   </style>
   <noscript>
     <style>
@@ -196,31 +313,21 @@
 
       <!-- Form -->
       <form id="login-form" class="space-y-6">
-        <div class="text-left space-y-2">
-          <label for="email" class="font-title block text-xs font-bold uppercase tracking-wider text-slate-500">
-            Correo Electronico
-          </label>
-          <div class="relative">
-            <input type="email" id="email" 
-              class="w-full bg-white border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-slate-800 placeholder-slate-400 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white outline-none transition-all text-sm shadow-sm" 
-              placeholder="correo@ejemplo.com" required autocomplete="username">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">mail</span>
+        <div class="wrap">
+          <div class="premium">
+            <input type="email" id="email" placeholder=" " required autocomplete="username">
+            <label for="email">Correo Electrónico</label>
+            <span class="material-symbols-outlined icon-left">mail</span>
           </div>
         </div>
 
-        <div class="text-left space-y-2">
-          <div class="flex justify-between items-center">
-            <label for="password" class="font-title block text-xs font-bold uppercase tracking-wider text-slate-500">
-              Contrasena
-            </label>
-          </div>
-          <div class="relative">
-            <input type="password" id="password" 
-              class="w-full bg-white border border-slate-300 rounded-xl pl-12 pr-12 py-3 text-slate-800 placeholder-slate-400 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white outline-none transition-all text-sm shadow-sm" 
-              placeholder="Ingrese su contrasena" required autocomplete="current-password">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">lock</span>
-            <button type="button" id="toggle-password" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors w-8 h-8 flex items-center justify-center" aria-label="Ver contrasena" aria-pressed="false">
-              <span class="material-symbols-outlined text-[20px]">visibility</span>
+        <div class="wrap">
+          <div class="premium has-right">
+            <input type="password" id="password" placeholder=" " required autocomplete="current-password">
+            <label for="password">Contraseña</label>
+            <span class="material-symbols-outlined icon-left">lock</span>
+            <button type="button" id="toggle-password" class="premium-toggle" aria-label="Ver contraseña" aria-pressed="false">
+              <span class="material-symbols-outlined">visibility</span>
             </button>
           </div>
         </div>

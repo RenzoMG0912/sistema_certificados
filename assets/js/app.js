@@ -213,7 +213,8 @@ const initPage = () => {
   };
 
   const courseModal = document.getElementById('course-modal');
-  if (courseModal) {
+  const isLandingPage = Boolean(document.getElementById('catalog-courses'));
+  if (courseModal && !isLandingPage) {
     const titleEl = document.getElementById('modal-title');
     const durationEl = document.getElementById('modal-duration');
     const trainerEl = document.getElementById('modal-trainer');

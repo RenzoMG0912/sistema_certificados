@@ -121,6 +121,14 @@
   color: var(--text-muted);
 }
 
+/* Scroll offset for sticky header */
+.hero,
+.section[id],
+.stats-bar,
+.testimonials {
+  scroll-margin-top: 110px;
+}
+
 /* Section headers */
 .section__subtitle {
   color: var(--text-muted);

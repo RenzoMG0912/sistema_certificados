@@ -174,18 +174,89 @@
 
   const initTestimonials = () => {
     const track = document.getElementById('testimonials-track');
+    const wrapper = document.querySelector('.testimonials__wrapper');
     const prev = document.querySelector('.testimonials__prev');
     const next = document.querySelector('.testimonials__next');
-    if (!track) return;
+    const originalCards = track ? [...track.querySelectorAll('.testimonial-card')] : [];
+    if (!track || !originalCards.length) return;
 
-    const scroll = (dir) => {
-      const card = track.querySelector('.testimonial-card');
-      const amount = card ? card.offsetWidth + 20 : 360;
-      track.scrollBy({ left: dir * amount, behavior: 'smooth' });
+    if (prev) prev.style.display = 'none';
+    if (next) next.style.display = 'none';
+
+    const total = originalCards.length;
+    const COPIES = 3;
+    track.innerHTML = '';
+    for (let i = 0; i < COPIES; i++) {
+      originalCards.forEach(c => track.appendChild(c.cloneNode(true)));
+    }
+
+    let offsetX = 0, copyWidth = 0, cardW = 0;
+    let animId = null, isPaused = false, speed = 0, lastTs = 0;
+
+    const calc = () => {
+      const el = track.querySelector('.testimonial-card');
+      if (!el) return false;
+      const s = getComputedStyle(el);
+      const ml = parseFloat(s.marginLeft) || 0;
+      const mr = parseFloat(s.marginRight) || 0;
+      cardW = el.offsetWidth + ml + mr;
+      copyWidth = total * cardW;
+      return copyWidth > 0;
     };
 
-    if (prev) prev.addEventListener('click', () => scroll(-1));
-    if (next) next.addEventListener('click', () => scroll(1));
+    const tick = (ts) => {
+      if (!lastTs) lastTs = ts;
+      const dt = (ts - lastTs) / 1000;
+      lastTs = ts;
+
+      if (!isPaused) {
+        offsetX += speed * dt;
+        while (offsetX >= copyWidth) offsetX -= copyWidth;
+        track.style.transform = `translateX(-${offsetX}px)`;
+      }
+
+      animId = requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (animId) cancelAnimationFrame(animId);
+      lastTs = 0;
+      animId = requestAnimationFrame(tick);
+    };
+
+    if (wrapper) {
+      wrapper.addEventListener('mouseenter', () => { isPaused = true; });
+      wrapper.addEventListener('mouseleave', () => { isPaused = false; lastTs = 0; });
+    }
+
+    let rt;
+    window.addEventListener('resize', () => {
+      clearTimeout(rt);
+      rt = setTimeout(() => {
+        if (calc()) {
+          speed = copyWidth / 30;
+          while (offsetX >= copyWidth) offsetX -= copyWidth;
+          track.style.transform = `translateX(-${offsetX}px)`;
+        }
+      }, 300);
+    });
+
+    if (calc()) {
+      speed = copyWidth / 30;
+      offsetX = 0;
+      track.style.transform = 'translateX(0px)';
+      start();
+    } else {
+      const retry = setInterval(() => {
+        if (calc()) {
+          clearInterval(retry);
+          speed = copyWidth / 30;
+          offsetX = 0;
+          track.style.transform = 'translateX(0px)';
+          start();
+        }
+      }, 150);
+    }
   };
 
   const initContactForm = () => {

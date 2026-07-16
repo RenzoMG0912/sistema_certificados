@@ -111,7 +111,7 @@ export const bindModalClose = (modalId) => {
   });
 };
 
-export const showConfirmModal = (title, message, confirmText = 'Sí, confirmar', cancelText = 'Cancelar') => {
+export const showConfirmModal = (title, message, confirmText = 'Sí, confirmar', cancelText = 'Cancelar', variant = 'danger') => {
   return new Promise((resolve) => {
 
     const setText = (id, text) => {
@@ -124,8 +124,28 @@ export const showConfirmModal = (title, message, confirmText = 'Sí, confirmar',
     setText('modal-confirm-confirm', confirmText);
     setText('modal-confirm-cancel', cancelText);
 
+    const iconWrapper = document.getElementById('modal-confirm-icon-wrapper');
+    const icon = document.getElementById('modal-confirm-icon');
     const confirmBtn = document.getElementById('modal-confirm-confirm');
     const cancelBtn = document.getElementById('modal-confirm-cancel');
+
+    iconWrapper?.classList.remove('is-danger', 'is-info');
+    icon?.classList.remove('is-danger', 'is-info');
+    confirmBtn?.classList.remove('is-danger', 'is-info');
+
+    if (variant === 'info') {
+      iconWrapper?.classList.add('is-info');
+      icon?.classList.remove('fa-triangle-exclamation');
+      icon?.classList.add('fa-circle-info');
+      icon?.classList.add('is-info');
+      confirmBtn?.classList.add('is-info');
+    } else {
+      iconWrapper?.classList.add('is-danger');
+      icon?.classList.remove('fa-circle-info');
+      icon?.classList.add('fa-triangle-exclamation');
+      icon?.classList.add('is-danger');
+      confirmBtn?.classList.add('is-danger');
+    }
 
     const cleanup = () => {
       closeModal('modal-confirm');

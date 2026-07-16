@@ -285,7 +285,7 @@ export const renderCertificates = () => {
         showToast('Este participante no tiene correo registrado', 'error');
         return;
       }
-      if (!await showConfirmModal('Enviar Certificado', `¿Enviar certificado por correo a ${cert.alumno_email}?`)) return;
+      if (!await showConfirmModal('Enviar Certificado', `¿Enviar certificado por correo a ${cert.alumno_email}?`, 'Sí, enviar', 'Cancelar', 'info')) return;
       button.disabled = true;
       button.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[15px]"></i>';
       try {

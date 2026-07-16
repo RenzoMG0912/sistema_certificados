@@ -433,17 +433,41 @@
     .dark .modal__backdrop {
       background-color: rgba(0, 0, 0, 0.75) !important;
     }
-    .dark #modal-confirm .w-14 {
+    .dark #modal-confirm-icon-wrapper.is-danger {
       background-color: rgba(239, 68, 68, 0.15) !important;
     }
-    .dark #modal-confirm .fa-triangle-exclamation {
+    .dark #modal-confirm-icon.is-danger {
       color: #ef4444 !important;
     }
-    .dark #modal-confirm-confirm {
+    .dark #modal-confirm-icon-wrapper.is-info {
+      background-color: rgba(59, 130, 246, 0.15) !important;
+    }
+    .dark #modal-confirm-icon.is-info {
+      color: #3b82f6 !important;
+    }
+    #modal-confirm-confirm.is-danger {
+      background-color: #dc2626;
+    }
+    #modal-confirm-confirm.is-danger:hover {
+      background-color: #b91c1c;
+    }
+    .dark #modal-confirm-confirm.is-danger {
       background-color: #dc2626 !important;
     }
-    .dark #modal-confirm-confirm:hover {
+    .dark #modal-confirm-confirm.is-danger:hover {
       background-color: #b91c1c !important;
+    }
+    #modal-confirm-confirm.is-info {
+      background-color: #2563eb;
+    }
+    #modal-confirm-confirm.is-info:hover {
+      background-color: #1d4ed8;
+    }
+    .dark #modal-confirm-confirm.is-info {
+      background-color: #2563eb !important;
+    }
+    .dark #modal-confirm-confirm.is-info:hover {
+      background-color: #1d4ed8 !important;
     }
     .dark .text-red-600 {
       color: #f87171 !important;
@@ -1884,15 +1908,15 @@
     <div class="modal__backdrop"></div>
     <div class="modal__panel" style="max-width:440px;">
       <div class="p-6 text-center">
-        <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
-          <i class="fa-solid fa-triangle-exclamation text-red-500 text-2xl"></i>
+        <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" id="modal-confirm-icon-wrapper">
+          <i class="fa-solid fa-triangle-exclamation text-2xl" id="modal-confirm-icon"></i>
         </div>
         <h3 class="font-title text-lg font-bold text-on-surface mb-2" id="modal-confirm-title">Confirmar</h3>
         <p class="text-sm text-on-surface-variant" id="modal-confirm-message">¿Está seguro?</p>
       </div>
       <div class="flex justify-end gap-3 px-6 pb-6 pt-2">
         <button class="flex-1 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" id="modal-confirm-cancel">Cancelar</button>
-        <button class="flex-1 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="modal-confirm-confirm">Sí, confirmar</button>
+        <button class="flex-1 px-5 py-2.5 rounded-xl text-white font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="modal-confirm-confirm">Sí, confirmar</button>
       </div>
     </div>
   </div>

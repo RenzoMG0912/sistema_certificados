@@ -260,7 +260,7 @@ export const renderEnrollments = () => {
         return;
       }
 
-      if (!await showConfirmModal('Generar Certificados', `¿Generar y enviar certificados para todos los alumnos del curso "${courseName}"?`)) {
+      if (!await showConfirmModal('Generar Certificados', `¿Generar y enviar certificados para todos los alumnos del curso "${courseName}"?`, 'Sí, generar', 'Cancelar', 'info')) {
         return;
       }
 

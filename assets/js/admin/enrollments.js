@@ -260,7 +260,20 @@ export const renderEnrollments = () => {
         return;
       }
 
-      if (!await showConfirmModal('Generar Certificados', `¿Generar y enviar certificados para todos los alumnos del curso "${courseName}"?`, 'Sí, generar', 'Cancelar', 'info')) {
+      if (!await showConfirmModal(
+        'Confirmar Envío de Certificados',
+        `¿Está seguro de que desea generar y enviar los certificados digitales a todos los estudiantes aprobados del curso "${courseName}"? Esta acción notificará automáticamente a los alumnos por correo electrónico.`,
+        'Sí, enviar ahora',
+        'Cancelar',
+        'info',
+        {
+          badge: {
+            icon: 'fa-solid fa-users',
+            text: `TOTAL DE ALUMNOS: ${studentCount}`
+          },
+          confirmIcon: 'fa-solid fa-paper-plane'
+        }
+      )) {
         return;
       }
 
@@ -313,7 +326,20 @@ export const renderEnrollments = () => {
         return;
       }
 
-      if (!await showConfirmModal('Eliminar Matrículas', `¿Está seguro de eliminar TODAS las matrículas de los ${studentCount} alumnos del curso "${courseName}"? Esta acción eliminará también los certificados vinculados y no se puede deshacer.`)) {
+      if (!await showConfirmModal(
+        'Eliminar Matrículas',
+        `¿Está seguro de eliminar TODAS las matrículas de los alumnos del curso "${courseName}"? Esta acción eliminará también los certificados vinculados y no se puede deshacer.`,
+        'Sí, eliminar',
+        'Cancelar',
+        'danger',
+        {
+          badge: {
+            icon: 'fa-solid fa-users',
+            text: `TOTAL DE ALUMNOS: ${studentCount}`
+          },
+          confirmIcon: 'fa-solid fa-trash'
+        }
+      )) {
         return;
       }
 

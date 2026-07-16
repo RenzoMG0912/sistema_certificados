@@ -111,7 +111,7 @@ export const bindModalClose = (modalId) => {
   });
 };
 
-export const showConfirmModal = (title, message, confirmText = 'Sí, confirmar', cancelText = 'Cancelar', variant = 'danger') => {
+export const showConfirmModal = (title, message, confirmText = 'Sí, confirmar', cancelText = 'Cancelar', variant = 'danger', options = {}) => {
   return new Promise((resolve) => {
 
     const setText = (id, text) => {
@@ -120,9 +120,19 @@ export const showConfirmModal = (title, message, confirmText = 'Sí, confirmar',
     };
 
     setText('modal-confirm-title', title);
-    setText('modal-confirm-message', message);
-    setText('modal-confirm-confirm', confirmText);
     setText('modal-confirm-cancel', cancelText);
+
+    // Resaltar automáticamente cualquier texto entre comillas dobles
+    const messageEl = document.getElementById('modal-confirm-message');
+    if (messageEl) {
+      let styledMessage = message;
+      if (variant === 'info') {
+        styledMessage = message.replace(/"([^"]+)"/g, '<span class="font-bold text-green-700 dark:text-green-400">"$1"</span>');
+      } else {
+        styledMessage = message.replace(/"([^"]+)"/g, '<span class="font-bold text-red-700 dark:text-red-400">"$1"</span>');
+      }
+      messageEl.innerHTML = styledMessage;
+    }
 
     const iconWrapper = document.getElementById('modal-confirm-icon-wrapper');
     const icon = document.getElementById('modal-confirm-icon');
@@ -141,6 +151,40 @@ export const showConfirmModal = (title, message, confirmText = 'Sí, confirmar',
       iconWrapper?.classList.add('is-danger');
       icon?.classList.add('fa-triangle-exclamation', 'is-danger');
       confirmBtn?.classList.add('is-danger');
+    }
+
+    // Configurar icono en el botón de confirmación
+    if (confirmBtn) {
+      let iconClass = options.confirmIcon;
+      if (!iconClass) {
+        iconClass = (variant === 'info') ? 'fa-solid fa-paper-plane' : 'fa-solid fa-trash';
+      }
+      confirmBtn.innerHTML = `<i class="${iconClass}"></i> <span>${confirmText}</span>`;
+    }
+
+    // Configurar el badge dinámico
+    const badgeWrapper = document.getElementById('modal-confirm-badge-wrapper');
+    const badge = document.getElementById('modal-confirm-badge');
+    const badgeIcon = document.getElementById('modal-confirm-badge-icon');
+    const badgeText = document.getElementById('modal-confirm-badge-text');
+
+    if (badgeWrapper && badge && badgeIcon && badgeText) {
+      if (options.badge) {
+        badgeWrapper.classList.remove('hidden');
+        badgeWrapper.classList.add('flex');
+        badgeText.textContent = options.badge.text;
+        badgeIcon.className = options.badge.icon || 'fa-solid fa-users';
+
+        badge.className = 'flex items-center gap-2 py-2.5 px-5 rounded-xl font-bold text-xs sm:text-sm tracking-wide';
+        if (variant === 'info') {
+          badge.classList.add('bg-green-50', 'text-green-700', 'dark:bg-green-950/30', 'dark:text-green-400');
+        } else {
+          badge.classList.add('bg-red-50', 'text-red-700', 'dark:bg-red-950/30', 'dark:text-red-400');
+        }
+      } else {
+        badgeWrapper.classList.add('hidden');
+        badgeWrapper.classList.remove('flex');
+      }
     }
 
     const cleanup = () => {

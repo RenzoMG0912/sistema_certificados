@@ -433,53 +433,70 @@
     .dark .modal__backdrop {
       background-color: rgba(0, 0, 0, 0.75) !important;
     }
+    /* Estilos Premium para Modal de Confirmación */
+    #modal-confirm .modal__panel {
+      border-radius: 24px !important;
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.08) !important;
+      border: 1px solid #f1f5f9 !important;
+    }
+    .dark #modal-confirm .modal__panel {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.4) !important;
+    }
+    #modal-confirm-icon-wrapper {
+      border-radius: 16px !important;
+      width: 4rem !important;
+      height: 4rem !important;
+      transition: all 0.3s ease;
+    }
+    #modal-confirm-icon-wrapper.is-info {
+      background-color: #eefbf2 !important;
+    }
+    #modal-confirm-icon.is-info {
+      color: #15803d !important;
+    }
+    .dark #modal-confirm-icon-wrapper.is-info {
+      background-color: rgba(16, 185, 129, 0.15) !important;
+    }
+    .dark #modal-confirm-icon.is-info {
+      color: #4ade80 !important;
+    }
+    #modal-confirm-icon-wrapper.is-danger {
+      background-color: #fef2f2 !important;
+    }
+    #modal-confirm-icon.is-danger {
+      color: #ef4444 !important;
+    }
     .dark #modal-confirm-icon-wrapper.is-danger {
       background-color: rgba(239, 68, 68, 0.15) !important;
     }
     .dark #modal-confirm-icon.is-danger {
-      color: #ef4444 !important;
+      color: #f87171 !important;
     }
-    .dark #modal-confirm-icon-wrapper.is-info {
-      background-color: rgba(59, 130, 246, 0.15) !important;
+    #modal-confirm-confirm.is-info {
+      background-color: #15803d !important;
     }
-    .dark #modal-confirm-icon.is-info {
-      color: #3b82f6 !important;
+    #modal-confirm-confirm.is-info:hover {
+      background-color: #166534 !important;
     }
-    #modal-confirm-icon-wrapper.is-danger {
-      background-color: #fef2f2;
+    .dark #modal-confirm-confirm.is-info {
+      background-color: #15803d !important;
     }
-    #modal-confirm-icon.is-danger {
-      color: #ef4444;
-    }
-    #modal-confirm-icon-wrapper.is-info {
-      background-color: #eff6ff;
-    }
-    #modal-confirm-icon.is-info {
-      color: #3b82f6;
+    .dark #modal-confirm-confirm.is-info:hover {
+      background-color: #166534 !important;
     }
     #modal-confirm-confirm.is-danger {
-      background-color: #dc2626;
+      background-color: #dc2626 !important;
     }
     #modal-confirm-confirm.is-danger:hover {
-      background-color: #b91c1c;
+      background-color: #b91c1c !important;
     }
     .dark #modal-confirm-confirm.is-danger {
       background-color: #dc2626 !important;
     }
     .dark #modal-confirm-confirm.is-danger:hover {
       background-color: #b91c1c !important;
-    }
-    #modal-confirm-confirm.is-info {
-      background-color: #2563eb;
-    }
-    #modal-confirm-confirm.is-info:hover {
-      background-color: #1d4ed8;
-    }
-    .dark #modal-confirm-confirm.is-info {
-      background-color: #2563eb !important;
-    }
-    .dark #modal-confirm-confirm.is-info:hover {
-      background-color: #1d4ed8 !important;
     }
     .dark .text-red-600 {
       color: #f87171 !important;
@@ -1918,17 +1935,26 @@
   <!-- MODAL: CONFIRMACIÓN -->
   <div class="modal modal-dashboard" id="modal-confirm" aria-hidden="true">
     <div class="modal__backdrop"></div>
-    <div class="modal__panel" style="max-width:520px;">
-      <div class="p-8 sm:p-10 text-center">
-        <div class="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6" id="modal-confirm-icon-wrapper">
-          <i class="fa-solid fa-circle-check text-3xl" id="modal-confirm-icon"></i>
+    <div class="modal__panel" style="max-width:420px;">
+      <div class="p-6 sm:p-7 text-center">
+        <div class="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-4" id="modal-confirm-icon-wrapper">
+          <i class="fa-solid fa-circle-check text-2xl" id="modal-confirm-icon"></i>
         </div>
-        <h3 class="text-2xl sm:text-3xl font-bold text-on-surface tracking-tight mb-3" id="modal-confirm-title">Confirmar</h3>
-        <p class="text-base sm:text-lg text-on-surface-variant leading-relaxed" id="modal-confirm-message">¿Está seguro?</p>
-        <hr class="my-8 border-slate-100">
+        <h3 class="text-lg sm:text-xl font-bold text-on-surface tracking-tight mb-2" id="modal-confirm-title">Confirmar</h3>
+        <p class="text-xs sm:text-[13px] text-on-surface-variant leading-relaxed px-1" id="modal-confirm-message">¿Está seguro?</p>
+        
+        <!-- Contenedor del Badge Dinámico -->
+        <div id="modal-confirm-badge-wrapper" class="hidden justify-center mt-4 mb-0">
+          <div id="modal-confirm-badge" class="flex items-center gap-2 py-1.5 px-3 rounded-lg font-bold text-[11px] tracking-wide">
+            <i id="modal-confirm-badge-icon" class="fa-solid fa-users"></i>
+            <span id="modal-confirm-badge-text"></span>
+          </div>
+        </div>
+
+        <hr class="my-5 border-slate-100 dark:border-slate-800">
         <div class="flex flex-col sm:flex-row gap-3">
-          <button class="flex-1 py-3.5 px-6 border-2 border-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors" type="button" id="modal-confirm-cancel">Cancelar</button>
-          <button class="flex-1 py-3.5 px-6 rounded-xl text-white font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98]" type="button" id="modal-confirm-confirm">Sí, confirmar</button>
+          <button class="flex-1 py-2.5 px-4 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-xs sm:text-sm" type="button" id="modal-confirm-cancel">Cancelar</button>
+          <button class="flex-1 py-2.5 px-4 rounded-xl text-white font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-xs sm:text-sm" type="button" id="modal-confirm-confirm">Sí, confirmar</button>
         </div>
       </div>
     </div>

@@ -26,7 +26,7 @@
 
     // Check if already logged in
     if (localStorage.getItem('student_token')) {
-      window.location.href = '/student/dashboard.html';
+      window.location.href = '/student/dashboard';
       return;
     }
 
@@ -95,7 +95,7 @@
             setTimeout(() => {
               document.body.style.opacity = '0';
               setTimeout(() => {
-                window.location.href = '/student/dashboard.html';
+                window.location.href = '/student/dashboard';
               }, 350);
             }, 1000);
           } else {

@@ -287,7 +287,7 @@ const init = async () => {
   initForms();
 
   if (!localStorage.getItem('admin_token')) {
-    window.location.href = '/login.html';
+    window.location.href = '/login';
     return;
   }
 
@@ -304,7 +304,7 @@ const init = async () => {
     event.preventDefault();
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_user');
-    window.location.href = '/login.html';
+    window.location.href = '/login';
   });
 
   setActiveTab('inicio');

@@ -47,8 +47,8 @@
     if (response.status === 401 || response.status === 403) {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
-      window.location.href = '/login.html';
-      return null;
+    window.location.href = '/login';
+      return;
     }
     const text = await response.text();
     let data = null;
@@ -73,7 +73,7 @@
 
   // ========== AUTH CHECK ==========
   if (!localStorage.getItem(TOKEN_KEY)) {
-    window.location.href = '/login.html';
+    window.location.href = '/login';
     return;
   }
 
@@ -644,7 +644,7 @@
   el('logout-btn')?.addEventListener('click', () => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
-    window.location.href = '/login.html';
+    window.location.href = '/login';
   });
 
   // ========== INIT ==========

@@ -445,6 +445,18 @@
     .dark #modal-confirm-icon.is-info {
       color: #3b82f6 !important;
     }
+    #modal-confirm-icon-wrapper.is-danger {
+      background-color: #fef2f2;
+    }
+    #modal-confirm-icon.is-danger {
+      color: #ef4444;
+    }
+    #modal-confirm-icon-wrapper.is-info {
+      background-color: #eff6ff;
+    }
+    #modal-confirm-icon.is-info {
+      color: #3b82f6;
+    }
     #modal-confirm-confirm.is-danger {
       background-color: #dc2626;
     }
@@ -1906,17 +1918,18 @@
   <!-- MODAL: CONFIRMACIÓN -->
   <div class="modal modal-dashboard" id="modal-confirm" aria-hidden="true">
     <div class="modal__backdrop"></div>
-    <div class="modal__panel" style="max-width:440px;">
-      <div class="p-6 text-center">
-        <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" id="modal-confirm-icon-wrapper">
-          <i class="fa-solid fa-triangle-exclamation text-2xl" id="modal-confirm-icon"></i>
+    <div class="modal__panel" style="max-width:520px;">
+      <div class="p-8 sm:p-10 text-center">
+        <div class="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6" id="modal-confirm-icon-wrapper">
+          <i class="fa-solid fa-circle-check text-3xl" id="modal-confirm-icon"></i>
         </div>
-        <h3 class="font-title text-lg font-bold text-on-surface mb-2" id="modal-confirm-title">Confirmar</h3>
-        <p class="text-sm text-on-surface-variant" id="modal-confirm-message">¿Está seguro?</p>
-      </div>
-      <div class="flex justify-end gap-3 px-6 pb-6 pt-2">
-        <button class="flex-1 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" id="modal-confirm-cancel">Cancelar</button>
-        <button class="flex-1 px-5 py-2.5 rounded-xl text-white font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="modal-confirm-confirm">Sí, confirmar</button>
+        <h3 class="text-2xl sm:text-3xl font-bold text-on-surface tracking-tight mb-3" id="modal-confirm-title">Confirmar</h3>
+        <p class="text-base sm:text-lg text-on-surface-variant leading-relaxed" id="modal-confirm-message">¿Está seguro?</p>
+        <hr class="my-8 border-slate-100">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button class="flex-1 py-3.5 px-6 border-2 border-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors" type="button" id="modal-confirm-cancel">Cancelar</button>
+          <button class="flex-1 py-3.5 px-6 rounded-xl text-white font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98]" type="button" id="modal-confirm-confirm">Sí, confirmar</button>
+        </div>
       </div>
     </div>
   </div>

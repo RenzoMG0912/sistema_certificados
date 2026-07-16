@@ -111,6 +111,45 @@ export const bindModalClose = (modalId) => {
   });
 };
 
+export const showConfirmModal = (title, message, confirmText = 'Sí, confirmar', cancelText = 'Cancelar') => {
+  return new Promise((resolve) => {
+
+    const setText = (id, text) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    };
+
+    setText('modal-confirm-title', title);
+    setText('modal-confirm-message', message);
+    setText('modal-confirm-confirm', confirmText);
+    setText('modal-confirm-cancel', cancelText);
+
+    const confirmBtn = document.getElementById('modal-confirm-confirm');
+    const cancelBtn = document.getElementById('modal-confirm-cancel');
+
+    const cleanup = () => {
+      closeModal('modal-confirm');
+      confirmBtn?.removeEventListener('click', onConfirm);
+      cancelBtn?.removeEventListener('click', onCancel);
+    };
+
+    const onConfirm = () => {
+      cleanup();
+      resolve(true);
+    };
+
+    const onCancel = () => {
+      cleanup();
+      resolve(false);
+    };
+
+    confirmBtn?.addEventListener('click', onConfirm);
+    cancelBtn?.addEventListener('click', onCancel);
+
+    openModal('modal-confirm');
+  });
+};
+
 export const readFileAsDataURL = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader();
   reader.onload = () => resolve(reader.result);

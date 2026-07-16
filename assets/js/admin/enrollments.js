@@ -1,4 +1,4 @@
-import { el, escapeHtml, formatDate, apiFetch, showToast, openModal, resetForm, closeModal } from './utils.js';
+import { el, escapeHtml, formatDate, apiFetch, showToast, showConfirmModal, openModal, resetForm, closeModal } from './utils.js';
 import { state } from './state.js';
 
 // ─────────────────────────────────────────
@@ -260,7 +260,7 @@ export const renderEnrollments = () => {
         return;
       }
 
-      if (!confirm(`¿Generar y enviar certificados para todos los alumnos sin certificado del curso "${courseName}"?`)) {
+      if (!await showConfirmModal('Generar Certificados', `¿Generar y enviar certificados para todos los alumnos del curso "${courseName}"?`)) {
         return;
       }
 
@@ -313,7 +313,7 @@ export const renderEnrollments = () => {
         return;
       }
 
-      if (!confirm(`¿Está seguro de que desea eliminar COMPLETAMENTE las matrículas de los ${studentCount} alumnos del curso "${courseName}"?\nEsta acción no se puede deshacer y también eliminará los certificados vinculados.`)) {
+      if (!await showConfirmModal('Eliminar Matrículas', `¿Está seguro de eliminar TODAS las matrículas de los ${studentCount} alumnos del curso "${courseName}"? Esta acción eliminará también los certificados vinculados y no se puede deshacer.`)) {
         return;
       }
 
@@ -407,7 +407,7 @@ export const renderEnrollments = () => {
   container.querySelectorAll('.btn-remove-enrollment-student').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      if (!confirm('¿Deseas quitar este alumno de la matrícula?')) return;
+      if (!await showConfirmModal('Quitar Alumno', '¿Deseas quitar este alumno de la matrícula?')) return;
       try {
         await apiFetch(`/api/matriculas/${btn.dataset.enrollmentId}`, { method: 'DELETE' });
         showToast('Matrícula eliminada correctamente');

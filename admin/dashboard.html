@@ -433,6 +433,18 @@
     .dark .modal__backdrop {
       background-color: rgba(0, 0, 0, 0.75) !important;
     }
+    .dark #modal-confirm .w-14 {
+      background-color: rgba(239, 68, 68, 0.15) !important;
+    }
+    .dark #modal-confirm .fa-triangle-exclamation {
+      color: #ef4444 !important;
+    }
+    .dark #modal-confirm-confirm {
+      background-color: #dc2626 !important;
+    }
+    .dark #modal-confirm-confirm:hover {
+      background-color: #b91c1c !important;
+    }
     .dark .text-red-600 {
       color: #f87171 !important;
     }
@@ -1863,6 +1875,24 @@
             <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="submit">Guardar Firma</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIRMACIÓN -->
+  <div class="modal modal-dashboard" id="modal-confirm" aria-hidden="true">
+    <div class="modal__backdrop"></div>
+    <div class="modal__panel" style="max-width:440px;">
+      <div class="p-6 text-center">
+        <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+          <i class="fa-solid fa-triangle-exclamation text-red-500 text-2xl"></i>
+        </div>
+        <h3 class="font-title text-lg font-bold text-on-surface mb-2" id="modal-confirm-title">Confirmar</h3>
+        <p class="text-sm text-on-surface-variant" id="modal-confirm-message">¿Está seguro?</p>
+      </div>
+      <div class="flex justify-end gap-3 px-6 pb-6 pt-2">
+        <button class="flex-1 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" id="modal-confirm-cancel">Cancelar</button>
+        <button class="flex-1 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="modal-confirm-confirm">Sí, confirmar</button>
       </div>
     </div>
   </div>

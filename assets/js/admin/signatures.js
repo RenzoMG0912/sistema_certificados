@@ -1,4 +1,4 @@
-import { el, escapeHtml, apiFetch, showToast, openModal, resetForm, readFileAsDataURL } from './utils.js';
+import { el, escapeHtml, apiFetch, showToast, showConfirmModal, openModal, resetForm, readFileAsDataURL } from './utils.js';
 import { state } from './state.js';
 import { populateCourseTrainerSelect } from './courses.js';
 
@@ -76,7 +76,7 @@ export const loadSignatures = async () => {
 
   list.querySelectorAll('.btn-delete-signature').forEach(button => {
     button.addEventListener('click', async () => {
-      if (!confirm('¿Eliminar esta firma?')) return;
+      if (!await showConfirmModal('Eliminar Firma', '¿Está seguro de eliminar esta firma? Los cursos que la usan quedarán sin firmante asignado.')) return;
       await apiFetch(`/api/firmas/${button.dataset.id}`, { method: 'DELETE' });
       showToast('Firma eliminada correctamente');
       await loadSignatures();

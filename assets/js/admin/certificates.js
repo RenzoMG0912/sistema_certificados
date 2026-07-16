@@ -1,4 +1,4 @@
-import { el, escapeHtml, formatDate, apiFetch, showToast, openModal, closeModal } from './utils.js';
+import { el, escapeHtml, formatDate, apiFetch, showToast, showConfirmModal, openModal, closeModal } from './utils.js';
 import { state } from './state.js';
 
 // Helper to parse date avoiding UTC offset issue (Peru UTC-5)
@@ -263,7 +263,7 @@ export const renderCertificates = () => {
     button.addEventListener('click', async (e) => {
       e.stopPropagation();
       el(`cert-menu-${button.dataset.id}`)?.classList.add('hidden');
-      if (!confirm('¿Eliminar este certificado?')) return;
+      if (!await showConfirmModal('Eliminar Certificado', '¿Está seguro de eliminar este certificado? Esta acción no se puede deshacer.')) return;
       try {
         await apiFetch(`/api/certificados/${button.dataset.id}`, { method: 'DELETE' });
         showToast('Certificado eliminado correctamente');
@@ -285,7 +285,7 @@ export const renderCertificates = () => {
         showToast('Este participante no tiene correo registrado', 'error');
         return;
       }
-      if (!confirm(`Enviar certificado a ${cert.alumno_email}?`)) return;
+      if (!await showConfirmModal('Enviar Certificado', `¿Enviar certificado por correo a ${cert.alumno_email}?`)) return;
       button.disabled = true;
       button.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[15px]"></i>';
       try {

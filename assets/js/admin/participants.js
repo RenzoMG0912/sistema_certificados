@@ -1,4 +1,4 @@
-import { el, escapeHtml, formatDate, apiFetch, showToast, openModal, resetForm } from './utils.js';
+import { el, escapeHtml, formatDate, apiFetch, showToast, showConfirmModal, openModal, resetForm } from './utils.js';
 import { state } from './state.js';
 
 export const openParticipantModal = (participant = null) => {
@@ -127,7 +127,7 @@ export const renderParticipants = () => {
 
   list.querySelectorAll('.btn-delete-participant').forEach(button => {
     button.addEventListener('click', async () => {
-      if (!confirm('¿Está seguro de eliminar este alumno?')) return;
+      if (!await showConfirmModal('Eliminar Alumno', '¿Está seguro de eliminar este alumno? Esta acción no se puede deshacer.')) return;
       await apiFetch(`/api/participantes/${button.dataset.id}`, { method: 'DELETE' });
       showToast('Alumno eliminado correctamente');
       await loadParticipants();

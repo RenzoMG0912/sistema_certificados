@@ -575,8 +575,12 @@ export const openEnrollmentCreateModal = async () => {
   const participants = await apiFetch('/api/participantes');
   state.participants = Array.isArray(participants) ? participants : [];
 
-  const editionSelect = document.getElementById('enrollment-edicion');
-  if (editionSelect) editionSelect.innerHTML = '<option value="">-- Primero selecciona un curso --</option>';
+  const edicionesList = document.getElementById('enrollment-ediciones-list');
+  const newEdicionToggle = document.getElementById('enrollment-new-edicion-toggle');
+  const newEdicionFields = document.getElementById('enrollment-new-edicion-fields');
+  if (edicionesList) edicionesList.innerHTML = '<p class="text-sm text-slate-400 text-center py-3">Selecciona un curso primero.</p>';
+  if (newEdicionToggle) newEdicionToggle.checked = false;
+  if (newEdicionFields) newEdicionFields.classList.add('hidden');
   renderEnrollmentCourseDetails(null);
   renderEnrollmentParticipantList('enrollment-participants-container', '', state.enrollmentCreateSelected);
   if (selectedCount) selectedCount.textContent = 'Selecciona los alumnos que deseas matricular en este curso.';
@@ -584,27 +588,61 @@ export const openEnrollmentCreateModal = async () => {
   courseSelect.onchange = async () => {
     const course = state.courses.find(item => String(item.id) === courseSelect.value);
     renderEnrollmentCourseDetails(course || null);
-    if (editionSelect) {
-      if (!course) {
-        editionSelect.innerHTML = '<option value="">-- Primero selecciona un curso --</option>';
-        return;
+
+    if (newEdicionToggle) newEdicionToggle.checked = false;
+    if (newEdicionFields) newEdicionFields.classList.add('hidden');
+
+    if (!course) {
+      if (edicionesList) edicionesList.innerHTML = '<p class="text-sm text-slate-400 text-center py-3">Selecciona un curso primero.</p>';
+      return;
+    }
+
+    if (edicionesList) edicionesList.innerHTML = '<p class="text-sm text-slate-400 text-center py-3">Cargando ediciones...</p>';
+
+    try {
+      const editions = await apiFetch(`/api/ediciones/by-curso/${course.id}`);
+      if (Array.isArray(editions) && editions.length > 0) {
+        edicionesList.innerHTML = editions.map(e =>
+          `<label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:border-primary/30 hover:bg-slate-50 cursor-pointer transition-all edicion-radio-label">
+            <input type="radio" name="enrollment-edicion" value="${e.id}" class="accent-primary shrink-0">
+            <div class="min-w-0">
+              <p class="text-sm font-semibold text-slate-800">${escapeHtml(e.codigo_edicion || 'Edición ' + e.id)}</p>
+              <p class="text-xs text-slate-500">${e.fecha_inicio || '—'} ${e.fecha_fin ? '→ ' + e.fecha_fin : ''}</p>
+            </div>
+          </label>`
+        ).join('');
+      } else {
+        edicionesList.innerHTML = '<p class="text-sm text-slate-400 text-center py-3">No hay ediciones para este curso.</p>';
       }
-      editionSelect.innerHTML = '<option value="">Cargando ediciones...</option>';
-      try {
-        const editions = await apiFetch(`/api/ediciones/by-curso/${course.id}`);
-        if (Array.isArray(editions) && editions.length > 0) {
-          editionSelect.innerHTML = '<option value="">-- Seleccionar edición --</option>' +
-            editions.map(e =>
-              `<option value="${e.id}">${escapeHtml(e.codigo_edicion || 'Edición ' + e.id)} (${e.fecha_inicio || ''} — ${e.fecha_fin || ''})</option>`
-            ).join('');
-        } else {
-          editionSelect.innerHTML = '<option value="">— No hay ediciones para este curso —</option>';
+    } catch (err) {
+      edicionesList.innerHTML = '<p class="text-sm text-slate-400 text-center py-3">Error al cargar ediciones.</p>';
+    }
+
+    // Al hacer clic en una edición existente, desmarcar "Crear nueva"
+    edicionesList.querySelectorAll('input[name="enrollment-edicion"]').forEach(radio => {
+      radio.addEventListener('change', function () {
+        if (this.checked && newEdicionToggle) {
+          newEdicionToggle.checked = false;
+          if (newEdicionFields) newEdicionFields.classList.add('hidden');
         }
-      } catch (err) {
-        editionSelect.innerHTML = '<option value="">— Error al cargar ediciones —</option>';
-      }
+      });
+    });
+
+    const codigoInput = document.getElementById('enrollment-new-edicion-codigo');
+    if (codigoInput && course.codigo_curso) {
+      const today = new Date().toISOString().split('T')[0];
+      codigoInput.value = `${course.codigo_curso}-${today}`;
     }
   };
+
+  newEdicionToggle?.addEventListener('change', function () {
+    if (this.checked) {
+      newEdicionFields.classList.remove('hidden');
+      document.querySelectorAll('input[name="enrollment-edicion"]').forEach(r => r.checked = false);
+    } else {
+      newEdicionFields.classList.add('hidden');
+    }
+  });
 
   searchInput.oninput = () => {
     state.enrollmentCreateQuery = searchInput.value;

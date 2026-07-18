@@ -121,7 +121,38 @@ const initForms = () => {
   el('form-enrollment')?.addEventListener('submit', async event => {
     event.preventDefault();
     const cursoId = Number(el('enrollment-course').value);
-    const edicionId = Number(el('enrollment-edicion').value);
+    const newEdicionToggle = document.getElementById('enrollment-new-edicion-toggle');
+    let edicionId;
+
+    if (newEdicionToggle?.checked) {
+      const codigo = document.getElementById('enrollment-new-edicion-codigo').value.trim();
+      const fecha_inicio = document.getElementById('enrollment-new-edicion-inicio').value;
+      const fecha_fin = document.getElementById('enrollment-new-edicion-fin').value || null;
+
+      if (!codigo || !fecha_inicio) {
+        showToast('Completa el código y la fecha de inicio para la nueva edición', 'warning');
+        return;
+      }
+
+      const result = await apiFetch('/api/ediciones', {
+        method: 'POST',
+        body: JSON.stringify({ curso_id: cursoId, codigo_edicion: codigo, fecha_inicio, fecha_fin })
+      });
+
+      if (!result.success) {
+        showToast(result.message || 'Error al crear la edición', 'error');
+        return;
+      }
+      edicionId = result.edicion.id;
+    } else {
+      const selectedRadio = document.querySelector('input[name="enrollment-edicion"]:checked');
+      if (!selectedRadio) {
+        showToast('Selecciona una edición existente o crea una nueva', 'warning');
+        return;
+      }
+      edicionId = Number(selectedRadio.value);
+    }
+
     const selected = Array.from(el('enrollment-participants-container').querySelectorAll('.participant-select:checked')).map(input => Number(input.value));
 
     if (!cursoId || !edicionId || selected.length === 0) {

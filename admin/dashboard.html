@@ -306,6 +306,12 @@
       border-color: #fca5a5;
     }
 
+    /* Edition radio cards */
+    .edicion-radio-label:has(input:checked) {
+      border-color: #e60000 !important;
+      background-color: #fef2f2 !important;
+    }
+
     .theme-toggle {
       display: inline-flex;
       align-items: center;
@@ -1595,10 +1601,30 @@
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label for="enrollment-edicion" class="text-xs font-semibold text-slate-700 font-title">2. Seleccionar Edición</label>
-            <select id="enrollment-edicion" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
-              <option value="">-- Primero selecciona un curso --</option>
-            </select>
+            <label class="text-xs font-semibold text-slate-700 font-title">2. Seleccionar o crear Edición</label>
+            <div id="enrollment-ediciones-list" class="space-y-2">
+              <p class="text-sm text-slate-400 text-center py-3">Selecciona un curso primero.</p>
+            </div>
+            <label class="flex items-center gap-2 cursor-pointer mt-1 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+              <input type="checkbox" id="enrollment-new-edicion-toggle" class="rounded border-slate-300 text-primary focus:ring-primary">
+              <span class="text-sm font-medium text-slate-700">+ Crear nueva sesión</span>
+            </label>
+            <div id="enrollment-new-edicion-fields" class="hidden space-y-3 pl-4 border-l-2 border-primary/30 mt-1">
+              <div>
+                <label for="enrollment-new-edicion-codigo" class="text-xs font-semibold text-slate-600">Código de edición</label>
+                <input type="text" id="enrollment-new-edicion-codigo" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" placeholder="ej: grupo-1">
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="enrollment-new-edicion-inicio" class="text-xs font-semibold text-slate-600">Fecha de inicio</label>
+                  <input type="date" id="enrollment-new-edicion-inicio" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+                </div>
+                <div>
+                  <label for="enrollment-new-edicion-fin" class="text-xs font-semibold text-slate-600">Fecha de fin</label>
+                  <input type="date" id="enrollment-new-edicion-fin" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+                </div>
+              </div>
+            </div>
           </div>
           
           <div class="flex flex-col gap-1.5">

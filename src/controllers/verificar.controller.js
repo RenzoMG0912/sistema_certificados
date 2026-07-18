@@ -21,7 +21,8 @@ async function registrarVerificacion(certId, req) {
       FROM certificados c
       JOIN matriculas m ON c.matricula_id = m.id
       JOIN participantes p ON m.participante_id = p.id
-      JOIN cursos c2 ON m.curso_id = c2.id
+      JOIN ediciones e ON m.edicion_id = e.id
+      JOIN cursos c2 ON e.curso_id = c2.id
       WHERE c.id = ?
     `, [certId]);
     if (certInfo.length > 0) {
@@ -77,7 +78,8 @@ module.exports = {
         FROM certificados c
         JOIN matriculas m ON c.matricula_id = m.id
         JOIN participantes p ON m.participante_id = p.id
-        JOIN cursos cur ON m.curso_id = cur.id
+        JOIN ediciones e ON m.edicion_id = e.id
+        JOIN cursos cur ON e.curso_id = cur.id
         LEFT JOIN firmas f1 ON c.firma_id_1 = f1.id
         LEFT JOIN firmas f2 ON c.firma_id_2 = f2.id
         WHERE c.hash = ?
@@ -152,7 +154,8 @@ module.exports = {
         FROM certificados c
         JOIN matriculas m ON c.matricula_id = m.id
         JOIN participantes p ON m.participante_id = p.id
-        JOIN cursos cur ON m.curso_id = cur.id
+        JOIN ediciones e ON m.edicion_id = e.id
+        JOIN cursos cur ON e.curso_id = cur.id
         LEFT JOIN firmas f1 ON c.firma_id_1 = f1.id
         LEFT JOIN firmas f2 ON c.firma_id_2 = f2.id
         WHERE c.codigo IN (?) AND p.dni = ?

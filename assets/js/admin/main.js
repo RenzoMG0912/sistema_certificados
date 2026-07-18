@@ -121,19 +121,17 @@ const initForms = () => {
   el('form-enrollment')?.addEventListener('submit', async event => {
     event.preventDefault();
     const cursoId = Number(el('enrollment-course').value);
+    const edicionId = Number(el('enrollment-edicion').value);
     const selected = Array.from(el('enrollment-participants-container').querySelectorAll('.participant-select:checked')).map(input => Number(input.value));
 
-    if (!cursoId || selected.length === 0) {
-      showToast('Selecciona un curso y al menos un alumno', 'warning');
+    if (!cursoId || !edicionId || selected.length === 0) {
+      showToast('Selecciona un curso, una edición y al menos un alumno', 'warning');
       return;
     }
 
-    const fechaInicio = el('enrollment-fecha-inicio')?.value || null;
-    const fechaFin = el('enrollment-fecha-fin')?.value || null;
-
     await apiFetch('/api/matriculas/bulk', {
       method: 'POST',
-      body: JSON.stringify({ curso_id: cursoId, participante_ids: selected, fecha_inicio: fechaInicio, fecha_fin: fechaFin })
+      body: JSON.stringify({ edicion_id: edicionId, participante_ids: selected })
     });
 
     showToast('Matrícula registrada correctamente');

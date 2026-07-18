@@ -57,7 +57,8 @@ module.exports = {
         FROM certificados c
         JOIN matriculas m ON c.matricula_id = m.id
         JOIN participantes p ON m.participante_id = p.id
-        JOIN cursos cur ON m.curso_id = cur.id
+        JOIN ediciones e ON m.edicion_id = e.id
+        JOIN cursos cur ON e.curso_id = cur.id
         ORDER BY c.id DESC
       `;
       const [rows] = await db.query(query);
@@ -94,7 +95,8 @@ module.exports = {
                c.entrenador AS curso_entrenador, c.codigo_curso, c.temario AS curso_temario
         FROM matriculas m
         JOIN participantes p ON m.participante_id = p.id
-        JOIN cursos c ON m.curso_id = c.id
+        JOIN ediciones e ON m.edicion_id = e.id
+        JOIN cursos c ON e.curso_id = c.id
         WHERE m.id = ?
       `;
       const [matRows] = await db.query(matQuery, [matricula_id]);
@@ -257,8 +259,9 @@ module.exports = {
         return res.status(404).json({ success: false, message: 'Matrícula no encontrada' });
       }
 
+      const edicionMat = mockDb.ediciones.find(e => e.id == matricula.edicion_id);
       const alumno = mockDb.participantes.find(p => p.id == matricula.participante_id);
-      const curso = mockDb.cursos.find(c => c.id == matricula.curso_id);
+      const curso = edicionMat ? mockDb.cursos.find(c => c.id == edicionMat.curso_id) : null;
       
       if (!alumno || !curso) {
         return res.status(404).json({ success: false, message: 'Alumno o curso no encontrado' });
@@ -390,26 +393,27 @@ module.exports = {
   },
 
   bulkGenerate: async (req, res, next) => {
-    const { curso_id } = req.body;
-    if (!curso_id) {
-      return res.status(400).json({ success: false, message: 'curso_id es requerido' });
+    const { edicion_id } = req.body;
+    if (!edicion_id) {
+      return res.status(400).json({ success: false, message: 'edicion_id es requerido' });
     }
 
     try {
-      // 1. Find all pending enrollments (no certificate yet) for this curso
+      // 1. Find all pending enrollments (no certificate yet) for this edicion
       const pendQuery = `
-        SELECT m.id AS matricula_id, m.fecha_inicio,
+        SELECT m.id AS matricula_id, e.fecha_inicio,
                p.id AS participante_id, p.nombres AS alumno_nombres, p.dni AS alumno_dni, p.email AS alumno_email,
                c.nombre AS curso_nombre, c.duracion AS curso_duracion,
                c.entrenador AS curso_entrenador, c.codigo_curso, c.firma_id AS curso_firma_id,
                c.temario AS curso_temario
         FROM matriculas m
         JOIN participantes p ON m.participante_id = p.id
-        JOIN cursos c ON m.curso_id = c.id
+        JOIN ediciones e ON m.edicion_id = e.id
+        JOIN cursos c ON e.curso_id = c.id
         LEFT JOIN certificados cert ON cert.matricula_id = m.id
-        WHERE m.curso_id = ? AND cert.id IS NULL
+        WHERE e.id = ? AND cert.id IS NULL
       `;
-      const [pendRows] = await db.query(pendQuery, [curso_id]);
+      const [pendRows] = await db.query(pendQuery, [edicion_id]);
 
       if (pendRows.length === 0) {
         return res.status(200).json({ success: true, message: 'No hay alumnos pendientes por certificar', count: 0 });
@@ -422,8 +426,12 @@ module.exports = {
       }
       const firma1 = gerenteRows[0];
 
-      // 3. Get firma_2 from curso
-      const [cursoRows] = await db.query('SELECT * FROM cursos WHERE id = ?', [curso_id]);
+      // 3. Get firma_2 from curso (via edicion)
+      const [edicionRows] = await db.query('SELECT curso_id FROM ediciones WHERE id = ?', [edicion_id]);
+      if (edicionRows.length === 0) {
+        return res.status(404).json({ success: false, message: 'Edición no encontrada' });
+      }
+      const [cursoRows] = await db.query('SELECT * FROM cursos WHERE id = ?', [edicionRows[0].curso_id]);
       if (cursoRows.length === 0) {
         return res.status(404).json({ success: false, message: 'Curso no encontrado' });
       }
@@ -518,7 +526,7 @@ module.exports = {
     } catch (error) {
       console.warn('[Mock DB] Generación masiva en memoria temporal');
 
-      const pendMatriculas = mockDb.matriculas.filter(m => m.curso_id == curso_id);
+      const pendMatriculas = mockDb.matriculas.filter(m => m.edicion_id == edicion_id);
       let pendientes = [];
       for (const m of pendMatriculas) {
         const exists = mockDb.certificados.some(c => c.matricula_id == m.id);
@@ -534,7 +542,8 @@ module.exports = {
         return res.status(404).json({ success: false, message: 'No se encontró una firma de Gerente' });
       }
 
-      const curso = mockDb.cursos.find(c => c.id == curso_id);
+      const ed = mockDb.ediciones.find(ed => ed.id == edicion_id);
+      const curso = ed ? mockDb.cursos.find(c => c.id == ed.curso_id) : null;
       if (!curso) {
         return res.status(404).json({ success: false, message: 'Curso no encontrado' });
       }
@@ -648,11 +657,12 @@ module.exports = {
       const query = `
         SELECT cert.codigo, cert.pdf_path,
                p.nombres AS alumno_nombre, p.dni AS alumno_dni, p.email AS alumno_email,
-               c.nombre AS curso_nombre
+               cur.nombre AS curso_nombre
         FROM certificados cert
         JOIN matriculas m ON cert.matricula_id = m.id
         JOIN participantes p ON m.participante_id = p.id
-        JOIN cursos c ON m.curso_id = c.id
+        JOIN ediciones e ON m.edicion_id = e.id
+        JOIN cursos cur ON e.curso_id = cur.id
         WHERE cert.id = ?
       `;
       const [rows] = await db.query(query, [id]);

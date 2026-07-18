@@ -96,7 +96,7 @@
 }
 .stats-bar__grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   padding: 28px 0;
 }
@@ -231,7 +231,7 @@
 }
 .course-card__actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 8px;
   margin-top: auto;
 }
@@ -291,7 +291,7 @@
 /* Benefits row */
 .benefits-icons {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
 }
 .benefit-icon {

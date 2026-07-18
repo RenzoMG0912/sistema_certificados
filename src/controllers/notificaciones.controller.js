@@ -39,7 +39,8 @@ async function checkExpiringCertificates() {
       FROM certificados c
       JOIN matriculas m ON c.matricula_id = m.id
       JOIN participantes p ON m.participante_id = p.id
-      JOIN cursos cur ON m.curso_id = cur.id
+      JOIN ediciones e ON m.edicion_id = e.id
+      JOIN cursos cur ON e.curso_id = cur.id
       WHERE c.fecha_vencimiento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
         AND c.fecha_vencimiento < '2999-01-01'
     `);

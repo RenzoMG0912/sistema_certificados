@@ -22,8 +22,15 @@ const firmas = [
   { id: 2, nombre: 'Ing. Gregorio A. Escajadillo Sarmiento', cargo: 'Entrenador', firma_url: '/assets/img/firmas/firma_gregorio.png', cip: '050142' }
 ];
 
+const ediciones = [
+  { id: 1, curso_id: 1, codigo_edicion: 'resp-emerg-2026-05-19', fecha_inicio: '2026-05-19', fecha_fin: null, created_at: new Date().toISOString() },
+  { id: 2, curso_id: 1, codigo_edicion: 'resp-emerg-2026-09-02', fecha_inicio: '2026-09-02', fecha_fin: null, created_at: new Date().toISOString() },
+  { id: 3, curso_id: 2, codigo_edicion: 'trab-alt-2026-08-26', fecha_inicio: '2026-08-26', fecha_fin: null, created_at: new Date().toISOString() },
+  { id: 4, curso_id: 3, codigo_edicion: 'eq-mov-2026-08-19', fecha_inicio: '2026-08-19', fecha_fin: null, created_at: new Date().toISOString() }
+];
+
 const matriculas = [
-  { id: 1, participante_id: 1, curso_id: 1, alumno_nombre: 'Usuario Demo', alumno_dni: '00000000', curso_nombre: 'Respuesta a emergencias', fecha_inicio: null, fecha_fin: null, created_at: new Date().toISOString() }
+  { id: 1, participante_id: 1, edicion_id: 1, created_at: new Date().toISOString() }
 ];
 
 const certificados = [
@@ -63,6 +70,7 @@ module.exports = {
   cursos,
   participantes,
   firmas,
+  ediciones,
   matriculas,
   certificados,
   verificaciones,

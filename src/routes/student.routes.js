@@ -72,29 +72,31 @@ router.get('/courses', async (req, res) => {
   const { id } = req.estudiante;
   try {
     const query = `
-      SELECT m.id AS matricula_id, m.fecha_inicio, m.fecha_fin,
+      SELECT m.id AS matricula_id, e.fecha_inicio, e.fecha_fin,
              c.id AS curso_id, c.codigo_curso, c.nombre AS curso_nombre,
              c.duracion, c.categoria, c.entrenador,
              CASE WHEN cert.id IS NOT NULL THEN 1 ELSE 0 END AS tiene_certificado,
              cert.codigo AS certificado_codigo, cert.fecha_emision AS certificado_fecha
       FROM matriculas m
-      JOIN cursos c ON m.curso_id = c.id
+      JOIN ediciones e ON m.edicion_id = e.id
+      JOIN cursos c ON e.curso_id = c.id
       LEFT JOIN certificados cert ON cert.matricula_id = m.id
       WHERE m.participante_id = ?
-      ORDER BY m.fecha_inicio DESC
+      ORDER BY e.fecha_inicio DESC
     `;
     const [rows] = await db.query(query, [id]);
     return res.status(200).json(rows);
   } catch (error) {
     const mats = mockDb.matriculas.filter(m => m.participante_id == id);
     const result = mats.map(m => {
-      const c = mockDb.cursos.find(cur => cur.id == m.curso_id);
+      const e = mockDb.ediciones.find(ed => ed.id == m.edicion_id);
+      const c = e ? mockDb.cursos.find(cur => cur.id == e.curso_id) : null;
       const cert = mockDb.certificados.find(cert => cert.matricula_id == m.id);
       return {
         matricula_id: m.id,
-        fecha_inicio: m.fecha_inicio,
-        fecha_fin: m.fecha_fin,
-        curso_id: m.curso_id,
+        fecha_inicio: e ? e.fecha_inicio : null,
+        fecha_fin: e ? e.fecha_fin : null,
+        curso_id: e ? e.curso_id : null,
         codigo_curso: c ? c.codigo_curso : '',
         curso_nombre: c ? c.nombre : 'Curso Eliminado',
         duracion: c ? c.duracion : '',
@@ -120,7 +122,8 @@ router.get('/certificates', async (req, res) => {
              c.codigo_curso
       FROM certificados cert
       JOIN matriculas m ON cert.matricula_id = m.id
-      JOIN cursos c ON m.curso_id = c.id
+      JOIN ediciones e ON m.edicion_id = e.id
+      JOIN cursos c ON e.curso_id = c.id
       WHERE m.participante_id = ?
       ORDER BY cert.fecha_emision DESC
     `;
@@ -132,7 +135,8 @@ router.get('/certificates', async (req, res) => {
       .filter(c => mats.some(m => m.id == c.matricula_id))
       .map(c => {
         const mat = mockDb.matriculas.find(m => m.id == c.matricula_id);
-        const curso = mat ? mockDb.cursos.find(cur => cur.id == mat.curso_id) : null;
+        const ed = mat ? mockDb.ediciones.find(e => e.id == mat.edicion_id) : null;
+        const curso = mat && ed ? mockDb.cursos.find(cur => cur.id == ed.curso_id) : null;
         return {
           id: c.id,
           codigo: c.codigo,

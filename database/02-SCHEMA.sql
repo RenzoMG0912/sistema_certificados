@@ -49,17 +49,26 @@ CREATE TABLE IF NOT EXISTS firmas (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabla de Matrículas (Relación entre Alumno y Curso)
+-- Tabla de Ediciones (Cada instancia/fecha de un curso)
+CREATE TABLE IF NOT EXISTS ediciones (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  curso_id INT NOT NULL,
+  codigo_edicion VARCHAR(50) UNIQUE NOT NULL,
+  fecha_inicio DATE NOT NULL,
+  fecha_fin DATE DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_edicion_curso FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de Matrículas (Relación entre Alumno y Edición de Curso)
 CREATE TABLE IF NOT EXISTS matriculas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   participante_id INT NOT NULL,
-  curso_id INT NOT NULL,
-  fecha_inicio DATE DEFAULT NULL,
-  fecha_fin DATE DEFAULT NULL,
+  edicion_id INT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY unique_p_c (participante_id, curso_id),
+  UNIQUE KEY unique_p_e (participante_id, edicion_id),
   CONSTRAINT fk_mat_participante FOREIGN KEY (participante_id) REFERENCES participantes(id) ON DELETE CASCADE,
-  CONSTRAINT fk_mat_curso FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE
+  CONSTRAINT fk_mat_edicion FOREIGN KEY (edicion_id) REFERENCES ediciones(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabla de Certificados Emitidos

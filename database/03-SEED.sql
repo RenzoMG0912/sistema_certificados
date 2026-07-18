@@ -26,3 +26,14 @@ INSERT IGNORE INTO firmas (nombre, cargo, firma_url, cip) VALUES
 -- 4. Participante Demo (contraseña por defecto = DNI: 00000000)
 INSERT IGNORE INTO participantes (nombres, dni, email, cargo, telefono, procedencia, induccion, examen_medico, password) VALUES
 ('Usuario Demo', '00000000', 'demo@teamhsec.local', 'ING. SUPERVISOR', '964680064', 'HUANCAYO', 'APTO', 'APTO', '$2a$10$Y5L3kWD9zdf/jqiMWB4D1evozZM05WCikRLVWOgasIaQa./BGiqr6');
+
+-- 5. Insertar Ediciones de Cursos (fechas de ejemplo)
+INSERT IGNORE INTO ediciones (curso_id, codigo_edicion, fecha_inicio, fecha_fin) VALUES
+(1, 'resp-emerg-2026-05-19', '2026-05-19', NULL),
+(1, 'resp-emerg-2026-09-02', '2026-09-02', NULL),
+(2, 'trab-alt-2026-08-26', '2026-08-26', NULL),
+(3, 'eq-mov-2026-08-19', '2026-08-19', NULL);
+
+-- 6. Matrícula Demo (vinculada a edición)
+INSERT IGNORE INTO matriculas (participante_id, edicion_id) VALUES
+(1, 1);

@@ -12,6 +12,7 @@ const matriculasRoutes = require('./matriculas.routes');
 const certificadosRoutes = require('./certificados.routes');
 const verificarRoutes = require('./verificar.routes');
 const firmasRoutes = require('./firmas.routes');
+const edicionesRoutes = require('./ediciones.routes');
 const smtpTestRoutes = require('./smtp-test.routes');
 const studentAuthRoutes = require('./studentAuth.routes');
 const studentRoutes = require('./student.routes');
@@ -27,6 +28,7 @@ router.use('/matriculas', matriculasRoutes);
 router.use('/certificados', certificadosRoutes);
 router.use('/verificar', verificarRoutes);
 router.use('/firmas', firmasRoutes);
+router.use('/ediciones', edicionesRoutes);
 router.use('/smtp-test', smtpTestRoutes);
 router.use('/notificaciones', notificacionesRoutes);
 router.use('/student/auth', studentAuthRoutes);
@@ -43,14 +45,15 @@ router.get('/admin/dashboard', authMiddleware, async (req, res, next) => {
     const [certRows] = await db.query('SELECT COUNT(*) AS count FROM certificados');
 
     const recentQuery = `
-      SELECT c.id, c.codigo, c.fecha_emision, c.fecha_vencimiento, c.pdf_path,
+      SELECT cert.id, cert.codigo, cert.fecha_emision, cert.fecha_vencimiento, cert.pdf_path,
              p.nombres AS alumno_nombre, p.dni AS alumno_dni,
              cur.nombre AS curso_nombre
-      FROM certificados c
-      JOIN matriculas m ON c.matricula_id = m.id
+      FROM certificados cert
+      JOIN matriculas m ON cert.matricula_id = m.id
       JOIN participantes p ON m.participante_id = p.id
-      JOIN cursos cur ON m.curso_id = cur.id
-      ORDER BY c.id DESC
+      JOIN ediciones e ON m.edicion_id = e.id
+      JOIN cursos cur ON e.curso_id = cur.id
+      ORDER BY cert.id DESC
       LIMIT 5
     `;
     const [recentRows] = await db.query(recentQuery);

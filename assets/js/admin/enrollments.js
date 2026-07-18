@@ -64,91 +64,129 @@ export const renderEnrollments = () => {
   container.innerHTML = filtered.map(group => {
     const courseId = String(group.curso_id);
     const isExpanded = state.expandedCourses.has(courseId);
-    const showAll = state.showAllStudents.has(courseId);
-    const enrollments = group.enrollments || [];
-    const total = enrollments.length;
-    const visible = showAll ? enrollments : enrollments.slice(0, PAGE_SIZE);
 
-    const studentRows = visible.map((item, idx) => {
-      const active = isEnrollmentActive(item);
-      return `
-        <tr class="hover:bg-slate-50/60 transition-colors">
-          <td class="pl-8 pr-4 py-3 text-xs text-slate-400 font-medium w-10">${idx + 1}</td>
-          <td class="px-4 py-3">
-            <span class="text-sm font-semibold text-on-surface">${escapeHtml(item.alumno_nombre || '')}</span>
-          </td>
-          <td class="px-4 py-3 text-sm text-on-surface-variant">${escapeHtml(item.alumno_dni || '—')}</td>
-          <td class="px-4 py-3 text-sm text-on-surface-variant">${formatDateShort(item.fecha_inicio)}</td>
-          <td class="px-4 py-3 text-sm text-on-surface-variant">${formatDateShort(item.fecha_fin)}</td>
-          <td class="px-4 py-3">
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold ${active ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}">
-              ${active ? 'Activa' : 'Vencida'}
-            </span>
-          </td>
-          <td class="px-4 py-3">
-            <div class="flex items-center gap-1.5">
-              <button type="button" class="btn-icon btn-view-enrollment-student text-slate-400 hover:text-primary transition-colors" data-enrollment-id="${item.id}" data-course-id="${courseId}" title="Ver alumno">
-                <i class="fa-solid fa-eye text-[12px]"></i>
-              </button>
-              <button type="button" class="btn-icon btn-delete btn-remove-enrollment-student text-slate-400 hover:text-red-600 transition-colors" data-enrollment-id="${item.id}" data-course-id="${courseId}" title="Quitar matrícula">
-                <i class="fa-solid fa-trash text-[12px]"></i>
+    // Group enrollments by edition
+    const editionMap = {};
+    (group.enrollments || []).forEach(item => {
+      const eid = String(item.edicion_id);
+      if (!editionMap[eid]) {
+        editionMap[eid] = {
+          edicion_id: eid,
+          codigo_edicion: item.codigo_edicion || '—',
+          fecha_inicio: item.fecha_inicio,
+          fecha_fin: item.fecha_fin,
+          enrollments: []
+        };
+      }
+      editionMap[eid].enrollments.push(item);
+    });
+    const editions = Object.values(editionMap);
+    const total = (group.enrollments || []).length;
+
+    const editionPanels = editions.map(ed => {
+      const eid = ed.edicion_id;
+      const showAll = state.showAllStudents.has(`e-${eid}`);
+      const visible = showAll ? ed.enrollments : ed.enrollments.slice(0, PAGE_SIZE);
+
+      const studentRows = visible.map((item, idx) => {
+        const active = isEnrollmentActive(item);
+        return `
+          <tr class="hover:bg-slate-50/60 transition-colors">
+            <td class="pl-8 pr-4 py-3 text-xs text-slate-400 font-medium w-10">${idx + 1}</td>
+            <td class="px-4 py-3">
+              <span class="text-sm font-semibold text-on-surface">${escapeHtml(item.alumno_nombre || '')}</span>
+            </td>
+            <td class="px-4 py-3 text-sm text-on-surface-variant">${escapeHtml(item.alumno_dni || '—')}</td>
+            <td class="px-4 py-3 text-sm text-on-surface-variant">${formatDateShort(ed.fecha_inicio)}</td>
+            <td class="px-4 py-3 text-sm text-on-surface-variant">${formatDateShort(ed.fecha_fin)}</td>
+            <td class="px-4 py-3">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold ${active ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}">
+                ${active ? 'Activa' : 'Vencida'}
+              </span>
+            </td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-1.5">
+                <button type="button" class="btn-icon btn-view-enrollment-student text-slate-400 hover:text-primary transition-colors" data-enrollment-id="${item.id}" data-course-id="${courseId}" title="Ver alumno">
+                  <i class="fa-solid fa-eye text-[12px]"></i>
+                </button>
+                <button type="button" class="btn-icon btn-delete btn-remove-enrollment-student text-slate-400 hover:text-red-600 transition-colors" data-enrollment-id="${item.id}" data-course-id="${courseId}" title="Quitar matrícula">
+                  <i class="fa-solid fa-trash text-[12px]"></i>
+                </button>
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+
+      const paginationRow = !showAll && ed.enrollments.length > PAGE_SIZE ? `
+        <tr>
+          <td colspan="7" class="pl-8 pr-6 py-3.5 border-t border-slate-100 bg-slate-50/20">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-400">Mostrando 1 a ${Math.min(PAGE_SIZE, ed.enrollments.length)} de ${ed.enrollments.length} alumnos</span>
+              <button type="button"
+                class="btn-show-all-students inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                data-edicion-id="${eid}">
+                <span class="material-symbols-outlined text-[16px] text-slate-500">groups</span>
+                Ver todos los alumnos (${ed.enrollments.length})
+                <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
               </button>
             </div>
           </td>
-        </tr>`;
+        </tr>` : (showAll && ed.enrollments.length > PAGE_SIZE ? `
+        <tr>
+          <td colspan="7" class="pl-8 pr-6 py-3.5 border-t border-slate-100 bg-slate-50/20">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-400">Mostrando todos los ${ed.enrollments.length} alumnos</span>
+              <button type="button"
+                class="btn-hide-all-students inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 text-xs font-semibold text-slate-500 hover:bg-slate-50 transition-colors"
+                data-edicion-id="${eid}">
+                <span class="material-symbols-outlined text-[16px] text-slate-400">expand_less</span>
+                Mostrar menos
+              </button>
+            </div>
+          </td>
+        </tr>` : '');
+
+      return `
+        <div class="border-t border-slate-100 bg-white">
+          <!-- Edition Sub-header -->
+          <div class="flex items-center justify-between px-6 py-2.5 bg-slate-50/70 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px] text-slate-400">layers</span>
+              <span class="text-xs font-semibold text-slate-600 uppercase tracking-wider">${escapeHtml(ed.codigo_edicion)}</span>
+              <span class="text-[11px] text-slate-400">${formatDateShort(ed.fecha_inicio)} — ${formatDateShort(ed.fecha_fin)}</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-emerald-600 mr-1">${ed.enrollments.length}</span>
+              <span class="text-[10px] text-slate-400 mr-2">alumnos</span>
+              <button type="button" class="btn-icon btn-bulk-generate-certs text-slate-500 hover:text-primary transition-colors" data-edicion-id="${eid}" title="Emitir certificados para esta edición">
+                <span class="material-symbols-outlined text-[16px]">workspace_premium</span>
+              </button>
+              <button type="button" class="btn-icon btn-delete btn-delete-all-enrollments text-slate-500 hover:text-red-600 transition-colors" data-edicion-id="${eid}" title="Eliminar todas las matrículas de esta edición">
+                <i class="fa-solid fa-trash text-[11px]"></i>
+              </button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="text-on-surface-variant bg-slate-50/50">
+                  <th class="pl-8 pr-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100 w-10">N°</th>
+                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Alumno</th>
+                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">DNI / Identificación</th>
+                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Fecha de Inicio</th>
+                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Fecha de Fin</th>
+                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Estado</th>
+                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                ${studentRows || `<tr><td colspan="7" class="px-8 py-6 text-center text-sm text-slate-400">Sin alumnos matriculados.</td></tr>`}
+                ${paginationRow}
+              </tbody>
+            </table>
+          </div>
+        </div>`;
     }).join('');
-
-    const paginationRow = !showAll && total > PAGE_SIZE ? `
-      <tr>
-        <td colspan="7" class="pl-8 pr-6 py-3.5 border-t border-slate-100 bg-slate-50/20">
-          <div class="flex items-center justify-between">
-            <span class="text-xs text-slate-400">Mostrando 1 a ${Math.min(PAGE_SIZE, total)} de ${total} alumnos</span>
-            <button type="button"
-              class="btn-show-all-students inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
-              data-course-id="${courseId}">
-              <span class="material-symbols-outlined text-[16px] text-slate-500">groups</span>
-              Ver todos los alumnos (${total})
-              <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
-            </button>
-          </div>
-        </td>
-      </tr>` : (showAll && total > PAGE_SIZE ? `
-      <tr>
-        <td colspan="7" class="pl-8 pr-6 py-3.5 border-t border-slate-100 bg-slate-50/20">
-          <div class="flex items-center justify-between">
-            <span class="text-xs text-slate-400">Mostrando todos los ${total} alumnos</span>
-            <button type="button"
-              class="btn-hide-all-students inline-flex items-center gap-1.5 h-9 px-4 rounded-xl border border-slate-200 text-xs font-semibold text-slate-500 hover:bg-slate-50 transition-colors"
-              data-course-id="${courseId}">
-              <span class="material-symbols-outlined text-[16px] text-slate-400">expand_less</span>
-              Mostrar menos
-            </button>
-          </div>
-        </td>
-      </tr>` : '');
-
-    const tableHTML = `
-      <div class="border-t border-slate-100 bg-white">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="text-on-surface-variant bg-slate-50/50">
-                <th class="pl-8 pr-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100 w-10">N°</th>
-                <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Alumno</th>
-                <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">DNI / Identificación</th>
-                <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Fecha de Inicio</th>
-                <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Fecha de Fin</th>
-                <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Estado</th>
-                <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Acciones</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-              ${studentRows || `<tr><td colspan="7" class="px-8 py-6 text-center text-sm text-slate-400">Sin alumnos matriculados.</td></tr>`}
-              ${paginationRow}
-            </tbody>
-          </table>
-        </div>
-      </div>`;
 
     const maxHeightStyle = isExpanded ? 'max-height: none;' : 'max-height: 0px;';
 
@@ -156,36 +194,24 @@ export const renderEnrollments = () => {
       <div class="enrollment-accordion-item bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm my-3" data-course-id="${courseId}">
         <!-- Course Header Row -->
         <div class="enrollment-course-header flex items-center gap-3 px-6 py-4 hover:bg-slate-50/50 transition-colors cursor-pointer" data-toggle-course="${courseId}">
-          <!-- Toggle arrow (left) -->
           <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center shrink-0 transition-all hover:bg-slate-100" data-toggle-course="${courseId}">
             <span class="chevron-left material-symbols-outlined text-[18px] text-slate-500 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}">chevron_right</span>
           </button>
-
-          <!-- Course Info -->
           <div class="flex-1 min-w-0">
             <p class="font-semibold text-sm text-on-surface">${escapeHtml(group.curso_nombre || '')}</p>
             <p class="text-xs text-on-surface-variant mt-0.5">
               Entrenador: ${escapeHtml(group.curso_entrenador || 'N/A')}
               ${group.curso_duracion ? `<span class="mx-1.5 opacity-30">•</span> Duración: ${escapeHtml(group.curso_duracion)}` : ''}
+              <span class="mx-1.5 opacity-30">•</span> Ediciones: ${editions.length}
             </p>
           </div>
-
-          <!-- Alumno count -->
           <div class="text-right shrink-0 mr-4">
             <p class="text-base font-bold text-emerald-600 leading-none">${total}</p>
             <p class="text-[11px] text-on-surface-variant mt-0.5">Alumnos</p>
           </div>
-
-          <!-- Action buttons -->
           <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
-            <button type="button" class="btn-icon btn-bulk-generate-certs text-slate-500 hover:text-primary transition-colors border border-slate-200 bg-white hover:bg-slate-50" data-course-id="${courseId}" title="Emitir certificados y enviar">
-              <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
-            </button>
             <button type="button" class="btn-icon btn-edit-enrollment text-slate-500 hover:text-primary transition-colors border border-slate-200 bg-white hover:bg-slate-50" data-course-id="${courseId}" title="Editar matrícula">
               <i class="fa-solid fa-pen text-[12px]"></i>
-            </button>
-            <button type="button" class="btn-icon btn-delete btn-delete-all-enrollments text-slate-500 hover:text-red-600 transition-colors border border-slate-200 bg-white hover:bg-red-50" data-course-id="${courseId}" title="Eliminar todas las matrículas">
-              <i class="fa-solid fa-trash text-[12px]"></i>
             </button>
             <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-100 transition-all text-slate-500" data-toggle-course="${courseId}" title="${isExpanded ? 'Colapsar' : 'Expandir'}">
               <span class="chevron-right material-symbols-outlined text-[18px] transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}">expand_more</span>
@@ -193,9 +219,9 @@ export const renderEnrollments = () => {
           </div>
         </div>
 
-        <!-- Expandable inner table container -->
+        <!-- Expandable inner container with edition panels -->
         <div class="accordion-collapse-container" style="${maxHeightStyle}">
-          ${tableHTML}
+          ${editionPanels}
         </div>
       </div>`;
   }).join('');
@@ -248,21 +274,29 @@ export const renderEnrollments = () => {
   container.querySelectorAll('.btn-bulk-generate-certs').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      const courseId = btn.dataset.courseId;
-      const group = state.enrollments.find(g => String(g.curso_id) === courseId);
-      if (!group) return;
+      const edicionId = btn.dataset.edicionId;
+      if (!edicionId) return;
 
-      const courseName = group.curso_nombre || 'este curso';
-      const studentCount = group.enrollments?.length || 0;
+      // Find the edition info from state
+      let editionName = 'esta edición';
+      let studentCount = 0;
+      for (const g of state.enrollments) {
+        const ed = (g.enrollments || []).find(item => String(item.edicion_id) === edicionId);
+        if (ed) {
+          editionName = `${g.curso_nombre} — ${ed.codigo_edicion || 'Edición ' + edicionId}`;
+          studentCount = (g.enrollments || []).filter(item => String(item.edicion_id) === edicionId).length;
+          break;
+        }
+      }
       
       if (studentCount === 0) {
-        showToast('No hay alumnos matriculados en este curso', 'warning');
+        showToast('No hay alumnos matriculados en esta edición', 'warning');
         return;
       }
 
       if (!await showConfirmModal(
         'Confirmar Envío de Certificados',
-        `¿Está seguro de que desea generar y enviar los certificados digitales a todos los estudiantes aprobados del curso "${courseName}"? Esta acción notificará automáticamente a los alumnos por correo electrónico.`,
+        `¿Está seguro de que desea generar y enviar los certificados digitales a todos los estudiantes de "${editionName}"? Esta acción notificará automáticamente a los alumnos por correo electrónico.`,
         'Sí, enviar ahora',
         'Cancelar',
         'info',
@@ -277,7 +311,6 @@ export const renderEnrollments = () => {
         return;
       }
 
-      // Deshabilitar y mostrar spinner
       btn.disabled = true;
       const originalHtml = btn.innerHTML;
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[14px]"></i>`;
@@ -285,7 +318,7 @@ export const renderEnrollments = () => {
       try {
         const res = await apiFetch('/api/certificados/bulk-generate', {
           method: 'POST',
-          body: JSON.stringify({ curso_id: Number(courseId) })
+          body: JSON.stringify({ edicion_id: Number(edicionId) })
         });
 
         if (res.success) {
@@ -310,25 +343,32 @@ export const renderEnrollments = () => {
     });
   });
 
-  // ── Bind delete all enrollments buttons ──
+  // ── Bind delete all enrollments by edition buttons ──
   container.querySelectorAll('.btn-delete-all-enrollments').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      const courseId = btn.dataset.courseId;
-      const group = state.enrollments.find(g => String(g.curso_id) === courseId);
-      if (!group) return;
+      const edicionId = btn.dataset.edicionId;
+      if (!edicionId) return;
 
-      const courseName = group.curso_nombre || 'este curso';
-      const studentCount = group.enrollments?.length || 0;
+      let editionName = 'esta edición';
+      let studentCount = 0;
+      for (const g of state.enrollments) {
+        const ed = (g.enrollments || []).find(item => String(item.edicion_id) === edicionId);
+        if (ed) {
+          editionName = `${g.curso_nombre} — ${ed.codigo_edicion || 'Edición ' + edicionId}`;
+          studentCount = (g.enrollments || []).filter(item => String(item.edicion_id) === edicionId).length;
+          break;
+        }
+      }
 
       if (studentCount === 0) {
-        showToast('No hay alumnos matriculados en este curso', 'warning');
+        showToast('No hay alumnos matriculados en esta edición', 'warning');
         return;
       }
 
       if (!await showConfirmModal(
-        'Eliminar Matrículas',
-        `¿Está seguro de eliminar TODAS las matrículas de los alumnos del curso "${courseName}"? Esta acción eliminará también los certificados vinculados y no se puede deshacer.`,
+        'Eliminar Matrículas de Edición',
+        `¿Está seguro de eliminar TODAS las matrículas de los alumnos de "${editionName}"? Esta acción eliminará también los certificados vinculados y no se puede deshacer.`,
         'Sí, eliminar',
         'Cancelar',
         'danger',
@@ -348,7 +388,7 @@ export const renderEnrollments = () => {
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[12px]"></i>`;
 
       try {
-        const res = await apiFetch(`/api/matriculas/by-course/${courseId}`, {
+        const res = await apiFetch(`/api/matriculas/by-edicion/${edicionId}`, {
           method: 'DELETE'
         });
 
@@ -371,16 +411,13 @@ export const renderEnrollments = () => {
   container.querySelectorAll('.btn-show-all-students').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const cid = btn.dataset.courseId;
-      state.showAllStudents.add(cid);
-      
-      // Re-render to show all rows, but make sure it defaults to open height
+      const eid = btn.dataset.edicionId;
+      state.showAllStudents.add(`e-${eid}`);
       renderEnrollments();
-      
-      const itemEl = container.querySelector(`.enrollment-accordion-item[data-course-id="${cid}"]`);
-      const collapseEl = itemEl?.querySelector('.accordion-collapse-container');
-      if (collapseEl) {
-        collapseEl.style.maxHeight = 'none';
+      const itemEl = container.querySelector(`.enrollment-accordion-item`);
+      if (itemEl) {
+        const collapseEl = itemEl.querySelector('.accordion-collapse-container');
+        if (collapseEl) collapseEl.style.maxHeight = 'none';
       }
     });
   });
@@ -389,16 +426,13 @@ export const renderEnrollments = () => {
   container.querySelectorAll('.btn-hide-all-students').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const cid = btn.dataset.courseId;
-      state.showAllStudents.delete(cid);
-      
-      // Re-render back to page size
+      const eid = btn.dataset.edicionId;
+      state.showAllStudents.delete(`e-${eid}`);
       renderEnrollments();
-      
-      const itemEl = container.querySelector(`.enrollment-accordion-item[data-course-id="${cid}"]`);
-      const collapseEl = itemEl?.querySelector('.accordion-collapse-container');
-      if (collapseEl) {
-        collapseEl.style.maxHeight = 'none';
+      const itemEl = container.querySelector(`.enrollment-accordion-item`);
+      if (itemEl) {
+        const collapseEl = itemEl.querySelector('.accordion-collapse-container');
+        if (collapseEl) collapseEl.style.maxHeight = 'none';
       }
     });
   });
@@ -541,13 +575,35 @@ export const openEnrollmentCreateModal = async () => {
   const participants = await apiFetch('/api/participantes');
   state.participants = Array.isArray(participants) ? participants : [];
 
+  const editionSelect = document.getElementById('enrollment-edicion');
+  if (editionSelect) editionSelect.innerHTML = '<option value="">-- Primero selecciona un curso --</option>';
   renderEnrollmentCourseDetails(null);
   renderEnrollmentParticipantList('enrollment-participants-container', '', state.enrollmentCreateSelected);
   if (selectedCount) selectedCount.textContent = 'Selecciona los alumnos que deseas matricular en este curso.';
 
-  courseSelect.onchange = () => {
+  courseSelect.onchange = async () => {
     const course = state.courses.find(item => String(item.id) === courseSelect.value);
     renderEnrollmentCourseDetails(course || null);
+    if (editionSelect) {
+      if (!course) {
+        editionSelect.innerHTML = '<option value="">-- Primero selecciona un curso --</option>';
+        return;
+      }
+      editionSelect.innerHTML = '<option value="">Cargando ediciones...</option>';
+      try {
+        const editions = await apiFetch(`/api/ediciones/by-curso/${course.id}`);
+        if (Array.isArray(editions) && editions.length > 0) {
+          editionSelect.innerHTML = '<option value="">-- Seleccionar edición --</option>' +
+            editions.map(e =>
+              `<option value="${e.id}">${escapeHtml(e.codigo_edicion || 'Edición ' + e.id)} (${e.fecha_inicio || ''} — ${e.fecha_fin || ''})</option>`
+            ).join('');
+        } else {
+          editionSelect.innerHTML = '<option value="">— No hay ediciones para este curso —</option>';
+        }
+      } catch (err) {
+        editionSelect.innerHTML = '<option value="">— Error al cargar ediciones —</option>';
+      }
+    }
   };
 
   searchInput.oninput = () => {
@@ -673,13 +729,45 @@ export const openEnrollmentEditModal = async (courseId) => {
   state.enrollmentEditToRemove = new Set();
   state.enrollmentEditQuery = '';
 
-  const [course, currentEnrollments, participants] = await Promise.all([
+  const [course, editions, participants] = await Promise.all([
     apiFetch(`/api/cursos/${courseId}`),
-    apiFetch(`/api/matriculas/by-course/${courseId}`),
+    apiFetch(`/api/ediciones/by-curso/${courseId}`),
     apiFetch('/api/participantes')
   ]);
 
-  state.enrollmentEditCurrent = Array.isArray(currentEnrollments) ? currentEnrollments : [];
+  state.ediciones = Array.isArray(editions) ? editions : [];
+
+  const editionSelect = document.getElementById('enrollment-edit-edicion');
+  if (editionSelect) {
+    if (state.ediciones.length === 0) {
+      editionSelect.innerHTML = '<option value="">— No hay ediciones —</option>';
+    } else {
+      editionSelect.innerHTML = '<option value="">-- Seleccionar edición --</option>' +
+        state.ediciones.map(e =>
+          `<option value="${e.id}">${escapeHtml(e.codigo_edicion || 'Edición ' + e.id)} (${e.fecha_inicio || ''} — ${e.fecha_fin || ''})</option>`
+        ).join('');
+    }
+
+    editionSelect.onchange = async () => {
+      const edId = editionSelect.value;
+      if (!edId) {
+        state.enrollmentEditCurrent = [];
+        state.enrollmentEditSelected = new Set();
+        state.enrollmentEditToRemove = new Set();
+        renderEnrollmentEditCurrentList();
+        renderEnrollmentEditAvailableList(state.enrollmentEditQuery || '');
+        return;
+      }
+      state.enrollmentEditEdicionId = Number(edId);
+      const currentEnrollments = await apiFetch(`/api/matriculas/by-edicion/${edId}`);
+      state.enrollmentEditCurrent = Array.isArray(currentEnrollments) ? currentEnrollments : [];
+      state.enrollmentEditSelected = new Set();
+      state.enrollmentEditToRemove = new Set();
+      renderEnrollmentEditCurrentList();
+      renderEnrollmentEditAvailableList(state.enrollmentEditQuery || '');
+    };
+  }
+
   state.enrollmentEditAvailable = Array.isArray(participants) ? participants : [];
 
   const titleEl = document.getElementById('modal-enrollment-edit-title');
@@ -708,7 +796,6 @@ export const openEnrollmentEditModal = async (courseId) => {
       const enrollmentId = String(target.dataset.id);
       state.enrollmentEditToRemove.add(enrollmentId);
       
-      // If the participant was also in the selected list, remove them from selected too
       const enrollment = state.enrollmentEditCurrent.find(item => String(item.id) === enrollmentId);
       if (enrollment) {
         state.enrollmentEditSelected.delete(String(enrollment.participante_id));
@@ -728,7 +815,6 @@ export const openEnrollmentEditModal = async (courseId) => {
         saveButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Guardando...`;
 
         try {
-          // 1. Delete staged removals
           if (state.enrollmentEditToRemove.size > 0) {
             const deletePromises = Array.from(state.enrollmentEditToRemove).map(id =>
               apiFetch(`/api/matriculas/${id}`, { method: 'DELETE' })
@@ -736,12 +822,11 @@ export const openEnrollmentEditModal = async (courseId) => {
             await Promise.all(deletePromises);
           }
 
-          // 2. Add staged additions
-          if (state.enrollmentEditSelected.size > 0) {
+          if (state.enrollmentEditSelected.size > 0 && state.enrollmentEditEdicionId) {
             await apiFetch('/api/matriculas/bulk', {
               method: 'POST',
               body: JSON.stringify({
-                curso_id: Number(courseId),
+                edicion_id: state.enrollmentEditEdicionId,
                 participante_ids: Array.from(state.enrollmentEditSelected).map(id => Number(id))
               })
             });

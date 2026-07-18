@@ -1,6 +1,16 @@
 // Archivo: assets/js/certificados.js
 // Lógica frontend unificada para la búsqueda y verificación de certificados
 
+function parseLocalDate(value) {
+  if (!value) return null;
+  const match = String(value).trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  }
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Elements
   const infoCardsWrapper = document.getElementById('info-cards-wrapper');
@@ -88,10 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
     certOfficialCode.textContent = cert.codigo || 'N/A';
     
     // Format Dates
-    const issueDate = cert.fecha_emision ? new Date(cert.fecha_emision) : null;
+    const issueDate = cert.fecha_emision ? parseLocalDate(cert.fecha_emision) : null;
     certIssueDate.textContent = issueDate ? issueDate.toLocaleDateString('es-ES') : 'N/A';
     
-    const expiryDate = cert.fecha_vencimiento ? new Date(cert.fecha_vencimiento) : null;
+    const expiryDate = cert.fecha_vencimiento ? parseLocalDate(cert.fecha_vencimiento) : null;
     const isExpired = expiryDate && expiryDate < new Date() && cert.fecha_vencimiento !== '2999-12-31';
     
     if (cert.fecha_vencimiento === '2999-12-31' || !cert.fecha_vencimiento) {

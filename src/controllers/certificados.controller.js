@@ -9,6 +9,14 @@ const { generarCertificadoPDF } = require('../services/pdf.service');
 const emailService = require('../services/email.service');
 const { crearNotificacion, TYPES } = require('./notificaciones.controller');
 
+function getPeruDate() {
+  const now = new Date();
+  const peruOffset = -5;
+  const localOffset = -now.getTimezoneOffset() / 60;
+  const peruTime = new Date(now.getTime() - (localOffset - peruOffset) * 3600000);
+  return peruTime.toISOString().split('T')[0];
+}
+
 
 // Función helper para sincronizar el index.json estático con los PDFs en disco
 function syncIndexStatic() {
@@ -449,9 +457,9 @@ module.exports = {
       const results = [];
       const emailPromises = [];
       for (const row of pendRows) {
-        const fecha_emision = new Date().toISOString().split('T')[0];
+        const fecha_emision = getPeruDate();
         const fecha_realizacion = row.fecha_inicio ? new Date(row.fecha_inicio).toISOString().split('T')[0] : fecha_emision;
-        const vigencia_anos = 2;
+        const vigencia_anos = 1;
 
         const codigo = await generarCodigoCertificado();
         const hashInput = `${codigo}-${row.alumno_dni}-${row.matricula_id}-${fecha_emision}-${Math.random()}`;
@@ -556,9 +564,9 @@ module.exports = {
         const alumno = mockDb.participantes.find(p => p.id == mat.participante_id);
         if (!alumno) continue;
 
-        const fecha_emision = new Date().toISOString().split('T')[0];
+        const fecha_emision = getPeruDate();
         const fecha_realizacion = mat.fecha_inicio ? new Date(mat.fecha_inicio).toISOString().split('T')[0] : fecha_emision;
-        const vigencia_anos = 2;
+        const vigencia_anos = 1;
 
         const yearSuffix = String(new Date().getFullYear()).slice(-2);
         const pattern = new RegExp(`^PE-\\d{4}-${yearSuffix}$`);

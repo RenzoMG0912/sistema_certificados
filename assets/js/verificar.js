@@ -1,6 +1,16 @@
 // Archivo: assets/js/verificar.js
 // Lógica frontend para la página de verificación pública de TEAM HSEC
 
+function parseLocalDate(value) {
+  if (!value) return null;
+  const match = String(value).trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  }
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.remove('js-loading');
   const spinner = document.getElementById('loading-spinner');
@@ -35,10 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('res-duration').textContent = cert.curso_duracion;
     document.getElementById('res-trainer').textContent = cert.curso_entrenador;
     
-    document.getElementById('res-issued').textContent = new Date(cert.fecha_emision).toLocaleDateString('es-ES');
-    document.getElementById('res-expired').textContent = cert.fecha_vencimiento 
-      ? new Date(cert.fecha_vencimiento).toLocaleDateString('es-ES') 
-      : 'Sin vencimiento';
+    const issuedDate = parseLocalDate(cert.fecha_emision);
+    document.getElementById('res-issued').textContent = issuedDate ? issuedDate.toLocaleDateString('es-ES') : '—';
+    const expiryDate = parseLocalDate(cert.fecha_vencimiento);
+    document.getElementById('res-expired').textContent = expiryDate ? expiryDate.toLocaleDateString('es-ES') : 'Sin vencimiento';
     
     document.getElementById('res-code').textContent = cert.codigo;
     document.getElementById('res-signature').textContent = cert.firma_nombre_1 ? `${cert.firma_nombre_1} (${cert.firma_cargo_1})` : 'Registrado';
@@ -46,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('res-hash').textContent = cert.hash;
 
     // Check expiration status
-    const isExpired = cert.fecha_vencimiento && new Date(cert.fecha_vencimiento) < new Date();
+    const isExpired = expiryDate && expiryDate < new Date();
     const statusBadge = document.getElementById('status-badge');
     
     if (isExpired) {

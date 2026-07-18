@@ -312,6 +312,68 @@
       background-color: #fef2f2 !important;
     }
 
+    /* Step wizard indicators */
+    #wizard-steps {
+      display: flex;
+      align-items: center;
+    }
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .step-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      background: #e5e7eb;
+      color: #9ca3af;
+      transition: all 0.3s ease;
+    }
+    .step-indicator.active .step-circle {
+      background: #e60000;
+      color: #fff;
+    }
+    .step-indicator.done .step-circle {
+      background: #10b981;
+      color: #fff;
+    }
+    .step-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #9ca3af;
+      transition: color 0.3s ease;
+      white-space: nowrap;
+    }
+    .step-indicator.active .step-label {
+      color: #e60000;
+    }
+    .step-indicator.done .step-label {
+      color: #10b981;
+    }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #e5e7eb;
+      margin: 0 10px;
+      min-width: 30px;
+      transition: background 0.3s ease;
+    }
+    .step-line.done {
+      background: #10b981;
+    }
+
+    /* Step content transitions */
+    .step-content {
+      animation: fadeIn 0.3s ease-out;
+    }
+
     .theme-toggle {
       display: inline-flex;
       align-items: center;
@@ -1570,89 +1632,130 @@
     </div>
   </div>
 
-  <!-- MODAL: REGISTRAR MATRÍCULA (MULTIPLE ALUMNOS) -->
+  <!-- MODAL: REGISTRAR MATRÍCULA (WIZARD MULTI-STEP) -->
   <div class="modal modal-dashboard" id="modal-enrollment" aria-hidden="true">
     <div class="modal__backdrop" data-modal-close></div>
-    <div class="modal__panel" style="max-width:650px;">
+    <div class="modal__panel" style="max-width:680px;">
       <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors border-none" type="button" aria-label="Cerrar" data-modal-close>
         <span class="material-symbols-outlined text-[18px]">close</span>
       </button>
       <div class="p-6 border-b border-slate-100">
-        <h3 class="font-title text-base font-bold text-on-surface">Matricular Alumnos en Curso</h3>
+        <h3 class="font-title text-base font-bold text-on-surface">Matricular Alumnos</h3>
+        <!-- Step indicators -->
+        <div class="flex items-center gap-0 mt-4" id="wizard-steps">
+          <div class="step-indicator active" data-step="1">
+            <span class="step-circle">1</span>
+            <span class="step-label">Curso</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-indicator" data-step="2">
+            <span class="step-circle">2</span>
+            <span class="step-label">Edición</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-indicator" data-step="3">
+            <span class="step-circle">3</span>
+            <span class="step-label">Alumnos</span>
+          </div>
+        </div>
       </div>
       <div class="p-6">
-        <form id="form-enrollment" class="space-y-4">
+        <form id="form-enrollment">
           
-          <div class="flex flex-col gap-1.5">
-            <label for="enrollment-course" class="text-xs font-semibold text-slate-700 font-title">1. Seleccionar Curso</label>
-            <select id="enrollment-course" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
-              <option value="">-- Primero selecciona un curso --</option>
-            </select>
+          <!-- ══════ STEP 1: CURSO ══════ -->
+          <div class="step-content" data-step="1">
+            <div class="flex flex-col gap-1.5">
+              <label for="enrollment-course" class="text-xs font-semibold text-slate-700 font-title">Seleccionar Curso</label>
+              <select id="enrollment-course" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all" required>
+                <option value="">-- Selecciona un curso --</option>
+              </select>
+            </div>
+            <div id="enrollment-course-details" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-600 space-y-1 mt-3">
+              <div class="font-semibold text-slate-700" id="enrollment-course-name"></div>
+              <div class="grid grid-cols-2 gap-2">
+                <span><span class="text-slate-400">Código:</span> <span id="enrollment-course-code"></span></span>
+                <span><span class="text-slate-400">Duración:</span> <span id="enrollment-course-duration"></span></span>
+                <span><span class="text-slate-400">Categoría:</span> <span id="enrollment-course-category"></span></span>
+                <span><span class="text-slate-400">Entrenador:</span> <span id="enrollment-course-trainer"></span></span>
+              </div>
+            </div>
           </div>
 
-          <div id="enrollment-course-details" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-600 space-y-1">
-            <div class="font-semibold text-slate-700" id="enrollment-course-name"></div>
-            <div class="grid grid-cols-2 gap-2">
-              <span><span class="text-slate-400">Código:</span> <span id="enrollment-course-code"></span></span>
-              <span><span class="text-slate-400">Duración:</span> <span id="enrollment-course-duration"></span></span>
-              <span><span class="text-slate-400">Categoría:</span> <span id="enrollment-course-category"></span></span>
-              <span><span class="text-slate-400">Entrenador:</span> <span id="enrollment-course-trainer"></span></span>
+          <!-- ══════ STEP 2: EDICIÓN ══════ -->
+          <div class="step-content hidden" data-step="2">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-slate-700 font-title">Seleccionar o crear Edición</label>
+              <div id="enrollment-ediciones-list" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
+                <p class="text-sm text-slate-400 text-center py-3">Cargando ediciones...</p>
+              </div>
+              <label class="flex items-center gap-2 cursor-pointer mt-1 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                <input type="checkbox" id="enrollment-new-edicion-toggle" class="rounded border-slate-300 text-primary focus:ring-primary">
+                <span class="text-sm font-medium text-slate-700">+ Crear nueva sesión</span>
+              </label>
+              <div id="enrollment-new-edicion-fields" class="hidden space-y-3 pl-4 border-l-2 border-primary/30 mt-1">
+                <div>
+                  <label for="enrollment-new-edicion-codigo" class="text-xs font-semibold text-slate-600">Código de edición</label>
+                  <input type="text" id="enrollment-new-edicion-codigo" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" placeholder="ej: grupo-1">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label for="enrollment-new-edicion-inicio" class="text-xs font-semibold text-slate-600">Fecha de inicio</label>
+                    <input type="date" id="enrollment-new-edicion-inicio" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+                  </div>
+                  <div>
+                    <label for="enrollment-new-edicion-fin" class="text-xs font-semibold text-slate-600">Fecha de fin</label>
+                    <input type="date" id="enrollment-new-edicion-fin" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-slate-700 font-title">2. Seleccionar o crear Edición</label>
-            <div id="enrollment-ediciones-list" class="space-y-2">
-              <p class="text-sm text-slate-400 text-center py-3">Selecciona un curso primero.</p>
-            </div>
-            <label class="flex items-center gap-2 cursor-pointer mt-1 p-2 rounded-lg hover:bg-slate-50 transition-colors">
-              <input type="checkbox" id="enrollment-new-edicion-toggle" class="rounded border-slate-300 text-primary focus:ring-primary">
-              <span class="text-sm font-medium text-slate-700">+ Crear nueva sesión</span>
-            </label>
-            <div id="enrollment-new-edicion-fields" class="hidden space-y-3 pl-4 border-l-2 border-primary/30 mt-1">
-              <div>
-                <label for="enrollment-new-edicion-codigo" class="text-xs font-semibold text-slate-600">Código de edición</label>
-                <input type="text" id="enrollment-new-edicion-codigo" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none" placeholder="ej: grupo-1">
+          <!-- ══════ STEP 3: ALUMNOS ══════ -->
+          <div class="step-content hidden" data-step="3">
+            <div class="flex flex-col gap-1.5">
+              <!-- Mini resumen curso + edición -->
+              <div class="bg-primary/5 border border-primary/20 rounded-xl p-3 text-xs text-slate-700 mb-2" id="enrollment-summary">
+                <span id="enrollment-summary-text">Cargando...</span>
               </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label for="enrollment-new-edicion-inicio" class="text-xs font-semibold text-slate-600">Fecha de inicio</label>
-                  <input type="date" id="enrollment-new-edicion-inicio" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
+
+              <label class="text-xs font-semibold text-slate-700 font-title">Seleccionar Alumnos a Matricular</label>
+              <div class="flex gap-2 items-center">
+                <div class="relative flex-1">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                  </span>
+                  <input type="text" id="enrollment-search" placeholder="Buscar por nombre o DNI..." autocomplete="off"
+                    class="w-full pl-8 pr-3 py-2 text-sm bg-white border border-slate-200 rounded-xl outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-slate-400">
                 </div>
-                <div>
-                  <label for="enrollment-new-edicion-fin" class="text-xs font-semibold text-slate-600">Fecha de fin</label>
-                  <input type="date" id="enrollment-new-edicion-fin" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none">
-                </div>
+                <button type="button" id="btn-select-all-participants"
+                  class="shrink-0 px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors whitespace-nowrap">
+                  Selec. todos
+                </button>
               </div>
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 max-h-52 overflow-y-auto custom-scrollbar" id="enrollment-participants-container">
+                <p class="text-sm text-slate-400 text-center py-4">Cargando alumnos...</p>
+              </div>
+              <p class="text-[11px] text-on-surface-variant" id="enrollment-selected-count">Selecciona los alumnos que deseas matricular.</p>
             </div>
           </div>
-          
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-slate-700 font-title">3. Seleccionar Alumnos a Matricular</label>
-            <!-- Barra de búsqueda + controles -->
-            <div class="flex gap-2 items-center">
-              <div class="relative flex-1">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-                  <i class="fa-solid fa-magnifying-glass text-xs"></i>
-                </span>
-                <input type="text" id="enrollment-search" placeholder="Buscar por nombre o DNI..." autocomplete="off"
-                  class="w-full pl-8 pr-3 py-2 text-sm bg-white border border-slate-200 rounded-xl outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-slate-400">
-              </div>
-              <button type="button" id="btn-select-all-participants"
-                class="shrink-0 px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors whitespace-nowrap">
-                Selec. todos
+
+          <!-- ══════ NAVEGACIÓN ══════ -->
+          <div class="flex items-center justify-between pt-4 border-t border-slate-100 mt-6">
+            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close id="btn-wizard-cancel">Cancelar</button>
+            <div class="flex items-center gap-3">
+              <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors hidden" type="button" id="btn-wizard-prev">
+                <i class="fa-solid fa-chevron-left mr-1.5 text-[11px]"></i> Anterior
+              </button>
+              <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="btn-wizard-next">
+                Siguiente <i class="fa-solid fa-chevron-right ml-1.5 text-[11px]"></i>
+              </button>
+              <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98] hidden" type="submit" id="btn-wizard-submit">
+                <i class="fa-solid fa-check mr-1.5 text-[12px]"></i> Matricular Seleccionados
               </button>
             </div>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 max-h-52 overflow-y-auto custom-scrollbar" id="enrollment-participants-container">
-              <p class="text-sm text-slate-400 text-center py-4">Selecciona un curso primero para cargar los alumnos disponibles.</p>
-            </div>
-            <p class="text-[11px] text-on-surface-variant" id="enrollment-selected-count">Selecciona los alumnos que deseas matricular en este curso.</p>
           </div>
-          
-          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cancelar</button>
-            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="submit">Matricular Seleccionados</button>
-          </div>
+
         </form>
       </div>
     </div>

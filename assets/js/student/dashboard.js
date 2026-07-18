@@ -342,7 +342,7 @@
         </thead>
         <tbody class="divide-y divide-outline-variant">
           ${displayCerts.map((cert, i) => {
-            const isVigente = !cert.fecha_vencimiento || new Date(cert.fecha_vencimiento) > new Date();
+            const isVigente = !cert.fecha_vencimiento || parseLocalDate(cert.fecha_vencimiento) > new Date();
             return `
             <tr class="${i % 2 === 1 ? 'bg-surface-container-low' : ''} hover:bg-surface-container transition-colors">
               <td class="px-4 py-3 flex items-center gap-2">
@@ -454,7 +454,7 @@
         </thead>
         <tbody class="divide-y divide-outline-variant">
           ${studentCertificates.map((cert, i) => {
-            const isVigente = !cert.fecha_vencimiento || new Date(cert.fecha_vencimiento) > new Date();
+            const isVigente = !cert.fecha_vencimiento || parseLocalDate(cert.fecha_vencimiento) > new Date();
             return `
             <tr class="${i % 2 === 1 ? 'bg-surface-container-low' : ''} hover:bg-surface-container transition-colors">
               <td class="px-4 py-3 flex items-center gap-2">

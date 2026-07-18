@@ -374,6 +374,65 @@
       animation: fadeIn 0.3s ease-out;
     }
 
+    /* Enrollment course tabs */
+    .enrollment-tabs-bar {
+      display: flex;
+      gap: 4px;
+      padding: 16px 16px 0;
+      overflow-x: auto;
+      border-bottom: 2px solid #e5e7eb;
+      background: #f8f9fa;
+    }
+    .enrollment-tab {
+      padding: 9px 18px;
+      border-radius: 8px 8px 0 0;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-bottom: none;
+      background: transparent;
+      color: #6b7280;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+    }
+    .enrollment-tab:hover {
+      background: #f0f1f3;
+      color: #374151;
+    }
+    .enrollment-tab.active {
+      background: #ffffff;
+      color: #e60000;
+      border-color: #e5e7eb;
+      position: relative;
+    }
+    .enrollment-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #ffffff;
+    }
+    .tab-badge {
+      background: #e5e7eb;
+      color: #6b7280;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 999px;
+      line-height: 1.5;
+    }
+    .enrollment-tab.active .tab-badge {
+      background: #fef2f2;
+      color: #e60000;
+    }
+
     .theme-toggle {
       display: inline-flex;
       align-items: center;

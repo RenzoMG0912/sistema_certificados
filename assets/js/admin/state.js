@@ -18,6 +18,7 @@ export const state = {
   enrollmentQuery: '',
   expandedCourses: new Set(),
   showAllStudents: new Set(),
+  enrollmentCourseTab: '',
   enrollmentCreateStep: 1,
   enrollmentCreateQuery: '',
   enrollmentCreateSelected: new Set(),

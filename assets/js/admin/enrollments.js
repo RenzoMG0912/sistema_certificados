@@ -61,11 +61,29 @@ export const renderEnrollments = () => {
     return;
   }
 
-  container.innerHTML = filtered.map(group => {
-    const courseId = String(group.curso_id);
-    const isExpanded = state.expandedCourses.has(courseId);
+  // Determine active tab
+  if (!filtered.some(g => String(g.curso_id) === state.enrollmentCourseTab)) {
+    state.enrollmentCourseTab = String(filtered[0].curso_id);
+  }
 
-    // Group enrollments by edition
+  // ── Render tabs bar ──
+  const tabsHtml = filtered.map(group => {
+    const cid = String(group.curso_id);
+    const totalEnrollments = (group.enrollments || []).length;
+    const isActive = cid === state.enrollmentCourseTab;
+    const editionCount = new Set((group.enrollments || []).map(e => e.edicion_id)).size;
+    return `
+      <button class="enrollment-tab ${isActive ? 'active' : ''}" data-curso-id="${cid}">
+        ${escapeHtml(group.curso_nombre || 'Curso')}
+        <span class="tab-badge">${totalEnrollments}</span>
+      </button>`;
+  }).join('');
+
+  // ── Render content for active course ──
+  const activeGroup = filtered.find(g => String(g.curso_id) === state.enrollmentCourseTab);
+
+  const buildEditionPanels = (group) => {
+    const courseId = String(group.curso_id);
     const editionMap = {};
     (group.enrollments || []).forEach(item => {
       const eid = String(item.edicion_id);
@@ -81,9 +99,8 @@ export const renderEnrollments = () => {
       editionMap[eid].enrollments.push(item);
     });
     const editions = Object.values(editionMap);
-    const total = (group.enrollments || []).length;
 
-    const editionPanels = editions.map(ed => {
+    return editions.map(ed => {
       const eid = ed.edicion_id;
       const showAll = state.showAllStudents.has(`e-${eid}`);
       const visible = showAll ? ed.enrollments : ed.enrollments.slice(0, PAGE_SIZE);
@@ -148,7 +165,6 @@ export const renderEnrollments = () => {
 
       return `
         <div class="border-t border-slate-100 bg-white">
-          <!-- Edition Sub-header -->
           <div class="flex items-center justify-between px-6 py-2.5 bg-slate-50/70 border-b border-slate-100">
             <div class="flex items-center gap-2">
               <span class="material-symbols-outlined text-[16px] text-slate-400">layers</span>
@@ -187,86 +203,45 @@ export const renderEnrollments = () => {
           </div>
         </div>`;
     }).join('');
+  };
 
-    const maxHeightStyle = isExpanded ? 'max-height: none;' : 'max-height: 0px;';
+  const contentHtml = activeGroup ? `
+    <div class="p-4 border-b border-slate-100 bg-white flex items-center justify-between">
+      <div>
+        <p class="font-semibold text-sm text-on-surface">${escapeHtml(activeGroup.curso_nombre || '')}</p>
+        <p class="text-xs text-on-surface-variant mt-0.5">
+          Entrenador: ${escapeHtml(activeGroup.curso_entrenador || 'N/A')}
+          ${activeGroup.curso_duracion ? `<span class="mx-1.5 opacity-30">•</span> Duración: ${escapeHtml(activeGroup.curso_duracion)}` : ''}
+          <span class="mx-1.5 opacity-30">•</span> ${new Set((activeGroup.enrollments || []).map(e => e.edicion_id)).size} edición(es)
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" class="btn-icon btn-edit-enrollment text-slate-500 hover:text-primary transition-colors border border-slate-200 bg-white hover:bg-slate-50" data-course-id="${state.enrollmentCourseTab}" title="Editar matrícula">
+          <i class="fa-solid fa-pen text-[12px]"></i>
+        </button>
+      </div>
+    </div>
+    ${buildEditionPanels(activeGroup)}
+  ` : '<div class="px-6 py-10 text-center text-on-surface-variant">Selecciona un curso.</div>';
 
-    return `
-      <div class="enrollment-accordion-item bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm my-3" data-course-id="${courseId}">
-        <!-- Course Header Row -->
-        <div class="enrollment-course-header flex items-center gap-3 px-6 py-4 hover:bg-slate-50/50 transition-colors cursor-pointer" data-toggle-course="${courseId}">
-          <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center shrink-0 transition-all hover:bg-slate-100" data-toggle-course="${courseId}">
-            <span class="chevron-left material-symbols-outlined text-[18px] text-slate-500 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}">chevron_right</span>
-          </button>
-          <div class="flex-1 min-w-0">
-            <p class="font-semibold text-sm text-on-surface">${escapeHtml(group.curso_nombre || '')}</p>
-            <p class="text-xs text-on-surface-variant mt-0.5">
-              Entrenador: ${escapeHtml(group.curso_entrenador || 'N/A')}
-              ${group.curso_duracion ? `<span class="mx-1.5 opacity-30">•</span> Duración: ${escapeHtml(group.curso_duracion)}` : ''}
-              <span class="mx-1.5 opacity-30">•</span> Ediciones: ${editions.length}
-            </p>
-          </div>
-          <div class="text-right shrink-0 mr-4">
-            <p class="text-base font-bold text-emerald-600 leading-none">${total}</p>
-            <p class="text-[11px] text-on-surface-variant mt-0.5">Alumnos</p>
-          </div>
-          <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
-            <button type="button" class="btn-icon btn-edit-enrollment text-slate-500 hover:text-primary transition-colors border border-slate-200 bg-white hover:bg-slate-50" data-course-id="${courseId}" title="Editar matrícula">
-              <i class="fa-solid fa-pen text-[12px]"></i>
-            </button>
-            <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-100 transition-all text-slate-500" data-toggle-course="${courseId}" title="${isExpanded ? 'Colapsar' : 'Expandir'}">
-              <span class="chevron-right material-symbols-outlined text-[18px] transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}">expand_more</span>
-            </button>
-          </div>
-        </div>
+  container.innerHTML = `
+    <div class="enrollment-tabs-bar">${tabsHtml}</div>
+    <div class="bg-white">${contentHtml}</div>
+  `;
 
-        <!-- Expandable inner container with edition panels -->
-        <div class="accordion-collapse-container" style="${maxHeightStyle}">
-          ${editionPanels}
-        </div>
-      </div>`;
-  }).join('');
+  // ── Bind tab clicks ──
+  container.querySelectorAll('.enrollment-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.enrollmentCourseTab = btn.dataset.cursoId;
+      renderEnrollments();
+    });
+  });
 
-  // ── Bind toggle events with smooth height transitions ──
-  container.querySelectorAll('[data-toggle-course]').forEach(btn => {
+  // ── Bind edit button ──
+  container.querySelectorAll('.btn-edit-enrollment').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const cid = btn.dataset.toggleCourse;
-      
-      const itemEl = container.querySelector(`.enrollment-accordion-item[data-course-id="${cid}"]`);
-      if (!itemEl) return;
-      
-      const collapseEl = itemEl.querySelector('.accordion-collapse-container');
-      const chevronLeft = itemEl.querySelector('.chevron-left');
-      const chevronRight = itemEl.querySelector('.chevron-right');
-      
-      if (!collapseEl) return;
-      
-      const isCurrentlyOpen = state.expandedCourses.has(cid);
-      
-      if (isCurrentlyOpen) {
-        // Collapse
-        collapseEl.style.maxHeight = collapseEl.scrollHeight + 'px';
-        collapseEl.offsetHeight; // force reflow
-        collapseEl.style.maxHeight = '0px';
-        
-        chevronLeft?.classList.remove('rotate-90');
-        chevronRight?.classList.remove('rotate-180');
-        state.expandedCourses.delete(cid);
-      } else {
-        // Expand
-        collapseEl.style.maxHeight = collapseEl.scrollHeight + 'px';
-        chevronLeft?.classList.add('rotate-90');
-        chevronRight?.classList.add('rotate-180');
-        state.expandedCourses.add(cid);
-        
-        const transitionHandler = () => {
-          if (state.expandedCourses.has(cid)) {
-            collapseEl.style.maxHeight = 'none';
-          }
-          collapseEl.removeEventListener('transitionend', transitionHandler);
-        };
-        collapseEl.addEventListener('transitionend', transitionHandler);
-      }
+      openEnrollmentEditModal(btn.dataset.courseId);
     });
   });
 
@@ -277,7 +252,6 @@ export const renderEnrollments = () => {
       const edicionId = btn.dataset.edicionId;
       if (!edicionId) return;
 
-      // Find the edition info from state
       let editionName = 'esta edición';
       let studentCount = 0;
       for (const g of state.enrollments) {
@@ -288,7 +262,7 @@ export const renderEnrollments = () => {
           break;
         }
       }
-      
+
       if (studentCount === 0) {
         showToast('No hay alumnos matriculados en esta edición', 'warning');
         return;
@@ -296,7 +270,7 @@ export const renderEnrollments = () => {
 
       if (!await showConfirmModal(
         'Confirmar Envío de Certificados',
-        `¿Está seguro de que desea generar y enviar los certificados digitales a todos los estudiantes de "${editionName}"? Esta acción notificará automáticamente a los alumnos por correo electrónico.`,
+        `¿Está seguro de que desea generar y enviar los certificados digitales a todos los estudiantes de "${editionName}"?`,
         'Sí, enviar ahora',
         'Cancelar',
         'info',
@@ -307,9 +281,7 @@ export const renderEnrollments = () => {
           },
           confirmIcon: 'fa-solid fa-paper-plane'
         }
-      )) {
-        return;
-      }
+      )) return;
 
       btn.disabled = true;
       const originalHtml = btn.innerHTML;
@@ -320,7 +292,6 @@ export const renderEnrollments = () => {
           method: 'POST',
           body: JSON.stringify({ edicion_id: Number(edicionId) })
         });
-
         if (res.success) {
           showToast(res.message || 'Certificados emitidos y enviados correctamente');
         } else {
@@ -332,14 +303,6 @@ export const renderEnrollments = () => {
         btn.disabled = false;
         btn.innerHTML = originalHtml;
       }
-    });
-  });
-
-  // ── Bind edit buttons ──
-  container.querySelectorAll('.btn-edit-enrollment').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openEnrollmentEditModal(btn.dataset.courseId);
     });
   });
 
@@ -368,7 +331,7 @@ export const renderEnrollments = () => {
 
       if (!await showConfirmModal(
         'Eliminar Matrículas de Edición',
-        `¿Está seguro de eliminar TODAS las matrículas de los alumnos de "${editionName}"? Esta acción eliminará también los certificados vinculados y no se puede deshacer.`,
+        `¿Está seguro de eliminar TODAS las matrículas de los alumnos de "${editionName}"?`,
         'Sí, eliminar',
         'Cancelar',
         'danger',
@@ -379,19 +342,14 @@ export const renderEnrollments = () => {
           },
           confirmIcon: 'fa-solid fa-trash'
         }
-      )) {
-        return;
-      }
+      )) return;
 
       btn.disabled = true;
       const originalHtml = btn.innerHTML;
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[12px]"></i>`;
 
       try {
-        const res = await apiFetch(`/api/matriculas/by-edicion/${edicionId}`, {
-          method: 'DELETE'
-        });
-
+        const res = await apiFetch(`/api/matriculas/by-edicion/${edicionId}`, { method: 'DELETE' });
         if (res.success) {
           showToast(res.message || 'Todas las matrículas han sido eliminadas correctamente');
           await loadEnrollments();
@@ -414,11 +372,6 @@ export const renderEnrollments = () => {
       const eid = btn.dataset.edicionId;
       state.showAllStudents.add(`e-${eid}`);
       renderEnrollments();
-      const itemEl = container.querySelector(`.enrollment-accordion-item`);
-      if (itemEl) {
-        const collapseEl = itemEl.querySelector('.accordion-collapse-container');
-        if (collapseEl) collapseEl.style.maxHeight = 'none';
-      }
     });
   });
 
@@ -429,15 +382,10 @@ export const renderEnrollments = () => {
       const eid = btn.dataset.edicionId;
       state.showAllStudents.delete(`e-${eid}`);
       renderEnrollments();
-      const itemEl = container.querySelector(`.enrollment-accordion-item`);
-      if (itemEl) {
-        const collapseEl = itemEl.querySelector('.accordion-collapse-container');
-        if (collapseEl) collapseEl.style.maxHeight = 'none';
-      }
     });
   });
 
-  // ── Bind view specific student details inside enrollment list ──
+  // ── Bind view specific student details ──
   container.querySelectorAll('.btn-view-enrollment-student').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -446,7 +394,6 @@ export const renderEnrollments = () => {
       const group = state.enrollments.find(g => String(g.curso_id) === courseId);
       const student = group?.enrollments?.find(item => String(item.id) === enrollmentId);
       if (student) {
-        // Open participant modal or details modal
         const part = await apiFetch(`/api/participantes/${student.participante_id}`);
         if (part) {
           el('participant-detail-name').textContent = part.nombres || '—';

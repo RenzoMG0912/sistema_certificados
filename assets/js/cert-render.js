@@ -1,3 +1,0 @@
-function renderCert() {
-  return null;
-}

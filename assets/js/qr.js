@@ -1,3 +1,0 @@
-function initQr() {
-  return true;
-}

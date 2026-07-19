@@ -380,8 +380,14 @@
       gap: 4px;
       padding: 16px 16px 0;
       overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       border-bottom: 2px solid #e5e7eb;
       background: #f8f9fa;
+    }
+    .enrollment-tabs-bar::-webkit-scrollbar {
+      display: none;
     }
     .enrollment-tab {
       padding: 9px 18px;
@@ -431,6 +437,74 @@
     .enrollment-tab.active .tab-badge {
       background: #fef2f2;
       color: #e60000;
+    }
+
+    /* Edition cards */
+    .edition-card {
+      margin: 0 16px 12px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .edition-card:hover {
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .edition-card-even {
+      border-left: 3px solid #e60000;
+    }
+    .edition-card-odd {
+      border-left: 3px solid #d5b874;
+    }
+    .edition-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+      gap: 12px;
+    }
+    .edition-card-header:hover {
+      background: #f0f1f3;
+    }
+    .edition-card-header .edition-toggle-icon {
+      transition: transform 0.2s;
+    }
+    .edition-card-header .edition-toggle-icon.expanded {
+      transform: rotate(90deg);
+    }
+    .edition-card-body {
+      border-top: 1px solid #e5e7eb;
+    }
+    .edition-code {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 10px;
+      background: #e5e7eb;
+      border-radius: 6px;
+    }
+    .edition-dates {
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .edition-student-count {
+      font-size: 14px;
+      font-weight: 700;
+      color: #059669;
+    }
+    .edition-actions {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding-left: 8px;
+      border-left: 1px solid #d1d5db;
     }
 
     .theme-toggle {

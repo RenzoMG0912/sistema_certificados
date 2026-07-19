@@ -27,10 +27,7 @@ app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'log
 app.get('/certificados', (req, res) => res.sendFile(path.join(__dirname, 'public', 'certificados.html')));
 app.get('/verificar', (req, res) => res.sendFile(path.join(__dirname, 'public', 'verificar.html')));
 app.get('/admin/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'admin', 'dashboard.html')));
-app.get('/admin/cursos', (req, res) => res.sendFile(path.join(__dirname, 'admin', 'cursos.html')));
-app.get('/admin/participantes', (req, res) => res.sendFile(path.join(__dirname, 'admin', 'participantes.html')));
-app.get('/admin/matricula', (req, res) => res.sendFile(path.join(__dirname, 'admin', 'matricula.html')));
-app.get('/admin/certificados', (req, res) => res.sendFile(path.join(__dirname, 'admin', 'certificados.html')));
+
 app.get('/student/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'student', 'dashboard.html')));
 
 // Enrutar recursos estáticos (assets, img, y compatibilidad con URLs .html antiguas)

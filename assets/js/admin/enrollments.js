@@ -100,8 +100,15 @@ export const renderEnrollments = () => {
     });
     const editions = Object.values(editionMap);
 
-    return editions.map(ed => {
+    return editions.map((ed, edIdx) => {
       const eid = ed.edicion_id;
+
+      // Ensure edition is in expanded set (start expanded)
+      if (!state.expandedEditions.has(eid)) {
+        state.expandedEditions.add(eid);
+      }
+      const isExpanded = state.expandedEditions.has(eid);
+
       const showAll = state.showAllStudents.has(`e-${eid}`);
       const visible = showAll ? ed.enrollments : ed.enrollments.slice(0, PAGE_SIZE);
 
@@ -164,42 +171,48 @@ export const renderEnrollments = () => {
         </tr>` : '');
 
       return `
-        <div class="border-t border-slate-100 bg-white">
-          <div class="flex items-center justify-between px-6 py-2.5 bg-slate-50/70 border-b border-slate-100">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-[16px] text-slate-400">layers</span>
-              <span class="text-xs font-semibold text-slate-600 uppercase tracking-wider">${escapeHtml(ed.codigo_edicion)}</span>
-              <span class="text-[11px] text-slate-400">${formatDateShort(ed.fecha_inicio)} — ${formatDateShort(ed.fecha_fin)}</span>
+        <div class="edition-card ${edIdx % 2 === 0 ? 'edition-card-even' : 'edition-card-odd'}">
+          <div class="edition-card-header" data-edicion-id="${eid}">
+            <div class="flex items-center gap-2 min-w-0 flex-1">
+              <span class="material-symbols-outlined text-[18px] text-slate-400 edition-toggle-icon ${isExpanded ? 'expanded' : ''}">chevron_right</span>
+              <div class="flex items-center gap-2 min-w-0 flex-wrap">
+                <span class="edition-code">${escapeHtml(ed.codigo_edicion)}</span>
+                <span class="edition-dates">${formatDateShort(ed.fecha_inicio)} — ${formatDateShort(ed.fecha_fin)}</span>
+              </div>
             </div>
-            <div class="flex items-center gap-1.5">
-              <span class="text-xs font-bold text-emerald-600 mr-1">${ed.enrollments.length}</span>
-              <span class="text-[10px] text-slate-400 mr-2">alumnos</span>
-              <button type="button" class="btn-icon btn-bulk-generate-certs text-slate-500 hover:text-primary transition-colors" data-edicion-id="${eid}" title="Emitir certificados para esta edición">
-                <span class="material-symbols-outlined text-[16px]">workspace_premium</span>
-              </button>
-              <button type="button" class="btn-icon btn-delete btn-delete-all-enrollments text-slate-500 hover:text-red-600 transition-colors" data-edicion-id="${eid}" title="Eliminar todas las matrículas de esta edición">
-                <i class="fa-solid fa-trash text-[11px]"></i>
-              </button>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <span class="edition-student-count">${ed.enrollments.length}</span>
+              <span class="text-[10px] text-slate-400 mr-1.5">alumnos</span>
+              <div class="edition-actions">
+                <button type="button" class="btn-icon btn-bulk-generate-certs text-slate-400 hover:text-primary transition-colors" data-edicion-id="${eid}" title="Emitir certificados para esta edición">
+                  <span class="material-symbols-outlined text-[17px]">workspace_premium</span>
+                </button>
+                <button type="button" class="btn-icon btn-delete btn-delete-all-enrollments text-slate-400 hover:text-red-600 transition-colors" data-edicion-id="${eid}" title="Eliminar todas las matrículas de esta edición">
+                  <i class="fa-solid fa-trash text-[12px]"></i>
+                </button>
+              </div>
             </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="text-on-surface-variant bg-slate-50/50">
-                  <th class="pl-8 pr-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100 w-10">N°</th>
-                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Alumno</th>
-                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">DNI / Identificación</th>
-                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Fecha de Inicio</th>
-                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Fecha de Fin</th>
-                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Estado</th>
-                  <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Acciones</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100">
-                ${studentRows || `<tr><td colspan="7" class="px-8 py-6 text-center text-sm text-slate-400">Sin alumnos matriculados.</td></tr>`}
-                ${paginationRow}
-              </tbody>
-            </table>
+          <div class="edition-card-body ${isExpanded ? '' : 'hidden'}">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="text-on-surface-variant bg-slate-50/50">
+                    <th class="pl-8 pr-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100 w-10">N°</th>
+                    <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Alumno</th>
+                    <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">DNI / Identificación</th>
+                    <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Fecha de Inicio</th>
+                    <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Fecha de Fin</th>
+                    <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Estado</th>
+                    <th class="px-4 py-3 font-semibold text-[10px] uppercase tracking-[0.14em] border-b border-slate-100">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${studentRows || `<tr><td colspan="7" class="px-8 py-6 text-center text-sm text-slate-400">Sin alumnos matriculados.</td></tr>`}
+                  ${paginationRow}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>`;
     }).join('');
@@ -407,6 +420,20 @@ export const renderEnrollments = () => {
           openModal('modal-participant-details');
         }
       }
+    });
+  });
+
+  // ── Bind edition collapse/expand ──
+  container.querySelectorAll('.edition-card-header').forEach(header => {
+    header.addEventListener('click', (e) => {
+      if (e.target.closest('.edition-actions, .btn-show-all-students, .btn-hide-all-students')) return;
+      const eid = header.dataset.edicionId;
+      if (state.expandedEditions.has(eid)) {
+        state.expandedEditions.delete(eid);
+      } else {
+        state.expandedEditions.add(eid);
+      }
+      renderEnrollments();
     });
   });
 

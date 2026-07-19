@@ -429,17 +429,24 @@ export const renderEnrollments = () => {
     });
   });
 
-  // ── Bind edition collapse/expand ──
+  // ── Bind edition collapse/expand (DOM directo, sin re-render) ──
   container.querySelectorAll('.edition-card-header').forEach(header => {
     header.addEventListener('click', (e) => {
       if (e.target.closest('.edition-actions, .btn-show-all-students, .btn-hide-all-students')) return;
       const eid = header.dataset.edicionId;
-      if (state.expandedEditions.has(eid)) {
+      const isExpanded = state.expandedEditions.has(eid);
+      if (isExpanded) {
         state.expandedEditions.delete(eid);
       } else {
         state.expandedEditions.add(eid);
       }
-      renderEnrollments();
+      const card = header.closest('.edition-card');
+      if (card) {
+        const body = card.querySelector('.edition-card-body');
+        const icon = header.querySelector('.edition-toggle-icon');
+        if (body) body.classList.toggle('hidden');
+        if (icon) icon.classList.toggle('expanded');
+      }
     });
   });
 

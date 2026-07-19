@@ -379,14 +379,20 @@
       display: flex;
       gap: 4px;
       padding: 16px 16px 0;
-      overflow: auto hidden;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
+      overflow-x: auto;
+      overflow-y: hidden;
       border-bottom: 2px solid #e5e7eb;
       background: #f8f9fa;
     }
     .enrollment-tabs-bar::-webkit-scrollbar {
-      display: none;
+      height: 6px;
+    }
+    .enrollment-tabs-bar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .enrollment-tabs-bar::-webkit-scrollbar-thumb {
+      background: #d1d5db;
+      border-radius: 3px;
     }
     .enrollment-tab {
       padding: 9px 18px;

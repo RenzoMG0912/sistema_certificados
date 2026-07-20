@@ -324,10 +324,6 @@
           </div>
           <h4 class="text-sm font-bold text-on-surface">${escapeHtml(name)}</h4>
           <p class="text-[11px] text-on-surface-variant uppercase tracking-wider mb-3">${escapeHtml(role)}</p>
-          <button class="inline-flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container transition-colors">
-            <span class="material-symbols-outlined text-[18px]">mail</span>
-            Enviar mensaje
-          </button>
         </div>`;
     }).join('');
   };

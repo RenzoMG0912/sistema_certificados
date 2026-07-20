@@ -705,7 +705,7 @@
     justify-content: flex-end;
     flex-wrap: wrap;
   }
-  .nav-platform { display: none; }
+  .nav-platform { display: inline-flex; }
   .why-split { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
   .grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }

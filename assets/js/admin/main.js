@@ -342,8 +342,4 @@ const init = async () => {
   initNotifications();
 };
 
-if (document.readyState !== 'loading') {
-  init();
-} else {
-  document.addEventListener('DOMContentLoaded', init);
-}
+document.addEventListener('DOMContentLoaded', init);

@@ -565,26 +565,21 @@
   </script>
 
   <script>
-    // Load shared sidebar, then initialize dashboard
-    (async function() {
+    // Load shared sidebar synchronously before other scripts
+    (function() {
       var c = document.getElementById('sidebar-container');
       if (c) {
-        try {
-          var res = await fetch('/components/sidebar.html');
-          if (res.ok) {
-            var html = await res.text();
-            c.innerHTML = html.replace(/__ROLE__/g, 'student').replace(/__SUBTITLE__/g, 'Portal Estudiantil');
-          }
-        } catch(e) {
-          console.error('Error loading sidebar:', e);
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/components/sidebar.html', false);
+        try { xhr.send(); } catch(e) {}
+        if (xhr.status === 200 || xhr.status === 0) {
+          c.innerHTML = xhr.responseText.replace(/__ROLE__/g, 'student').replace(/__SUBTITLE__/g, 'Portal Estudiantil');
         }
       }
-      // Now load dashboard.js dynamically
-      var s = document.createElement('script');
-      s.src = '/assets/js/student/dashboard.js';
-      document.body.appendChild(s);
     })();
   </script>
+
+  <script src="/assets/js/student/dashboard.js"></script>
 
   <script>
     window.addEventListener('DOMContentLoaded', () => {

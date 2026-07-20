@@ -41,7 +41,7 @@ const updatePageHeader = (tabId) => {
 };
 
 export const setActiveTab = (tabId) => {
-  document.querySelectorAll('.sidebar-menu a[data-tab]').forEach(link => {
+  document.querySelectorAll('.sidebar-link[data-tab]').forEach(link => {
     link.classList.toggle('active', link.dataset.tab === tabId);
   });
   document.querySelectorAll('.tab-content').forEach(section => {
@@ -72,7 +72,7 @@ export const loadCurrentSection = async (tabId) => {
 };
 
 export const initTabs = () => {
-  document.querySelectorAll('.sidebar-menu a[data-tab]').forEach(link => {
+  document.querySelectorAll('.sidebar-link[data-tab]').forEach(link => {
     link.addEventListener('click', event => {
       event.preventDefault();
       const tabId = link.dataset.tab;

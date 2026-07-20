@@ -321,11 +321,11 @@ const init = async () => {
   }
 
   const userData = localStorage.getItem('admin_user');
-  if (userData && el('user-display')) {
+  if (userData && el('user-display-header')) {
     try {
-      el('user-display').textContent = JSON.parse(userData).nombre || 'Administrador';
+      el('user-display-header').textContent = JSON.parse(userData).nombre || 'Administrador TEAM HSEC';
     } catch {
-      el('user-display').textContent = 'Administrador';
+      el('user-display-header').textContent = 'Administrador TEAM HSEC';
     }
   }
 

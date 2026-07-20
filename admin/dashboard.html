@@ -626,6 +626,17 @@
       background-color: #1e293b !important;
       border-color: #334155 !important;
     }
+    .dark header {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    .dark .mobile-nav {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    .dark footer {
+      border-color: #334155 !important;
+    }
     .dark .stat-card:hover {
       box-shadow: 0 8px 25px -5px rgba(0,0,0,0.3) !important;
     }
@@ -897,22 +908,34 @@
       background-color: #f0f1f3;
     }
 
+    /* Mobile nav */
+    .mobile-nav a.active { color: #e60000; }
+    .mobile-nav a.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+
     @media (max-width: 767px) {
       main { padding-bottom: 80px !important; }
+      .p-6 { padding-left: 1rem; padding-right: 1rem; }
     }
   </style>
 </head>
 <body class="font-body text-[13px] text-on-surface">
 
+  <div class="flex min-h-screen">
+
   <!-- Sidebar (estilo student) -->
-  <aside id="sidebar" class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-white border-r border-outline-variant p-5 gap-4 z-40">
+  <aside id="sidebar" class="hidden md:flex flex-col h-screen w-64 sticky top-0 bg-white border-r border-outline-variant p-5 gap-4 z-40">
     <!-- Logo -->
-    <div class="flex items-center gap-3 mb-6">
-      <img src="/img/logo_RV.png" alt="TeamHSEC" class="w-10 h-10 rounded-xl object-contain">
-      <div>
-        <h1 class="font-title text-lg font-bold text-primary">TeamHSEC</h1>
-        <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Admin Portal</p>
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <img src="/img/logo_RV.png" alt="TeamHSEC" class="w-10 h-10 rounded-xl object-contain">
+        <div>
+          <h1 class="font-title text-lg font-bold text-primary">TeamHSEC</h1>
+          <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Admin Portal</p>
+        </div>
       </div>
+      <button id="sidebar-close-btn" class="md:hidden w-8 h-8 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors" aria-label="Cerrar sidebar">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
     </div>
 
     <!-- Navigation -->
@@ -957,7 +980,7 @@
   </aside>
 
   <!-- Main Worktree -->
-  <div class="main-worktree ml-0 md:ml-64 min-h-screen flex flex-col bg-[#fcfcfc]">
+  <div class="main-worktree flex-1 w-full min-h-screen flex flex-col bg-[#fcfcfc]">
     
     <!-- Topbar -->
     <header class="bg-[#fcfcfc] flex flex-col px-10 pt-8 pb-4 gap-6 sticky top-0 z-40">
@@ -1638,6 +1661,35 @@
       </div>
     </footer>
   </div>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-nav md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-outline-variant flex justify-around py-3 z-50">
+    <a class="mobile-nav-link active flex flex-col items-center gap-0.5 text-primary" href="#" data-tab="inicio">
+      <span class="material-symbols-outlined text-[22px]">dashboard</span>
+      <span class="text-[10px] font-semibold">Inicio</span>
+    </a>
+    <a class="mobile-nav-link flex flex-col items-center gap-0.5 text-on-surface-variant" href="#" data-tab="cursos">
+      <span class="material-symbols-outlined text-[22px]">menu_book</span>
+      <span class="text-[10px] font-semibold">Cursos</span>
+    </a>
+    <a class="mobile-nav-link flex flex-col items-center gap-0.5 text-on-surface-variant" href="#" data-tab="participantes">
+      <span class="material-symbols-outlined text-[22px]">group</span>
+      <span class="text-[10px] font-semibold">Alumnos</span>
+    </a>
+    <a class="mobile-nav-link flex flex-col items-center gap-0.5 text-on-surface-variant" href="#" data-tab="matriculas">
+      <span class="material-symbols-outlined text-[22px]">assignment_ind</span>
+      <span class="text-[10px] font-semibold">Matrículas</span>
+    </a>
+    <a class="mobile-nav-link flex flex-col items-center gap-0.5 text-on-surface-variant" href="#" data-tab="certificados">
+      <span class="material-symbols-outlined text-[22px]">verified_user</span>
+      <span class="text-[10px] font-semibold">Certificados</span>
+    </a>
+    <a class="mobile-nav-link flex flex-col items-center gap-0.5 text-on-surface-variant" href="#" data-tab="firmas">
+      <span class="material-symbols-outlined text-[22px]">draw</span>
+      <span class="text-[10px] font-semibold">Firmas</span>
+    </a>
+  </nav>
 
   <!-- MODAL: CREAR/EDITAR CURSO -->
   <div class="modal modal-dashboard" id="modal-course" aria-hidden="true">
@@ -2260,30 +2312,50 @@
         });
       }
 
-      // Mobile menu toggle (sidebar overlay on mobile)
+      // Mobile menu toggle — drawer lateral con overlay
       const sidebar = document.getElementById('sidebar');
       const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-      const mobileIcon = mobileMenuBtn?.querySelector('.material-symbols-outlined');
-      if (mobileMenuBtn && sidebar) {
+      const mobileMenuIcon = mobileMenuBtn?.querySelector('.material-symbols-outlined');
+      const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+      let backdrop = null;
+
+      function openSidebar() {
+        if (window.innerWidth >= 768) return;
+        sidebar.classList.remove('hidden');
+        sidebar.classList.add('fixed', 'left-0', 'top-0', 'z-50', 'h-screen');
+        if (mobileMenuIcon) mobileMenuIcon.textContent = 'close';
+        // Create backdrop
+        if (!backdrop) {
+          backdrop = document.createElement('div');
+          backdrop.className = 'fixed inset-0 bg-black/50 z-40 transition-opacity';
+          backdrop.addEventListener('click', closeSidebar);
+          document.body.appendChild(backdrop);
+        }
+        requestAnimationFrame(() => { backdrop.style.opacity = '1'; });
+      }
+
+      function closeSidebar() {
+        sidebar.classList.add('hidden');
+        sidebar.classList.remove('fixed', 'left-0', 'top-0', 'z-50', 'h-screen');
+        if (mobileMenuIcon) mobileMenuIcon.textContent = 'menu';
+        if (backdrop) {
+          backdrop.remove();
+          backdrop = null;
+        }
+      }
+
+      if (mobileMenuBtn) {
         mobileMenuBtn.addEventListener('click', () => {
-          const isHidden = sidebar.classList.contains('hidden');
-          if (isHidden) {
-            sidebar.classList.remove('hidden');
-            sidebar.classList.add('inset-0', 'z-50', 'w-full');
-            if (mobileIcon) mobileIcon.textContent = 'close';
+          if (sidebar.classList.contains('hidden')) {
+            openSidebar();
           } else {
-            sidebar.classList.add('hidden');
-            sidebar.classList.remove('inset-0', 'z-50', 'w-full');
-            if (mobileIcon) mobileIcon.textContent = 'menu';
+            closeSidebar();
           }
         });
-        document.addEventListener('click', (e) => {
-          if (!sidebar.classList.contains('hidden') && !sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-            sidebar.classList.add('hidden');
-            sidebar.classList.remove('inset-0', 'z-50', 'w-full');
-            if (mobileIcon) mobileIcon.textContent = 'menu';
-          }
-        });
+      }
+
+      if (sidebarCloseBtn) {
+        sidebarCloseBtn.addEventListener('click', closeSidebar);
       }
     });
   </script>

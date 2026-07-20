@@ -35,6 +35,7 @@ app.use(express.static('public'));
 app.use('/admin', express.static('admin'));
 app.use('/student', express.static('student'));
 app.use('/assets', express.static('assets'));
+app.use('/components', express.static('components'));
 
 // Rutas de la API
 app.use('/api', apiRouter);

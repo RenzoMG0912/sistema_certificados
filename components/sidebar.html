@@ -1,0 +1,95 @@
+<aside id="sidebar" class="hidden md:flex flex-col h-screen w-64 sticky top-0 bg-white border-r border-outline-variant p-5 gap-4 z-40" data-role="__ROLE__">
+  <!-- Logo -->
+  <div class="flex items-center gap-3 mb-6">
+    <img src="/img/logo_RV.png" alt="TeamHSEC" class="w-10 h-10 rounded-xl object-contain">
+    <div>
+      <h1 class="font-title text-lg font-bold text-primary">TeamHSEC</h1>
+      <p class="sidebar-subtitle text-[10px] text-on-surface-variant uppercase tracking-wider">__SUBTITLE__</p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="sidebar-nav flex flex-col gap-1 flex-grow">
+
+    <!-- Student Nav -->
+    <div class="student-only">
+      <a class="sidebar-link active flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-150 text-sm font-medium" href="#" data-tab="inicio">
+        <span class="material-symbols-outlined text-[20px]">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="cursos">
+        <span class="material-symbols-outlined text-[20px]">auto_stories</span>
+        <span>Mis Cursos</span>
+      </a>
+      <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="certificados">
+        <span class="material-symbols-outlined text-[20px]">workspace_premium</span>
+        <span>Certificados</span>
+      </a>
+      <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="perfil">
+        <span class="material-symbols-outlined text-[20px]">person</span>
+        <span>Mi Perfil</span>
+      </a>
+    </div>
+
+    <!-- Admin Nav -->
+    <div class="admin-only">
+      <a class="sidebar-link active flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-150 text-sm font-medium" href="#" data-tab="inicio">
+        <span class="material-symbols-outlined text-[20px]">dashboard</span>
+        <span>Resumen</span>
+      </a>
+      <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="cursos">
+        <span class="material-symbols-outlined text-[20px]">menu_book</span>
+        <span>Cursos</span>
+      </a>
+      <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="participantes">
+        <span class="material-symbols-outlined text-[20px]">group</span>
+        <span>Alumnos</span>
+      </a>
+      <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="matriculas">
+        <span class="material-symbols-outlined text-[20px]">assignment_ind</span>
+        <span>Matrículas</span>
+      </a>
+      <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="certificados">
+        <span class="material-symbols-outlined text-[20px]">verified_user</span>
+        <span>Certificados</span>
+      </a>
+      <a class="sidebar-link flex items-center gap-3 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium" href="#" data-tab="firmas">
+        <span class="material-symbols-outlined text-[20px]">draw</span>
+        <span>Firmas</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Bottom Actions -->
+  <div class="mt-auto pt-4 border-t border-outline-variant">
+
+    <!-- Student Bottom -->
+    <div class="student-only">
+      <a href="/" class="flex items-center gap-3 text-on-surface-variant px-4 py-2.5 hover:bg-surface-container-high rounded-xl transition-all duration-150 text-sm font-medium mb-1">
+        <span class="material-symbols-outlined text-[20px]">home</span>
+        <span>Página Principal</span>
+      </a>
+      <button id="logout-btn" class="w-full flex items-center gap-3 text-primary px-4 py-2.5 hover:bg-primary-container rounded-xl transition-all duration-150 text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">logout</span>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
+
+    <!-- Admin Bottom -->
+    <div class="admin-only">
+      <button id="logout-btn" class="w-full flex items-center gap-3 text-primary px-4 py-2.5 hover:bg-primary-container rounded-xl transition-all duration-150 text-sm font-medium mb-1">
+        <span class="material-symbols-outlined text-[20px]">logout</span>
+        <span>Cerrar Sesión</span>
+      </button>
+      <div class="flex items-center gap-3 pt-3 border-t border-outline-variant">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
+          <span class="material-symbols-outlined">account_circle</span>
+        </div>
+        <div class="flex flex-col min-w-0">
+          <span class="font-semibold text-on-surface text-sm leading-tight truncate" id="user-display">Cargando...</span>
+          <span class="text-[10px] text-secondary font-bold uppercase tracking-wider">Administrador</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>

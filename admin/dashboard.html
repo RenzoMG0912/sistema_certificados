@@ -905,7 +905,7 @@
 <body class="font-body text-[13px] text-on-surface">
 
   <!-- Sidebar (estilo student) -->
-  <aside id="sidebar" class="hidden md:flex flex-col h-screen w-64 sticky top-0 bg-white border-r border-outline-variant p-5 gap-4 z-40">
+  <aside id="sidebar" class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-white border-r border-outline-variant p-5 gap-4 z-40">
     <!-- Logo -->
     <div class="flex items-center gap-3 mb-6">
       <img src="/img/logo_RV.png" alt="TeamHSEC" class="w-10 h-10 rounded-xl object-contain">
@@ -957,7 +957,7 @@
   </aside>
 
   <!-- Main Worktree -->
-  <div class="main-worktree ml-64 min-h-screen flex flex-col bg-[#fcfcfc]">
+  <div class="main-worktree ml-0 md:ml-64 min-h-screen flex flex-col bg-[#fcfcfc]">
     
     <!-- Topbar -->
     <header class="bg-[#fcfcfc] flex flex-col px-10 pt-8 pb-4 gap-6 sticky top-0 z-40">
@@ -2266,18 +2266,21 @@
       const mobileIcon = mobileMenuBtn?.querySelector('.material-symbols-outlined');
       if (mobileMenuBtn && sidebar) {
         mobileMenuBtn.addEventListener('click', () => {
-          const isOpen = sidebar.classList.contains('fixed');
-          sidebar.classList.toggle('hidden');
-          sidebar.classList.toggle('fixed');
-          sidebar.classList.toggle('inset-0');
-          sidebar.classList.toggle('z-50');
-          sidebar.classList.toggle('w-full');
-          if (mobileIcon) mobileIcon.textContent = isOpen ? 'menu' : 'close';
+          const isHidden = sidebar.classList.contains('hidden');
+          if (isHidden) {
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('inset-0', 'z-50', 'w-full');
+            if (mobileIcon) mobileIcon.textContent = 'close';
+          } else {
+            sidebar.classList.add('hidden');
+            sidebar.classList.remove('inset-0', 'z-50', 'w-full');
+            if (mobileIcon) mobileIcon.textContent = 'menu';
+          }
         });
         document.addEventListener('click', (e) => {
-          if (sidebar.classList.contains('fixed') && !sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+          if (!sidebar.classList.contains('hidden') && !sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
             sidebar.classList.add('hidden');
-            sidebar.classList.remove('fixed', 'inset-0', 'z-50', 'w-full');
+            sidebar.classList.remove('inset-0', 'z-50', 'w-full');
             if (mobileIcon) mobileIcon.textContent = 'menu';
           }
         });

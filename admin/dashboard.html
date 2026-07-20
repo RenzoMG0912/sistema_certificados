@@ -934,7 +934,7 @@
         </div>
       </div>
       <button id="sidebar-close-btn" class="md:hidden w-8 h-8 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors" aria-label="Cerrar sidebar">
-        <span class="material-symbols-outlined text-[20px]">close</span>
+        <span class="material-symbols-outlined">close</span>
       </button>
     </div>
 
@@ -2324,24 +2324,12 @@
         sidebar.classList.remove('hidden');
         sidebar.classList.add('fixed', 'left-0', 'top-0', 'z-50', 'h-screen');
         if (mobileMenuIcon) mobileMenuIcon.textContent = 'close';
-        // Create backdrop
-        if (!backdrop) {
-          backdrop = document.createElement('div');
-          backdrop.className = 'fixed inset-0 bg-black/50 z-40 transition-opacity';
-          backdrop.addEventListener('click', closeSidebar);
-          document.body.appendChild(backdrop);
-        }
-        requestAnimationFrame(() => { backdrop.style.opacity = '1'; });
       }
 
       function closeSidebar() {
         sidebar.classList.add('hidden');
         sidebar.classList.remove('fixed', 'left-0', 'top-0', 'z-50', 'h-screen');
         if (mobileMenuIcon) mobileMenuIcon.textContent = 'menu';
-        if (backdrop) {
-          backdrop.remove();
-          backdrop = null;
-        }
       }
 
       if (mobileMenuBtn) {

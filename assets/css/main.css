@@ -890,6 +890,42 @@ body.modal-open {
   }
 }
 
+@media (max-width: 600px) {
+  .section__header h2 {
+    font-size: 26px !important;
+  }
+  .search__fields {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .search__fields input {
+    min-width: unset !important;
+    width: 100% !important;
+  }
+  .search__fields button {
+    width: 100% !important;
+  }
+  .split-verification {
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .pdf-visualizer {
+    min-height: 300px;
+  }
+  .pdf-visualizer iframe {
+    min-height: 300px;
+  }
+  .sidebar-info {
+    padding: 20px 16px;
+  }
+  .certs {
+    grid-template-columns: 1fr !important;
+  }
+  .toggle-search-container {
+    text-align: center;
+  }
+}
+
 /* Accordion Smooth Height Transition */
 .accordion-collapse-container {
   max-height: 0;

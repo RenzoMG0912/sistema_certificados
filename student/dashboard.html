@@ -126,6 +126,18 @@
     .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
+    /* Responsive: padding inferior para nav móvil */
+    @media (max-width: 767px) {
+      main { padding-bottom: 80px !important; }
+      .p-6 { padding-left: 1rem; padding-right: 1rem; }
+      #profile-card { padding: 1rem !important; }
+      #profile-card .grid { gap: 0.75rem; }
+      [id^="home-courses-list"] .bg-white,
+      [id^="certificates-full-list"],
+      [id^="home-instructors-list"] { border-radius: 1rem; }
+      .overflow-x-auto { -webkit-overflow-scrolling: touch; }
+    }
+
     /* Mobile nav */
     .mobile-nav a.active { color: #e60000; }
     .mobile-nav a.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }

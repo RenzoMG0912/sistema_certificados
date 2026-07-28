@@ -480,6 +480,8 @@
   </div>
 
   <script>
+      window.onpageshow = (e) => { if (e.persisted) location.reload(); };
+
       // Dark mode toggle (runs immediately)
       (() => {
         const html = document.documentElement;

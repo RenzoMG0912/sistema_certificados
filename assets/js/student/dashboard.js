@@ -120,6 +120,7 @@
     });
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    history.pushState(null, '', `#${tabName}`);
   };
 
   // Bind tab links
@@ -670,6 +671,17 @@
     localStorage.removeItem(USER_KEY);
     window.location.href = '/login';
   });
+
+  // ========== HASH ROUTING ==========
+  window.addEventListener('hashchange', () => {
+    const tabName = location.hash.replace('#', '') || 'inicio';
+    switchTab(tabName);
+  });
+
+  const hash = location.hash.replace('#', '');
+  if (hash) {
+    switchTab(hash);
+  }
 
   // ========== INIT ==========
   loadAllData();

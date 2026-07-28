@@ -83,6 +83,19 @@ export const initTabs = () => {
       const tabId = link.dataset.tab;
       setActiveTab(tabId);
       loadCurrentSection(tabId);
+      history.pushState(null, '', `#${tabId}`);
     });
   });
+
+  window.addEventListener('hashchange', () => {
+    const tabId = location.hash.replace('#', '') || 'inicio';
+    setActiveTab(tabId);
+    loadCurrentSection(tabId);
+  });
+
+  const hash = location.hash.replace('#', '');
+  if (hash) {
+    setActiveTab(hash);
+    loadCurrentSection(hash);
+  }
 };

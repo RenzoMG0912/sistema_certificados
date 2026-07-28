@@ -18,6 +18,7 @@
 
 <body>
   <script>document.body.classList.add('js-loading');</script>
+  <script>window.onpageshow = (e) => { if (e.persisted) location.reload(); };</script>
 
   <!-- Top bar -->
   <div class="top-info">

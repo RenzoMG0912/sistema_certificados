@@ -917,6 +917,8 @@
     html { scroll-behavior: smooth; }
 
     @media (max-width: 767px) {
+      html, body { overflow-x: hidden; width: 100%; }
+      .mobile-nav { position: fixed !important; z-index: 999 !important; bottom: 0 !important; left: 0 !important; right: 0 !important; }
       main { padding: 0.75rem 1rem 5rem !important; }
       .p-6 { padding-left: 1rem; padding-right: 1rem; }
       .btn-icon { width: 44px; height: 44px; min-width: 44px; min-height: 44px; }
@@ -928,6 +930,8 @@
       #page-subtitle { display: none; }
       .space-y-7 > * + * { margin-top: 1rem !important; }
       .gap-6 { gap: 0.75rem !important; }
+      .grid-cols-1.lg\:grid-cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .grid-cols-1.sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
       .stat-card { padding: 0.75rem !important; }
       .stat-card .text-[34px] { font-size: 1.375rem !important; }
       .stat-card .text-[28px] { font-size: 1.125rem !important; }
@@ -1014,8 +1018,8 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <nav class="flex items-center text-on-surface-variant font-medium text-[11px] gap-2 uppercase tracking-widest min-w-0">
-          <span class="truncate">Admin Portal</span>
-          <span class="opacity-30">&gt;</span>
+          <span class="truncate hidden md:inline">Admin Portal</span>
+          <span class="opacity-30 hidden md:inline">&gt;</span>
           <span class="truncate">Panel</span>
           <span class="opacity-30">&gt;</span>
           <span class="text-primary font-bold truncate" id="breadcrumb-section">Panel</span>

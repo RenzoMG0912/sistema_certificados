@@ -129,6 +129,9 @@
     * { -webkit-tap-highlight-color: transparent; }
     input, select, textarea { font-size: 16px; }
     html { scroll-behavior: smooth; }
+    .skeleton { background: linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
+    .dark .skeleton { background: linear-gradient(90deg,#1e293b 25%,#334155 50%,#1e293b 75%); background-size: 200% 100%; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     /* Responsive: padding inferior para nav móvil */
     @media (max-width: 767px) {
@@ -398,7 +401,9 @@
                 <button id="notif-mark-all-read" class="text-xs text-primary font-semibold hover:underline">Marcar todas leídas</button>
               </div>
               <div id="notif-list" class="max-h-80 overflow-y-auto divide-y divide-outline-variant">
-                <div class="p-6 text-center text-sm text-on-surface-variant">Cargando...</div>
+                <div class="flex items-start gap-3 px-4 py-3"><div class="skeleton" style="width:32px;height:32px;border-radius:50%;flex-shrink:0"></div><div class="flex-1 min-w-0"><div class="skeleton" style="height:12px;width:70%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:40%"></div></div></div>
+                <div class="flex items-start gap-3 px-4 py-3"><div class="skeleton" style="width:32px;height:32px;border-radius:50%;flex-shrink:0"></div><div class="flex-1 min-w-0"><div class="skeleton" style="height:12px;width:55%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:50%"></div></div></div>
+                <div class="flex items-start gap-3 px-4 py-3"><div class="skeleton" style="width:32px;height:32px;border-radius:50%;flex-shrink:0"></div><div class="flex-1 min-w-0"><div class="skeleton" style="height:12px;width:80%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:35%"></div></div></div>
               </div>
             </div>
           </div>
@@ -452,7 +457,7 @@
                 </div>
                 <div>
                   <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Cursos Inscritos</p>
-                  <p id="stat-cursos" class="text-2xl font-bold text-on-surface mt-0.5">0</p>
+                  <p id="stat-cursos" class="text-2xl font-bold text-on-surface mt-0.5"><span class="skeleton" style="display:inline-block;width:60px;height:28px;vertical-align:middle"></span></p>
                   <p class="text-on-surface-variant text-xs mt-0.5">Curso en progreso</p>
                 </div>
               </div>
@@ -465,7 +470,7 @@
                 </div>
                 <div>
                   <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Certificados Obtenidos</p>
-                  <p id="stat-certificados" class="text-2xl font-bold text-on-surface mt-0.5">0</p>
+                  <p id="stat-certificados" class="text-2xl font-bold text-on-surface mt-0.5"><span class="skeleton" style="display:inline-block;width:60px;height:28px;vertical-align:middle"></span></p>
                   <p class="text-on-surface-variant text-xs mt-0.5">¡Sigue así!</p>
                 </div>
               </div>
@@ -478,7 +483,7 @@
                 </div>
                 <div>
                   <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider">Progreso General</p>
-                  <p id="stat-progreso" class="text-2xl font-bold text-on-surface mt-0.5">0%</p>
+                  <p id="stat-progreso" class="text-2xl font-bold text-on-surface mt-0.5"><span class="skeleton" style="display:inline-block;width:60px;height:28px;vertical-align:middle"></span></p>
                   <p class="text-on-surface-variant text-xs mt-0.5">Completado</p>
                 </div>
               </div>
@@ -499,11 +504,9 @@
                 <button class="text-primary text-xs font-semibold hover:underline flex items-center gap-1" onclick="switchTab('cursos')">Ver todos <span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
               </div>
               <div id="home-courses-list" class="space-y-3">
-                <!-- Cursos cargados dinámicamente -->
-                <div class="bg-white border border-outline-variant rounded-2xl p-6 text-center text-on-surface-variant text-sm">
-                  <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
-                  Cargando cursos...
-                </div>
+                <div class="bg-white border border-outline-variant rounded-2xl p-4 flex gap-4"><div class="skeleton" style="width:48px;height:48px;border-radius:12px;flex-shrink:0"></div><div class="flex-1 min-w-0"><div class="skeleton" style="height:16px;width:55%;margin-bottom:8px"></div><div class="skeleton" style="height:12px;width:35%;margin-bottom:6px"></div><div class="skeleton" style="height:8px;width:100%;border-radius:999px"></div></div></div>
+                <div class="bg-white border border-outline-variant rounded-2xl p-4 flex gap-4"><div class="skeleton" style="width:48px;height:48px;border-radius:12px;flex-shrink:0"></div><div class="flex-1 min-w-0"><div class="skeleton" style="height:16px;width:65%;margin-bottom:8px"></div><div class="skeleton" style="height:12px;width:40%;margin-bottom:6px"></div><div class="skeleton" style="height:8px;width:100%;border-radius:999px"></div></div></div>
+                <div class="bg-white border border-outline-variant rounded-2xl p-4 flex gap-4"><div class="skeleton" style="width:48px;height:48px;border-radius:12px;flex-shrink:0"></div><div class="flex-1 min-w-0"><div class="skeleton" style="height:16px;width:50%;margin-bottom:8px"></div><div class="skeleton" style="height:12px;width:30%;margin-bottom:6px"></div><div class="skeleton" style="height:8px;width:100%;border-radius:999px"></div></div></div>
               </div>
             </section>
 
@@ -514,10 +517,8 @@
                 Mi Instructor
               </h3>
               <div id="home-instructors-list" class="bg-white border border-outline-variant rounded-2xl p-4 space-y-4">
-                <div class="text-center text-on-surface-variant text-sm">
-                  <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
-                  Cargando...
-                </div>
+                <div class="flex items-center gap-3"><div class="skeleton" style="width:40px;height:40px;border-radius:50%"></div><div class="flex-1"><div class="skeleton" style="height:14px;width:55%;margin-bottom:4px"></div><div class="skeleton" style="height:11px;width:35%"></div></div></div>
+                <div class="flex items-center gap-3"><div class="skeleton" style="width:40px;height:40px;border-radius:50%"></div><div class="flex-1"><div class="skeleton" style="height:14px;width:60%;margin-bottom:4px"></div><div class="skeleton" style="height:11px;width:40%"></div></div></div>
               </div>
             </section>
           </div>
@@ -532,10 +533,7 @@
               <button class="text-primary text-xs font-semibold hover:underline flex items-center gap-1" onclick="switchTab('certificados')">Ver todos <span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
             </div>
             <div id="home-certificates-table" class="bg-white border border-outline-variant rounded-2xl overflow-hidden">
-              <div class="p-6 text-center text-on-surface-variant text-sm">
-                <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
-                Cargando certificados...
-              </div>
+              <div class="p-6"><div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-3"><div class="skeleton" style="height:14px;width:45%"></div><div class="skeleton" style="height:14px;width:25%"></div></div><div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-3"><div class="skeleton" style="height:14px;width:50%"></div><div class="skeleton" style="height:14px;width:20%"></div></div><div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-3"><div class="skeleton" style="height:14px;width:40%"></div><div class="skeleton" style="height:14px;width:30%"></div></div><div class="flex items-center justify-between"><div class="skeleton" style="height:14px;width:55%"></div><div class="skeleton" style="height:14px;width:25%"></div></div></div>
             </div>
           </section>
         </div>
@@ -550,10 +548,9 @@
             <p class="text-on-surface-variant text-sm mt-1">Todos los cursos en los que estás inscrito.</p>
           </section>
           <div id="courses-full-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-            <div class="bg-white border border-outline-variant rounded-2xl p-6 text-center text-on-surface-variant text-sm col-span-full">
-              <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
-              Cargando cursos...
-            </div>
+            <div class="bg-white border border-outline-variant rounded-2xl p-4 flex gap-4"><div class="skeleton" style="width:56px;height:56px;border-radius:14px;flex-shrink:0"></div><div class="flex-1 min-w-0"><div class="skeleton" style="height:18px;width:60%;margin-bottom:10px"></div><div class="skeleton" style="height:12px;width:40%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:70%"></div></div></div>
+            <div class="bg-white border border-outline-variant rounded-2xl p-4 flex gap-4"><div class="skeleton" style="width:56px;height:56px;border-radius:14px;flex-shrink:0"></div><div class="flex-1 min-w-0"><div class="skeleton" style="height:18px;width:50%;margin-bottom:10px"></div><div class="skeleton" style="height:12px;width:35%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:60%"></div></div></div>
+            <div class="bg-white border border-outline-variant rounded-2xl p-4 flex gap-4"><div class="skeleton" style="width:56px;height:56px;border-radius:14px;flex-shrink:0"></div><div class="flex-1 min-w-0"><div class="skeleton" style="height:18px;width:55%;margin-bottom:10px"></div><div class="skeleton" style="height:12px;width:45%;margin-bottom:6px"></div><div class="skeleton" style="height:10px;width:65%"></div></div></div>
           </div>
         </div>
 
@@ -567,10 +564,7 @@
             <p class="text-on-surface-variant text-sm mt-1">Todos los certificados que has obtenido.</p>
           </section>
           <div id="certificates-full-list" class="bg-white border border-outline-variant rounded-2xl overflow-hidden mt-6">
-            <div class="p-6 text-center text-on-surface-variant text-sm">
-              <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
-              Cargando certificados...
-            </div>
+            <div class="p-6"><div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-3"><div class="skeleton" style="height:14px;width:50%"></div><div class="skeleton" style="height:14px;width:20%"></div><div class="skeleton" style="height:20px;width:56px;border-radius:999px"></div></div><div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-3"><div class="skeleton" style="height:14px;width:45%"></div><div class="skeleton" style="height:14px;width:25%"></div><div class="skeleton" style="height:20px;width:56px;border-radius:999px"></div></div><div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-3"><div class="skeleton" style="height:14px;width:55%"></div><div class="skeleton" style="height:14px;width:15%"></div><div class="skeleton" style="height:20px;width:56px;border-radius:999px"></div></div><div class="flex items-center justify-between"><div class="skeleton" style="height:14px;width:40%"></div><div class="skeleton" style="height:14px;width:30%"></div><div class="skeleton" style="height:20px;width:56px;border-radius:999px"></div></div></div>
           </div>
         </div>
 
@@ -584,10 +578,8 @@
             <p class="text-on-surface-variant text-sm mt-1">Información personal registrada en el sistema.</p>
           </section>
           <div id="profile-card" class="bg-white border border-outline-variant rounded-2xl p-6 mt-6">
-            <div class="text-center text-on-surface-variant text-sm">
-              <span class="material-symbols-outlined text-3xl text-outline-variant mb-2 block">hourglass_empty</span>
-              Cargando perfil...
-            </div>
+            <div class="flex flex-col items-center mb-6"><div class="skeleton" style="width:80px;height:80px;border-radius:50%;margin-bottom:12px"></div><div class="skeleton" style="height:20px;width:150px;margin-bottom:6px"></div><div class="skeleton" style="height:14px;width:100px"></div></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><div class="skeleton" style="height:12px;width:80px;margin-bottom:4px"></div><div class="skeleton" style="height:16px;width:140px"></div></div><div><div class="skeleton" style="height:12px;width:80px;margin-bottom:4px"></div><div class="skeleton" style="height:16px;width:120px"></div></div><div><div class="skeleton" style="height:12px;width:80px;margin-bottom:4px"></div><div class="skeleton" style="height:16px;width:160px"></div></div><div><div class="skeleton" style="height:12px;width:80px;margin-bottom:4px"></div><div class="skeleton" style="height:16px;width:100px"></div></div></div>
           </div>
         </div>
 

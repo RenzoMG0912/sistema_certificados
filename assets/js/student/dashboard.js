@@ -133,6 +133,24 @@
   // Make switchTab global for inline onclick
   window.switchTab = switchTab;
 
+  // User dropdown toggle
+  const userMenuBtn = el('user-menu-btn');
+  const userDropdown = el('user-dropdown');
+  if (userMenuBtn && userDropdown) {
+    userMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+    document.addEventListener('click', (e) => {
+      if (!userMenuBtn.parentElement.contains(e.target)) {
+        userDropdown.classList.add('hidden');
+      }
+    });
+  }
+  el('logout-btn-dropdown')?.addEventListener('click', () => {
+    el('logout-btn')?.click();
+  });
+
   // ========== RENDER FUNCTIONS ==========
   const renderProfile = () => {
     if (!studentProfile) return;
@@ -146,6 +164,10 @@
 
     if (nameDisplay) nameDisplay.textContent = studentProfile.nombres || 'Estudiante';
     if (roleDisplay) roleDisplay.textContent = studentProfile.cargo || 'Estudiante';
+    const nameDisplayMobile = el('user-name-display-mobile');
+    const roleDisplayMobile = el('user-role-display-mobile');
+    if (nameDisplayMobile) nameDisplayMobile.textContent = studentProfile.nombres || 'Estudiante';
+    if (roleDisplayMobile) roleDisplayMobile.textContent = studentProfile.cargo || 'Estudiante';
     if (avatar) {
       avatar.innerHTML = `${getInitials(studentProfile.nombres)}<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>`;
     }

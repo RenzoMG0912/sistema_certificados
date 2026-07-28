@@ -402,14 +402,30 @@
               </div>
             </div>
           </div>
-          <div class="flex items-center gap-3 cursor-pointer">
-            <div class="text-right hidden sm:block">
-              <p id="user-name-display" class="text-sm font-bold text-on-surface">Estudiante</p>
-              <p id="user-role-display" class="text-[10px] text-on-surface-variant uppercase tracking-wider">Estudiante</p>
-            </div>
-            <div id="user-avatar" class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm border-2 border-white shadow-sm relative">
-              E
-              <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+          <div class="relative" id="user-menu">
+            <button id="user-menu-btn" class="flex items-center gap-3 cursor-pointer" type="button">
+              <div class="text-right hidden sm:block">
+                <p id="user-name-display" class="text-sm font-bold text-on-surface">Estudiante</p>
+                <p id="user-role-display" class="text-[10px] text-on-surface-variant uppercase tracking-wider">Estudiante</p>
+              </div>
+              <div id="user-avatar" class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm border-2 border-white shadow-sm relative">
+                E
+                <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+              </div>
+            </button>
+            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-outline-variant rounded-2xl shadow-xl z-50 overflow-hidden">
+              <div class="p-3 border-b border-outline-variant sm:hidden">
+                <p id="user-name-display-mobile" class="text-sm font-semibold text-on-surface">Estudiante</p>
+                <p id="user-role-display-mobile" class="text-[10px] text-on-surface-variant uppercase tracking-wider">Estudiante</p>
+              </div>
+              <button class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors" onclick="switchTab('perfil')">
+                <span class="material-symbols-outlined text-[18px]">person</span>
+                Ver Perfil
+              </button>
+              <button id="logout-btn-dropdown" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-primary hover:bg-surface-container-low transition-colors">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+                Cerrar Sesión
+              </button>
             </div>
           </div>
         </div>

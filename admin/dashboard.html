@@ -912,9 +912,60 @@
     .mobile-nav a.active { color: #e60000; }
     .mobile-nav a.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
 
+    * { -webkit-tap-highlight-color: transparent; }
+    input, select, textarea { font-size: 16px; }
+    html { scroll-behavior: smooth; }
+
     @media (max-width: 767px) {
       main { padding-bottom: 80px !important; }
       .p-6 { padding-left: 1rem; padding-right: 1rem; }
+      .btn-icon { width: 44px; height: 44px; min-width: 44px; min-height: 44px; }
+      table thead { display: none; }
+      table tbody tr {
+        display: flex;
+        flex-direction: column;
+        padding: 0.875rem;
+        margin-bottom: 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      }
+      .dark table tbody tr { background: #1e293b; border-color: #334155; }
+      table tbody td {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.375rem 0 !important;
+        border: none !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        min-height: 0;
+      }
+      table tbody td:first-child { padding-left: 0 !important; }
+      table tbody td:last-child { padding-right: 0 !important; }
+      table tbody td::before {
+        content: attr(data-label);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #6b7280;
+        min-width: 80px;
+        flex-shrink: 0;
+      }
+      .dark table tbody td::before { color: #94a3b8; }
+      table tbody td.actions-cell {
+        justify-content: flex-end;
+        padding-top: 0.625rem !important;
+        margin-top: 0.5rem;
+        border-top: 1px solid #e5e7eb !important;
+      }
+      .dark table tbody td.actions-cell { border-top-color: #334155 !important; }
+      table tbody td.actions-cell::before { display: none; }
+      table tbody td[colspan] { display: block; text-align: center; padding: 2rem 1rem !important; }
+      table tbody td[colspan]::before { display: none; }
+      .overflow-x-auto { overflow: visible !important; }
     }
   </style>
 </head>

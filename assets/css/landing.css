@@ -709,7 +709,7 @@
   .why-split { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
   .grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .testimonials__nav { display: none; }
+  .testimonials__nav { width: 36px; height: 36px; font-size: 14px; }
 }
 
 @media (max-width: 640px) {
@@ -723,6 +723,7 @@
   .course-card__actions { grid-template-columns: 1fr; }
   .footer__grid { grid-template-columns: 1fr; }
   .footer-copy__row { flex-direction: column; text-align: center; }
-  .social-float { display: none; }
+  .social-float { width: 32px; border-radius: 6px 0 0 6px; }
+  .social-float a { width: 32px; height: 34px; font-size: 14px; }
   .nav-cta { font-size: 11px !important; padding: 8px 12px !important; }
 }

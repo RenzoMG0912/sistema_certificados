@@ -56,12 +56,12 @@ export const renderCourses = () => {
 
   list.innerHTML = pageItems.map(course => `
     <tr>
-      <td class="px-6 py-4"><code>${escapeHtml(course.codigo_curso || '')}</code></td>
-      <td class="px-6 py-4"><strong>${escapeHtml(course.nombre || '')}</strong></td>
-      <td class="px-6 py-4">${escapeHtml(course.duracion || '')}</td>
-      <td class="px-6 py-4"><span class="${getCategoryBadgeClass(course.categoria)}">${escapeHtml(course.categoria || 'N/A')}</span></td>
-      <td class="px-6 py-4">${escapeHtml(course.entrenador || 'N/A')}</td>
-      <td class="px-6 py-4 text-center">
+      <td data-label="Código" class="px-6 py-4"><code>${escapeHtml(course.codigo_curso || '')}</code></td>
+      <td data-label="Nombre" class="px-6 py-4"><strong>${escapeHtml(course.nombre || '')}</strong></td>
+      <td data-label="Duración" class="px-6 py-4">${escapeHtml(course.duracion || '')}</td>
+      <td data-label="Categoría" class="px-6 py-4"><span class="${getCategoryBadgeClass(course.categoria)}">${escapeHtml(course.categoria || 'N/A')}</span></td>
+      <td data-label="Entrenador" class="px-6 py-4">${escapeHtml(course.entrenador || 'N/A')}</td>
+      <td data-label="Acciones" class="px-6 py-4 text-center actions-cell">
         <div class="flex items-center justify-center gap-2">
           <button type="button" class="btn-icon btn-edit-course" data-id="${course.id}" title="Editar"><i class="fa-solid fa-pen"></i></button>
           <button type="button" class="btn-icon btn-delete btn-delete-course" data-id="${course.id}" title="Eliminar"><i class="fa-solid fa-trash"></i></button>

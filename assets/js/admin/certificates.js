@@ -120,34 +120,34 @@ export const renderCertificates = () => {
 
     return `
       <tr class="hover:bg-slate-50/50 transition-colors">
-        <td class="px-6 py-3.5"><span class="font-bold text-slate-800">${escapeHtml(cert.codigo || '')}</span></td>
-        <td class="px-6 py-3.5">
+        <td data-label="Código" class="px-6 py-3.5"><span class="font-bold text-slate-800">${escapeHtml(cert.codigo || '')}</span></td>
+        <td data-label="Alumno" class="px-6 py-3.5">
           <div class="font-bold text-on-surface">${escapeHtml(cert.alumno_nombre || '')}</div>
           <div class="text-xs text-on-surface-variant font-medium mt-0.5">${escapeHtml(cert.alumno_dni || '')}</div>
         </td>
-        <td class="px-6 py-3.5 text-sm text-on-surface-variant">${escapeHtml(cert.curso_nombre || '')}</td>
-        <td class="px-6 py-3.5 text-sm text-on-surface-variant">${formatDateShort(cert.fecha_emision)}</td>
-        <td class="px-6 py-3.5 text-sm text-on-surface-variant">${formatDateShort(cert.fecha_vencimiento)}</td>
-        <td class="px-6 py-3.5">
+        <td data-label="Curso" class="px-6 py-3.5 text-sm text-on-surface-variant">${escapeHtml(cert.curso_nombre || '')}</td>
+        <td data-label="F. Emisión" class="px-6 py-3.5 text-sm text-on-surface-variant">${formatDateShort(cert.fecha_emision)}</td>
+        <td data-label="Vencimiento" class="px-6 py-3.5 text-sm text-on-surface-variant">${formatDateShort(cert.fecha_vencimiento)}</td>
+        <td data-label="Estado" class="px-6 py-3.5">
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">
             ${status}
           </span>
         </td>
-        <td class="px-6 py-3.5">
+        <td data-label="Acciones" class="px-6 py-3.5 actions-cell">
           <div class="flex items-center gap-2">
             <!-- Red PDF button -->
-            <a href="${escapeHtml(cert.pdf_path || '#')}" target="_blank" rel="noreferrer" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-red-600 hover:bg-slate-50 transition-all" title="Descargar / Ver PDF">
+            <a href="${escapeHtml(cert.pdf_path || '#')}" target="_blank" rel="noreferrer" class="btn-icon" title="Descargar / Ver PDF">
               <i class="fa-solid fa-file-pdf text-[15px]"></i>
             </a>
 
             <!-- Send email button -->
-            <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center ${cert.alumno_email ? 'text-blue-600 hover:bg-blue-50' : 'text-slate-300 cursor-not-allowed'} transition-all btn-send-certificate" data-id="${cert.id}" title="${cert.alumno_email ? 'Enviar por correo' : 'Sin correo registrado'}" ${cert.alumno_email ? '' : 'disabled'}>
+            <button type="button" class="btn-icon ${cert.alumno_email ? 'text-blue-600 hover:bg-blue-50' : 'text-slate-300 cursor-not-allowed'} transition-all btn-send-certificate" data-id="${cert.id}" title="${cert.alumno_email ? 'Enviar por correo' : 'Sin correo registrado'}" ${cert.alumno_email ? '' : 'disabled'}>
               <i class="fa-solid fa-envelope text-[15px]"></i>
             </button>
 
             <!-- Action dropdown toggle -->
             <div class="relative cert-actions-container">
-              <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-100 transition-all text-slate-400 btn-cert-menu-toggle" data-id="${cert.id}">
+              <button type="button" class="btn-icon hover:bg-slate-100 transition-all text-slate-400 btn-cert-menu-toggle" data-id="${cert.id}">
                 <i class="fa-solid fa-ellipsis-vertical text-[14px]"></i>
               </button>
               <div class="hidden absolute right-0 mt-1.5 w-36 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 cert-menu-dropdown" id="cert-menu-${cert.id}">

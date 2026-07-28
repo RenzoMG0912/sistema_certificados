@@ -58,6 +58,7 @@ body {
 	color: var(--text);
 	background: var(--bg);
 	scroll-behavior: smooth;
+	-webkit-tap-highlight-color: transparent;
 	opacity: 1;
 	transition: opacity 0.35s ease, background 0.3s ease, color 0.3s ease;
 }
@@ -345,6 +346,7 @@ input, select {
 	border-radius: 999px;
 	border: 1px solid var(--border);
 	font-family: inherit;
+	font-size: 16px;
 	min-width: 240px;
 	background: var(--bg-card);
 	color: var(--text);
@@ -923,6 +925,36 @@ body.modal-open {
   }
   .toggle-search-container {
     text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero__text h1 {
+    font-size: 26px !important;
+  }
+  .hero__content {
+    padding: 40px 0 !important;
+  }
+  .hero__card-inner {
+    padding: 18px !important;
+  }
+  .section {
+    padding: 40px 0 !important;
+  }
+  .section__header h2 {
+    font-size: 22px !important;
+  }
+  .stats-bar__grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    padding: 16px 0 !important;
+  }
+  .modal__panel {
+    padding: 20px 16px !important;
+  }
+  .badge {
+    font-size: 10px !important;
+    padding: 4px 10px !important;
   }
 }
 

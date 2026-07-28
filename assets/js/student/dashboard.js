@@ -140,9 +140,9 @@
         const isOpen = sidebar.classList.contains('fixed');
         sidebar.classList.toggle('hidden');
         sidebar.classList.toggle('fixed');
-        sidebar.classList.toggle('inset-0');
+        sidebar.classList.toggle('left-0');
+        sidebar.classList.toggle('top-0');
         sidebar.classList.toggle('z-50');
-        sidebar.classList.toggle('w-full');
         if (mobileMenuIcon) {
           mobileMenuIcon.textContent = isOpen ? 'menu' : 'close';
         }
@@ -157,7 +157,7 @@
     if (!sidebar || !btn) return;
     if (sidebar.classList.contains('fixed') && !sidebar.contains(e.target) && !btn.contains(e.target)) {
       sidebar.classList.add('hidden');
-      sidebar.classList.remove('fixed', 'inset-0', 'z-50', 'w-full');
+      sidebar.classList.remove('fixed', 'left-0', 'top-0', 'z-50');
       if (mobileMenuIcon) mobileMenuIcon.textContent = 'menu';
     }
   });
@@ -376,18 +376,18 @@
             const isVigente = !cert.fecha_vencimiento || parseLocalDate(cert.fecha_vencimiento) > new Date();
             return `
             <tr class="${i % 2 === 1 ? 'bg-surface-container-low' : ''} hover:bg-surface-container transition-colors">
-              <td class="px-4 py-3 flex items-center gap-2">
+              <td data-label="Curso" class="px-4 py-3 flex items-center gap-2">
                 <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
                 <span class="text-sm font-medium">${escapeHtml(cert.curso_nombre)}</span>
               </td>
-              <td class="px-4 py-3 text-sm text-on-surface-variant hidden sm:table-cell">${formatDate(cert.fecha_emision)}</td>
-              <td class="px-4 py-3 text-sm text-on-surface-variant font-mono hidden md:table-cell">${escapeHtml(cert.codigo)}</td>
-              <td class="px-4 py-3 hidden md:table-cell">
+              <td data-label="F. Emisión" class="px-4 py-3 text-sm text-on-surface-variant hidden sm:table-cell">${formatDate(cert.fecha_emision)}</td>
+              <td data-label="Código" class="px-4 py-3 text-sm text-on-surface-variant font-mono hidden md:table-cell">${escapeHtml(cert.codigo)}</td>
+              <td data-label="Estado" class="px-4 py-3 hidden md:table-cell">
                 <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${isVigente ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
                   ${isVigente ? 'Vigente' : 'Vencido'}
                 </span>
               </td>
-              <td class="px-4 py-3 text-right">
+              <td data-label="Acción" class="px-4 py-3 text-right actions-cell">
                 ${cert.pdf_path ? `<a href="${escapeHtml(cert.pdf_path)}" target="_blank" class="inline-flex items-center gap-1 text-primary text-xs font-semibold hover:opacity-70">
                   <span class="material-symbols-outlined text-[16px]">download</span> Descargar
                 </a>` : '<span class="text-xs text-on-surface-variant">Sin PDF</span>'}
@@ -490,19 +490,19 @@
             const isVigente = !cert.fecha_vencimiento || parseLocalDate(cert.fecha_vencimiento) > new Date();
             return `
             <tr class="${i % 2 === 1 ? 'bg-surface-container-low' : ''} hover:bg-surface-container transition-colors">
-              <td class="px-4 py-3 flex items-center gap-2">
+              <td data-label="Curso" class="px-4 py-3 flex items-center gap-2">
                 <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
                 <span class="text-sm font-medium">${escapeHtml(cert.curso_nombre)}</span>
               </td>
-              <td class="px-4 py-3 text-sm text-on-surface-variant hidden sm:table-cell">${formatDate(cert.fecha_emision)}</td>
-              <td class="px-4 py-3 text-sm text-on-surface-variant hidden md:table-cell">${formatDate(cert.fecha_vencimiento)}</td>
-              <td class="px-4 py-3 text-sm text-on-surface-variant font-mono hidden md:table-cell">${escapeHtml(cert.codigo)}</td>
-              <td class="px-4 py-3 hidden md:table-cell">
+              <td data-label="F. Emisión" class="px-4 py-3 text-sm text-on-surface-variant hidden sm:table-cell">${formatDate(cert.fecha_emision)}</td>
+              <td data-label="Vencimiento" class="px-4 py-3 text-sm text-on-surface-variant hidden md:table-cell">${formatDate(cert.fecha_vencimiento)}</td>
+              <td data-label="Código" class="px-4 py-3 text-sm text-on-surface-variant font-mono hidden md:table-cell">${escapeHtml(cert.codigo)}</td>
+              <td data-label="Estado" class="px-4 py-3 hidden md:table-cell">
                 <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${isVigente ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
                   ${isVigente ? 'Vigente' : 'Vencido'}
                 </span>
               </td>
-              <td class="px-4 py-3 text-right">
+              <td data-label="Acción" class="px-4 py-3 text-right actions-cell">
                 ${cert.pdf_path ? `<a href="${escapeHtml(cert.pdf_path)}" target="_blank" class="inline-flex items-center gap-1 text-primary text-xs font-semibold hover:opacity-70">
                   <span class="material-symbols-outlined text-[16px]">download</span> Descargar
                 </a>` : '<span class="text-xs text-on-surface-variant">Sin PDF</span>'}

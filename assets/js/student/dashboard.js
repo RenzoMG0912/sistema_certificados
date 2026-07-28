@@ -94,7 +94,7 @@
     
     // Remove active from mobile nav links
     document.querySelectorAll('.mobile-nav-link').forEach(l => {
-      l.classList.remove('active');
+      l.classList.remove('active', 'text-primary');
       l.classList.add('text-on-surface-variant');
     });
 

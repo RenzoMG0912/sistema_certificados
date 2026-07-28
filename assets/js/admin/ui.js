@@ -46,6 +46,8 @@ export const setActiveTab = (tabId) => {
   });
   document.querySelectorAll('.mobile-nav-link[data-tab]').forEach(link => {
     link.classList.toggle('active', link.dataset.tab === tabId);
+    link.classList.toggle('text-primary', link.dataset.tab === tabId);
+    link.classList.toggle('text-on-surface-variant', link.dataset.tab !== tabId);
   });
   document.querySelectorAll('.tab-content').forEach(section => {
     section.classList.toggle('active', section.id === `tab-${tabId}`);

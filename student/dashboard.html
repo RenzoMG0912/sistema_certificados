@@ -418,7 +418,7 @@
                 <p id="user-name-display-mobile" class="text-sm font-semibold text-on-surface">Estudiante</p>
                 <p id="user-role-display-mobile" class="text-[10px] text-on-surface-variant uppercase tracking-wider">Estudiante</p>
               </div>
-              <button class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors" onclick="switchTab('perfil')">
+              <button class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors" onclick="switchTab('perfil'); document.getElementById('user-dropdown')?.classList.add('hidden')">
                 <span class="material-symbols-outlined text-[18px]">person</span>
                 Ver Perfil
               </button>

@@ -130,38 +130,6 @@
     });
   });
 
-  // Mobile menu toggle
-  const mobileMenuBtn = el('mobile-menu-btn');
-  const mobileMenuIcon = mobileMenuBtn?.querySelector('.material-symbols-outlined');
-  if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener('click', () => {
-      const sidebar = el('sidebar');
-      if (sidebar) {
-        const isOpen = sidebar.classList.contains('fixed');
-        sidebar.classList.toggle('hidden');
-        sidebar.classList.toggle('fixed');
-        sidebar.classList.toggle('left-0');
-        sidebar.classList.toggle('top-0');
-        sidebar.classList.toggle('z-50');
-        if (mobileMenuIcon) {
-          mobileMenuIcon.textContent = isOpen ? 'menu' : 'close';
-        }
-      }
-    });
-  }
-
-  // Close sidebar on backdrop click
-  document.addEventListener('click', (e) => {
-    const sidebar = el('sidebar');
-    const btn = el('mobile-menu-btn');
-    if (!sidebar || !btn) return;
-    if (sidebar.classList.contains('fixed') && !sidebar.contains(e.target) && !btn.contains(e.target)) {
-      sidebar.classList.add('hidden');
-      sidebar.classList.remove('fixed', 'left-0', 'top-0', 'z-50');
-      if (mobileMenuIcon) mobileMenuIcon.textContent = 'menu';
-    }
-  });
-
   // Make switchTab global for inline onclick
   window.switchTab = switchTab;
 

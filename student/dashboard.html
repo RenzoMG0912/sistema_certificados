@@ -140,8 +140,20 @@
       [id^="certificates-full-list"],
       [id^="home-instructors-list"] { border-radius: 1rem; }
       .overflow-x-auto { overflow: visible !important; -webkit-overflow-scrolling: touch; }
-
-
+      header { padding: 0.5rem 1rem !important; }
+      header .w-10 { width: 2rem !important; height: 2rem !important; }
+      header .text-sm { font-size: 0.75rem !important; }
+      header .gap-3 { gap: 0.5rem !important; }
+      #notif-btn .material-symbols-outlined { font-size: 1.25rem !important; }
+      .theme-toggle { width: 2.25rem !important; height: 2.25rem !important; }
+      .theme-toggle .material-symbols-outlined { font-size: 1.125rem !important; }
+      .space-y-6 > * + * { margin-top: 0.75rem !important; }
+      .mt-6 { margin-top: 0.75rem !important; }
+      .mb-4 { margin-bottom: 0.5rem !important; }
+      .gap-4 { gap: 0.5rem !important; }
+      .text-2xl { font-size: 1.125rem !important; }
+      #welcome-subtitle { display: none; }
+      [id^="home-courses-list"] .bg-white { padding: 0.75rem !important; }
     }
 
     /* Mobile nav */
@@ -369,13 +381,6 @@
 
       <!-- Top Bar -->
       <header class="sticky top-0 z-30 flex justify-between items-center w-full px-6 py-4 bg-white border-b border-outline-variant">
-        <!-- Mobile Menu -->
-        <div class="md:hidden flex items-center gap-2">
-          <button id="mobile-menu-btn" class="text-on-surface-variant">
-            <span class="material-symbols-outlined">menu</span>
-          </button>
-        </div>
-
         <!-- Right Side -->
         <div class="flex items-center gap-3 ml-auto">
           <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">

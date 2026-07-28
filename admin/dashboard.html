@@ -933,9 +933,6 @@
           <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Admin Portal</p>
         </div>
       </div>
-      <button id="sidebar-close-btn" class="md:hidden w-8 h-8 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors" aria-label="Cerrar sidebar">
-        <span class="material-symbols-outlined">close</span>
-      </button>
     </div>
 
     <!-- Navigation -->
@@ -2316,7 +2313,6 @@
       const sidebar = document.getElementById('sidebar');
       const mobileMenuBtn = document.getElementById('mobile-menu-btn');
       const mobileMenuIcon = mobileMenuBtn?.querySelector('.material-symbols-outlined');
-      const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
       let backdrop = null;
 
       function openSidebar() {
@@ -2342,9 +2338,6 @@
         });
       }
 
-      if (sidebarCloseBtn) {
-        sidebarCloseBtn.addEventListener('click', closeSidebar);
-      }
     });
   </script>
   <script type="module" src="/assets/js/admin/main.js"></script>

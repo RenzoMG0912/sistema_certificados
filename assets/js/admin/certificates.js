@@ -120,20 +120,20 @@ export const renderCertificates = () => {
 
     return `
       <tr class="hover:bg-slate-50/50 transition-colors">
-        <td data-label="Código" class="px-6 py-3.5"><span class="font-bold text-slate-800">${escapeHtml(cert.codigo || '')}</span></td>
-        <td data-label="Alumno" class="px-6 py-3.5">
+        <td class="px-6 py-3.5"><span class="font-bold text-slate-800">${escapeHtml(cert.codigo || '')}</span></td>
+        <td class="px-6 py-3.5">
           <div class="font-bold text-on-surface">${escapeHtml(cert.alumno_nombre || '')}</div>
           <div class="text-xs text-on-surface-variant font-medium mt-0.5">${escapeHtml(cert.alumno_dni || '')}</div>
         </td>
-        <td data-label="Curso" class="px-6 py-3.5 text-sm text-on-surface-variant">${escapeHtml(cert.curso_nombre || '')}</td>
-        <td data-label="F. Emisión" class="px-6 py-3.5 text-sm text-on-surface-variant">${formatDateShort(cert.fecha_emision)}</td>
-        <td data-label="Vencimiento" class="px-6 py-3.5 text-sm text-on-surface-variant">${formatDateShort(cert.fecha_vencimiento)}</td>
-        <td data-label="Estado" class="px-6 py-3.5">
+        <td class="px-6 py-3.5 text-sm text-on-surface-variant">${escapeHtml(cert.curso_nombre || '')}</td>
+        <td class="px-6 py-3.5 text-sm text-on-surface-variant">${formatDateShort(cert.fecha_emision)}</td>
+        <td class="px-6 py-3.5 text-sm text-on-surface-variant">${formatDateShort(cert.fecha_vencimiento)}</td>
+        <td class="px-6 py-3.5">
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">
             ${status}
           </span>
         </td>
-        <td data-label="Acciones" class="px-6 py-3.5 actions-cell">
+        <td class="px-6 py-3.5 actions-cell">
           <div class="flex items-center gap-2">
             <!-- Red PDF button -->
             <a href="${escapeHtml(cert.pdf_path || '#')}" target="_blank" rel="noreferrer" class="btn-icon" title="Descargar / Ver PDF">

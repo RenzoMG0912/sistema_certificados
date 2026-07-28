@@ -31,14 +31,14 @@ export const loadDashboardStats = async () => {
     const isExpired = expiry && expiry < today;
     return `
       <tr>
-        <td data-label="Código" class="px-6 py-4"><strong>${escapeHtml(cert.codigo)}</strong></td>
-        <td data-label="Alumno" class="px-6 py-4">${escapeHtml(cert.alumno_nombre || '')}</td>
-        <td data-label="Curso" class="px-6 py-4">${escapeHtml(cert.curso_nombre || '')}</td>
-        <td data-label="F. Emisión" class="px-6 py-4">${formatDate(cert.fecha_emision)}</td>
-        <td data-label="Estado" class="px-6 py-4">
+        <td class="px-6 py-4"><strong>${escapeHtml(cert.codigo)}</strong></td>
+        <td class="px-6 py-4">${escapeHtml(cert.alumno_nombre || '')}</td>
+        <td class="px-6 py-4">${escapeHtml(cert.curso_nombre || '')}</td>
+        <td class="px-6 py-4">${formatDate(cert.fecha_emision)}</td>
+        <td class="px-6 py-4">
           <span class="badge-status ${isExpired ? 'badge-expired' : 'badge-active'}">${isExpired ? 'Vencido' : 'Vigente'}</span>
         </td>
-        <td data-label="PDF" class="px-6 py-4 actions-cell">
+        <td class="px-6 py-4 actions-cell">
           <a href="${escapeHtml(cert.pdf_path || '#')}" target="_blank" rel="noreferrer" class="btn-icon" title="Ver PDF"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i></a>
         </td>
       </tr>

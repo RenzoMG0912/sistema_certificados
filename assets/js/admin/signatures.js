@@ -34,11 +34,11 @@ export const loadSignatures = async () => {
 
   list.innerHTML = filtered.map(signature => `
     <tr>
-      <td data-label="ID" class="px-6 py-4">${escapeHtml(signature.id || '')}</td>
-      <td data-label="Nombre" class="px-6 py-4">${escapeHtml(signature.nombre || '')}</td>
-      <td data-label="Cargo" class="px-6 py-4">${escapeHtml(signature.cargo || '')}</td>
-      <td data-label="CIP" class="px-6 py-4">${escapeHtml(signature.cip || 'N/A')}</td>
-      <td data-label="Acciones" class="px-6 py-4 actions-cell">
+      <td class="px-6 py-4">${escapeHtml(signature.id || '')}</td>
+      <td class="px-6 py-4">${escapeHtml(signature.nombre || '')}</td>
+      <td class="px-6 py-4">${escapeHtml(signature.cargo || '')}</td>
+      <td class="px-6 py-4">${escapeHtml(signature.cip || 'N/A')}</td>
+      <td class="px-6 py-4 actions-cell">
         <div class="flex items-center gap-2">
           <button type="button" class="btn-icon btn-preview-signature" data-id="${signature.id}" title="Ver imagen"><i class="fa-solid fa-image"></i></button>
           <button type="button" class="btn-icon btn-edit-signature" data-id="${signature.id}" title="Editar"><i class="fa-solid fa-pen"></i></button>

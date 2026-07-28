@@ -61,13 +61,13 @@ export const renderParticipants = () => {
 
   list.innerHTML = pageItems.map(participant => `
     <tr>
-      <td data-label="DNI" class="px-6 py-4"><strong>${escapeHtml(participant.dni || '')}</strong></td>
-      <td data-label="Nombre" class="px-6 py-4">${escapeHtml(participant.nombres || '')}</td>
-      <td data-label="Teléfono" class="px-6 py-4">${escapeHtml(participant.telefono || 'N/A')}</td>
-      <td data-label="Procedencia" class="px-6 py-4">${escapeHtml(participant.procedencia || 'N/A')}</td>
-      <td data-label="Correo" class="px-6 py-4">${escapeHtml(participant.email || 'Sin correo')}</td>
-      <td data-label="F. Registro" class="px-6 py-4">${formatDate(participant.created_at)}</td>
-      <td data-label="Acciones" class="px-6 py-4 actions-cell">
+      <td class="px-6 py-4"><strong>${escapeHtml(participant.dni || '')}</strong></td>
+      <td class="px-6 py-4">${escapeHtml(participant.nombres || '')}</td>
+      <td class="px-6 py-4">${escapeHtml(participant.telefono || 'N/A')}</td>
+      <td class="px-6 py-4">${escapeHtml(participant.procedencia || 'N/A')}</td>
+      <td class="px-6 py-4">${escapeHtml(participant.email || 'Sin correo')}</td>
+      <td class="px-6 py-4">${formatDate(participant.created_at)}</td>
+      <td class="px-6 py-4 actions-cell">
         <div class="flex items-center justify-center gap-2">
           <button type="button" class="btn-icon btn-view-participant" data-id="${participant.id}" title="Ver detalles"><i class="fa-solid fa-eye"></i></button>
           <button type="button" class="btn-icon btn-edit-participant" data-id="${participant.id}" title="Editar"><i class="fa-solid fa-pen"></i></button>

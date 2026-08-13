@@ -75,6 +75,9 @@ module.exports = {
 
   create: async (req, res, next) => {
     const { curso_id, codigo_edicion, fecha_inicio, fecha_fin } = req.body;
+    if (fecha_fin && fecha_inicio && fecha_fin < fecha_inicio) {
+      return res.status(400).json({ success: false, message: 'La fecha de fin no puede ser anterior a la fecha de inicio' });
+    }
     try {
       const [check] = await db.query('SELECT id FROM ediciones WHERE codigo_edicion = ?', [codigo_edicion]);
       if (check.length > 0) {
@@ -107,6 +110,9 @@ module.exports = {
   update: async (req, res, next) => {
     const { id } = req.params;
     const { curso_id, codigo_edicion, fecha_inicio, fecha_fin } = req.body;
+    if (fecha_fin && fecha_inicio && fecha_fin < fecha_inicio) {
+      return res.status(400).json({ success: false, message: 'La fecha de fin no puede ser anterior a la fecha de inicio' });
+    }
     try {
       const [rows] = await db.query('SELECT id FROM ediciones WHERE id = ?', [id]);
       if (rows.length === 0) {

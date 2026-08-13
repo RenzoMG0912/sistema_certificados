@@ -605,6 +605,14 @@ export const openEnrollmentCreateModal = async () => {
     }
   });
 
+  document.getElementById('enrollment-new-edicion-inicio').onchange = (e) => {
+    const fin = document.getElementById('enrollment-new-edicion-fin');
+    if (fin) {
+      fin.min = e.target.value;
+      if (fin.value && fin.value < e.target.value) fin.value = '';
+    }
+  };
+
   // Wizard navigation
   document.getElementById('btn-wizard-prev').onclick = () => {
     if (state.enrollmentCreateStep > 1) goToStep(state.enrollmentCreateStep - 1);
@@ -631,6 +639,11 @@ export const openEnrollmentCreateModal = async () => {
         const fecha_inicio = document.getElementById('enrollment-new-edicion-inicio').value;
         if (!codigo || !fecha_inicio) {
           showToast('Completa el código y la fecha de inicio para la nueva edición', 'warning');
+          return;
+        }
+        const fecha_fin = document.getElementById('enrollment-new-edicion-fin').value;
+        if (fecha_fin && fecha_fin < fecha_inicio) {
+          showToast('La fecha de fin no puede ser anterior a la fecha de inicio', 'warning');
           return;
         }
       }

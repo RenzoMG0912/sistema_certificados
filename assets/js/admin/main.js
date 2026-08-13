@@ -133,6 +133,10 @@ const initForms = () => {
         showToast('Completa el código y la fecha de inicio para la nueva edición', 'warning');
         return;
       }
+      if (fecha_fin && fecha_fin < fecha_inicio) {
+        showToast('La fecha de fin no puede ser anterior a la fecha de inicio', 'warning');
+        return;
+      }
 
       const result = await apiFetch('/api/ediciones', {
         method: 'POST',

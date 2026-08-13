@@ -66,15 +66,7 @@ export const renderEnrollments = () => {
     state.enrollmentCourseTab = String(filtered[0].curso_id);
   }
 
-  // Initialize expanded state for newly seen editions only
-  filtered.forEach(group => {
-    (group.enrollments || []).forEach(item => {
-      const eid = String(item.edicion_id);
-      if (!state.expandedEditions.has(eid)) {
-        state.expandedEditions.add(eid);
-      }
-    });
-  });
+  
 
   // ── Render tabs bar ──
   const tabsHtml = filtered.map(group => {

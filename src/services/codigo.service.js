@@ -10,13 +10,12 @@ async function generarCodigoCertificado() {
   const currentYear = new Date().getFullYear();
   const yearSuffix = String(currentYear).slice(-2); // ej: "26" para 2026
 
-  // Buscamos el último código emitido en el año actual
+  // Buscamos todos los códigos emitidos en el año actual
+  // (no usamos ORDER BY id DESC: tras importaciones, el id no refleja el número del código)
   const query = `
     SELECT codigo 
     FROM certificados 
-    WHERE codigo LIKE ? 
-    ORDER BY id DESC 
-    LIMIT 1
+    WHERE codigo LIKE ?
   `;
   const pattern = `PE-%-${yearSuffix}`;
 
@@ -24,23 +23,34 @@ async function generarCodigoCertificado() {
     const [rows] = await db.query(query, [pattern]);
     let nextNum = 1;
 
-    if (rows && rows.length > 0) {
-      const lastCode = rows[0].codigo; // ej: "PE-0005-26"
-      const parts = lastCode.split('-');
+    for (const row of rows || []) {
+      const parts = row.codigo.split('-');
       if (parts.length === 3) {
-        const lastNum = parseInt(parts[1], 10);
-        if (!isNaN(lastNum)) {
-          nextNum = lastNum + 1;
+        const num = parseInt(parts[1], 10);
+        if (!isNaN(num) && num >= nextNum) {
+          nextNum = num + 1;
         }
       }
     }
 
-    // Formatear el número correlativo rellenando con ceros a la izquierda (4 dígitos)
-    return `PE-${nextNum}-${yearSuffix}`;
+    // Seguridad adicional: si el código calculado ya existe en la BD (duplicados
+    // raros o importaciones desordenadas), incrementar hasta encontrar uno libre.
+    let codigo = `PE-${nextNum}-${yearSuffix}`;
+    while (await codigoExiste(codigo)) {
+      nextNum += 1;
+      codigo = `PE-${nextNum}-${yearSuffix}`;
+    }
+
+    return codigo;
   } catch (error) {
     console.error('Error al generar el código correlativo:', error);
     throw new Error('No se pudo generar el código secuencial del certificado.');
   }
+}
+
+async function codigoExiste(codigo) {
+  const [rows] = await db.query('SELECT id FROM certificados WHERE codigo = ? LIMIT 1', [codigo]);
+  return rows.length > 0;
 }
 
 module.exports = {

@@ -17,6 +17,18 @@ function getPeruDate() {
   return peruTime.toISOString().split('T')[0];
 }
 
+// Escribe el error real en un archivo dentro de public/ (se abre desde el Gestor de archivos de Plesk)
+function logErrorAArchivo(contexto, error) {
+  try {
+    const logPath = path.join(__dirname, '..', '..', 'public', '_errores_generacion.log');
+    const detalle = error && error.stack ? error.stack : (error && error.message ? error.message : String(error));
+    const linea = `\n[${new Date().toISOString()}] ${contexto}\n${detalle}\n`;
+    fs.appendFileSync(logPath, linea);
+  } catch (e) {
+    console.error('No se pudo escribir el log de error en archivo:', e.message);
+  }
+}
+
 
 // Función helper para sincronizar el index.json estático con los PDFs en disco
 function syncIndexStatic() {
@@ -259,6 +271,8 @@ module.exports = {
       });
 
     } catch (error) {
+      console.error('[Mock DB] Error REAL al generar certificado único:', error.message);
+      logErrorAArchivo('Generacion de certificado UNICO (por matricula)', error);
       console.warn('[Mock DB] Generando certificado y PDF en memoria temporal por fallo de conexión a BD');
       
       // Simular lógica en memoria
@@ -533,6 +547,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[Mock DB] Fallo en generación masiva. Error REAL:', error.message);
+      logErrorAArchivo('Generacion MASIVA (bulkGenerate, edicion)', error);
       console.warn('[Mock DB] Generación masiva en memoria temporal');
 
       const pendMatriculas = mockDb.matriculas.filter(m => m.edicion_id == edicion_id);

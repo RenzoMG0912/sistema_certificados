@@ -22,6 +22,17 @@ CREATE TABLE IF NOT EXISTS participantes (
   procedencia VARCHAR(150),
   induccion VARCHAR(50),
   examen_medico VARCHAR(50),
+  password VARCHAR(255) NULL AFTER examen_medico,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de Firmas Autorizadas
+CREATE TABLE IF NOT EXISTS firmas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(150) NOT NULL,
+  cargo VARCHAR(150) NOT NULL,
+  firma_url VARCHAR(255) NOT NULL,
+  cip VARCHAR(50) DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -37,16 +48,6 @@ CREATE TABLE IF NOT EXISTS cursos (
   temario TEXT DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_curso_firma FOREIGN KEY (firma_id) REFERENCES firmas(id) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Tabla de Firmas Autorizadas
-CREATE TABLE IF NOT EXISTS firmas (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(150) NOT NULL,
-  cargo VARCHAR(150) NOT NULL,
-  firma_url VARCHAR(255) NOT NULL,
-  cip VARCHAR(50) DEFAULT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tabla de Ediciones (Cada instancia/fecha de un curso)

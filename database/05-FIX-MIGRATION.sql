@@ -7,7 +7,9 @@
 --   4) cursos.temario en NULL (el reverso del certificado salía vacío)
 
 -- 1. Agregar columna password a participantes (seguridad: bcrypt del DNI del alumno)
-ALTER TABLE participantes ADD COLUMN password VARCHAR(255) NULL AFTER examen_medico;
+-- IF NOT EXISTS: MariaDB 10.4+ (lo usa Plesk). Si tu BD es MySQL y da "Duplicate column",
+-- significa que la columna ya existe y puedes continuar sin problema.
+ALTER TABLE participantes ADD COLUMN IF NOT EXISTS password VARCHAR(255) NULL AFTER examen_medico;
 
 -- 2. Asignar password = bcrypt(DNI) a los alumnos ya registrados
 UPDATE participantes SET password = '$2a$10$r.Oj0jeTJc93PKb7qZa0BOz4t9lcsZOERbK3p32YzBDIEKu36IyLa' WHERE dni = '00000000';

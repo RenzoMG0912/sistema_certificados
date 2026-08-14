@@ -532,6 +532,7 @@ module.exports = {
       });
 
     } catch (error) {
+      console.error('[Mock DB] Fallo en generación masiva. Error REAL:', error.message);
       console.warn('[Mock DB] Generación masiva en memoria temporal');
 
       const pendMatriculas = mockDb.matriculas.filter(m => m.edicion_id == edicion_id);

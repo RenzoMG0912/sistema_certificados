@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS participantes (
   procedencia VARCHAR(150),
   induccion VARCHAR(50),
   examen_medico VARCHAR(50),
-  password VARCHAR(255) NULL AFTER examen_medico,
+  password VARCHAR(255) NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

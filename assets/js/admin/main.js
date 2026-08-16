@@ -67,115 +67,131 @@ const initModalButtons = () => {
 const initForms = () => {
   el('form-course')?.addEventListener('submit', async event => {
     event.preventDefault();
-    const id = el('course-id').value;
-    const trainerSelect = el('course-trainer');
-    const firmaId = trainerSelect.value ? Number(trainerSelect.value) : null;
-    const selectedOption = trainerSelect.selectedOptions[0];
-    const trainerName = selectedOption ? selectedOption.text.replace(/\s*\(.*\)$/, '').trim() : '';
+    try {
+      const id = el('course-id').value;
+      const trainerSelect = el('course-trainer');
+      const firmaId = trainerSelect.value ? Number(trainerSelect.value) : null;
+      const selectedOption = trainerSelect.selectedOptions[0];
+      const trainerName = selectedOption ? selectedOption.text.replace(/\s*\(.*\)$/, '').trim() : '';
 
-    if (!firmaId) {
-      showToast('Debes seleccionar un Entrenador / Ponente', 'error');
-      return;
+      if (!firmaId) {
+        showToast('Debes seleccionar un Entrenador / Ponente', 'error');
+        return;
+      }
+
+      const payload = {
+        codigo_curso: el('course-code').value.trim(),
+        nombre: el('course-name').value.trim(),
+        duracion: el('course-duration').value.trim(),
+        categoria: el('course-category').value.trim(),
+        entrenador: trainerName,
+        firma_id: firmaId,
+        temario: el('course-syllabus').value.trim() || null
+      };
+
+      await apiFetch(id ? `/api/cursos/${id}` : '/api/cursos', {
+        method: id ? 'PUT' : 'POST',
+        body: JSON.stringify(payload)
+      });
+
+      showToast(id ? 'Curso actualizado correctamente' : 'Curso creado correctamente');
+      closeModal('modal-course');
+      await loadCourses();
+    } catch (err) {
+      showToast(err.message || 'Error al guardar el curso', 'error');
     }
-
-    const payload = {
-      codigo_curso: el('course-code').value.trim(),
-      nombre: el('course-name').value.trim(),
-      duracion: el('course-duration').value.trim(),
-      categoria: el('course-category').value.trim(),
-      entrenador: trainerName,
-      firma_id: firmaId,
-      temario: el('course-syllabus').value.trim() || null
-    };
-
-    await apiFetch(id ? `/api/cursos/${id}` : '/api/cursos', {
-      method: id ? 'PUT' : 'POST',
-      body: JSON.stringify(payload)
-    });
-
-    showToast(id ? 'Curso actualizado correctamente' : 'Curso creado correctamente');
-    closeModal('modal-course');
-    await loadCourses();
   });
 
   el('form-participant')?.addEventListener('submit', async event => {
     event.preventDefault();
-    const id = el('participant-id').value;
-    const payload = {
-      nombres: el('participant-name').value.trim(),
-      dni: el('participant-dni').value.trim(),
-      email: el('participant-email').value.trim(),
-      cargo: el('participant-cargo').value.trim(),
-      telefono: el('participant-telefono').value.trim(),
-      procedencia: el('participant-procedencia').value.trim(),
-      induccion: el('participant-induccion').value,
-      examen_medico: el('participant-examen-medico').value
-    };
+    try {
+      const id = el('participant-id').value;
+      const payload = {
+        nombres: el('participant-name').value.trim(),
+        dni: el('participant-dni').value.trim(),
+        email: el('participant-email').value.trim(),
+        cargo: el('participant-cargo').value.trim(),
+        telefono: el('participant-telefono').value.trim(),
+        procedencia: el('participant-procedencia').value.trim(),
+        induccion: el('participant-induccion').value,
+        examen_medico: el('participant-examen-medico').value
+      };
 
-    await apiFetch(id ? `/api/participantes/${id}` : '/api/participantes', {
-      method: id ? 'PUT' : 'POST',
-      body: JSON.stringify(payload)
-    });
+      await apiFetch(id ? `/api/participantes/${id}` : '/api/participantes', {
+        method: id ? 'PUT' : 'POST',
+        body: JSON.stringify(payload)
+      });
 
-    showToast(id ? 'Alumno actualizado correctamente' : 'Alumno creado correctamente');
-    closeModal('modal-participant');
-    await loadParticipants();
+      showToast(id ? 'Alumno actualizado correctamente' : 'Alumno creado correctamente');
+      closeModal('modal-participant');
+      await loadParticipants();
+    } catch (err) {
+      showToast(err.message || 'Error al guardar el alumno', 'error');
+    }
   });
 
   el('form-enrollment')?.addEventListener('submit', async event => {
     event.preventDefault();
-    const cursoId = Number(el('enrollment-course').value);
-    const newEdicionToggle = document.getElementById('enrollment-new-edicion-toggle');
-    let edicionId;
+    const submitBtn = document.getElementById('btn-wizard-submit');
+    if (submitBtn) submitBtn.disabled = true;
+    try {
+      const cursoId = Number(el('enrollment-course').value);
+      const newEdicionToggle = document.getElementById('enrollment-new-edicion-toggle');
+      let edicionId;
 
-    if (newEdicionToggle?.checked) {
-      const codigo = document.getElementById('enrollment-new-edicion-codigo').value.trim();
-      const fecha_inicio = document.getElementById('enrollment-new-edicion-inicio').value;
-      const fecha_fin = document.getElementById('enrollment-new-edicion-fin').value || null;
+      if (newEdicionToggle?.checked) {
+        const codigo = document.getElementById('enrollment-new-edicion-codigo').value.trim();
+        const fecha_inicio = document.getElementById('enrollment-new-edicion-inicio').value;
+        const fecha_fin = document.getElementById('enrollment-new-edicion-fin').value || null;
 
-      if (!codigo || !fecha_inicio) {
-        showToast('Completa el código y la fecha de inicio para la nueva edición', 'warning');
+        if (!codigo || !fecha_inicio) {
+          showToast('Completa el código y la fecha de inicio para la nueva edición', 'warning');
+          return;
+        }
+        if (fecha_fin && fecha_fin < fecha_inicio) {
+          showToast('La fecha de fin no puede ser anterior a la fecha de inicio', 'warning');
+          return;
+        }
+
+        const result = await apiFetch('/api/ediciones', {
+          method: 'POST',
+          body: JSON.stringify({ curso_id: cursoId, codigo_edicion: codigo, fecha_inicio, fecha_fin })
+        });
+
+        if (!result?.success) {
+          showToast(result?.message || 'Error al crear la edición', 'error');
+          return;
+        }
+        edicionId = result.edicion.id;
+      } else {
+        const selectedRadio = document.querySelector('input[name="enrollment-edicion"]:checked');
+        if (!selectedRadio) {
+          showToast('Selecciona una edición existente o crea una nueva', 'warning');
+          return;
+        }
+        edicionId = Number(selectedRadio.value);
+      }
+
+      const selected = Array.from(el('enrollment-participants-container').querySelectorAll('.participant-select:checked')).map(input => Number(input.value));
+
+      if (!cursoId || !edicionId || selected.length === 0) {
+        showToast('Selecciona un curso, una edición y al menos un alumno', 'warning');
         return;
       }
-      if (fecha_fin && fecha_fin < fecha_inicio) {
-        showToast('La fecha de fin no puede ser anterior a la fecha de inicio', 'warning');
-        return;
-      }
 
-      const result = await apiFetch('/api/ediciones', {
+      await apiFetch('/api/matriculas/bulk', {
         method: 'POST',
-        body: JSON.stringify({ curso_id: cursoId, codigo_edicion: codigo, fecha_inicio, fecha_fin })
+        body: JSON.stringify({ edicion_id: edicionId, participante_ids: selected })
       });
 
-      if (!result.success) {
-        showToast(result.message || 'Error al crear la edición', 'error');
-        return;
-      }
-      edicionId = result.edicion.id;
-    } else {
-      const selectedRadio = document.querySelector('input[name="enrollment-edicion"]:checked');
-      if (!selectedRadio) {
-        showToast('Selecciona una edición existente o crea una nueva', 'warning');
-        return;
-      }
-      edicionId = Number(selectedRadio.value);
+      showToast('Matrícula registrada correctamente');
+      closeModal('modal-enrollment');
+      await loadEnrollments();
+    } catch (err) {
+      showToast(err.message || 'No se pudo registrar la matrícula', 'error');
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
     }
-
-    const selected = Array.from(el('enrollment-participants-container').querySelectorAll('.participant-select:checked')).map(input => Number(input.value));
-
-    if (!cursoId || !edicionId || selected.length === 0) {
-      showToast('Selecciona un curso, una edición y al menos un alumno', 'warning');
-      return;
-    }
-
-    await apiFetch('/api/matriculas/bulk', {
-      method: 'POST',
-      body: JSON.stringify({ edicion_id: edicionId, participante_ids: selected })
-    });
-
-    showToast('Matrícula registrada correctamente');
-    closeModal('modal-enrollment');
-    await loadEnrollments();
   });
 
   el('form-certificate')?.addEventListener('submit', async event => {

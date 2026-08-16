@@ -792,15 +792,21 @@ function loadEditionsForStep2(courseId) {
     } else {
       edicionesList.innerHTML = '<p class="text-sm text-slate-400 text-center py-3">No hay ediciones para este curso.</p>';
     }
+
+    // Autogenerar un código de edición que NO colisione con los existentes
+    const codigoInput = document.getElementById('enrollment-new-edicion-codigo');
+    if (codigoInput && course.codigo_curso) {
+      const today = new Date().toISOString().split('T')[0];
+      const base = `${course.codigo_curso}-${today}`;
+      const existing = new Set((editions || []).map(e => e.codigo_edicion));
+      let codigo = base;
+      let n = 2;
+      while (existing.has(codigo)) codigo = `${base}-${n++}`;
+      codigoInput.value = codigo;
+    }
   }).catch(() => {
     edicionesList.innerHTML = '<p class="text-sm text-slate-400 text-center py-3">Error al cargar ediciones.</p>';
   });
-
-  const codigoInput = document.getElementById('enrollment-new-edicion-codigo');
-  if (codigoInput && course.codigo_curso) {
-    const today = new Date().toISOString().split('T')[0];
-    codigoInput.value = `${course.codigo_curso}-${today}`;
-  }
 }
 
 function updateEnrollmentSummary() {

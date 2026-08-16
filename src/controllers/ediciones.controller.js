@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const mockDb = require('../config/mockDb');
+const { isConnectionError } = require('../utils/dbErrors');
 
 module.exports = {
   list: async (req, res, next) => {
@@ -78,6 +79,9 @@ module.exports = {
     if (fecha_fin && fecha_inicio && fecha_fin < fecha_inicio) {
       return res.status(400).json({ success: false, message: 'La fecha de fin no puede ser anterior a la fecha de inicio' });
     }
+    if (codigo_edicion && String(codigo_edicion).length > 50) {
+      return res.status(400).json({ success: false, message: 'El código de edición no puede superar los 50 caracteres' });
+    }
     try {
       const [check] = await db.query('SELECT id FROM ediciones WHERE codigo_edicion = ?', [codigo_edicion]);
       if (check.length > 0) {
@@ -90,6 +94,11 @@ module.exports = {
       const [newRow] = await db.query('SELECT * FROM ediciones WHERE id = ?', [result.insertId]);
       return res.status(201).json({ success: true, edicion: newRow[0] });
     } catch (error) {
+      // Solo se usa el modo mock cuando la base de datos no está disponible;
+      // un error SQL real (longitud, unicidad, FK) no debe simularse como éxito.
+      if (!isConnectionError(error)) {
+        return next(error);
+      }
       const exists = mockDb.ediciones.some(e => e.codigo_edicion === codigo_edicion);
       if (exists) {
         return res.status(400).json({ success: false, message: 'Ya existe una edición con ese código' });

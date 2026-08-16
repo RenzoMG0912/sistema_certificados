@@ -1,6 +1,7 @@
 const db = require('../config/db');
 const mockDb = require('../config/mockDb');
 const { crearNotificacion, TYPES } = require('./notificaciones.controller');
+const { isConnectionError } = require('../utils/dbErrors');
 
 module.exports = {
   list: async (req, res, next) => {
@@ -313,6 +314,11 @@ module.exports = {
       }
       return res.status(201).json({ success: true, message: `${inserted.length} matrícula(s) creada(s)`, matriculas: inserted });
     } catch (error) {
+      // Solo se usa el modo mock cuando la base de datos no está disponible;
+      // un error SQL real (FK, unicidad) no debe simularse como éxito.
+      if (!isConnectionError(error)) {
+        return next(error);
+      }
       console.warn('[Mock DB] Creando matrículas masivas en memoria temporal');
       const inserted = [];
       const e = mockDb.ediciones.find(ed => ed.id == edicion_id);

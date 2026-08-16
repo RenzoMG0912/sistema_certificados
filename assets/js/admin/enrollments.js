@@ -794,14 +794,23 @@ function loadEditionsForStep2(courseId) {
     }
 
     // Autogenerar un código de edición que NO colisione con los existentes
+    // y que respete el límite VARCHAR(50) de ediciones.codigo_edicion
     const codigoInput = document.getElementById('enrollment-new-edicion-codigo');
     if (codigoInput && course.codigo_curso) {
+      const EDICION_CODE_MAX = 50;
       const today = new Date().toISOString().split('T')[0];
-      const base = `${course.codigo_curso}-${today}`;
+      const dateSuffix = `-${today}`;
+      const maxPrefix = EDICION_CODE_MAX - dateSuffix.length;
+      let prefix = course.codigo_curso.slice(0, maxPrefix).replace(/[-_]+$/, '');
+      let base = `${prefix}${dateSuffix}`;
       const existing = new Set((editions || []).map(e => e.codigo_edicion));
       let codigo = base;
       let n = 2;
-      while (existing.has(codigo)) codigo = `${base}-${n++}`;
+      while (existing.has(codigo)) {
+        const dedupeSuffix = `-${n}`;
+        codigo = `${base.slice(0, EDICION_CODE_MAX - dedupeSuffix.length)}${dedupeSuffix}`;
+        n += 1;
+      }
       codigoInput.value = codigo;
     }
   }).catch(() => {

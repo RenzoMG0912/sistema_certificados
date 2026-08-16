@@ -1,6 +1,7 @@
 // Archivo: src/controllers/cursos.controller.js
 const db = require('../config/db');
 const mockDb = require('../config/mockDb');
+const { isConnectionError } = require('../utils/dbErrors');
 
 module.exports = {
   list: async (req, res, next) => {
@@ -33,6 +34,9 @@ module.exports = {
 
   create: async (req, res, next) => {
     const { codigo_curso, nombre, duracion, categoria, entrenador, firma_id, temario } = req.body;
+    if (codigo_curso && String(codigo_curso).length > 50) {
+      return res.status(400).json({ success: false, message: 'El código del curso no puede superar los 50 caracteres' });
+    }
     try {
       const [check] = await db.query('SELECT id FROM cursos WHERE codigo_curso = ?', [codigo_curso]);
       if (check.length > 0) {
@@ -47,6 +51,11 @@ module.exports = {
       const [newRow] = await db.query('SELECT * FROM cursos WHERE id = ?', [result.insertId]);
       return res.status(201).json({ success: true, curso: newRow[0] });
     } catch (error) {
+      // Solo se usa el modo mock cuando la base de datos no está disponible;
+      // un error SQL real (longitud, unicidad) no debe simularse como éxito.
+      if (!isConnectionError(error)) {
+        return next(error);
+      }
       console.warn('[Mock DB] Creando curso en memoria temporal');
       const exists = mockDb.cursos.some(c => c.codigo_curso === codigo_curso);
       if (exists) {
@@ -70,6 +79,9 @@ module.exports = {
   update: async (req, res, next) => {
     const { id } = req.params;
     const { codigo_curso, nombre, duracion, categoria, entrenador, firma_id, temario } = req.body;
+    if (codigo_curso && String(codigo_curso).length > 50) {
+      return res.status(400).json({ success: false, message: 'El código del curso no puede superar los 50 caracteres' });
+    }
     try {
       const [check] = await db.query('SELECT id FROM cursos WHERE codigo_curso = ? AND id <> ?', [codigo_curso, id]);
       if (check.length > 0) {
@@ -85,6 +97,11 @@ module.exports = {
       const [updatedRow] = await db.query('SELECT * FROM cursos WHERE id = ?', [id]);
       return res.status(200).json({ success: true, curso: updatedRow[0] });
     } catch (error) {
+      // Solo se usa el modo mock cuando la base de datos no está disponible;
+      // un error SQL real (longitud, unicidad) no debe simularse como éxito.
+      if (!isConnectionError(error)) {
+        return next(error);
+      }
       console.warn('[Mock DB] Actualizando curso en memoria temporal');
       const index = mockDb.cursos.findIndex(c => c.id == id);
       if (index === -1) {

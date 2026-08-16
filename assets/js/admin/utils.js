@@ -213,8 +213,10 @@ export const showConfirmModal = (title, message, confirmText = 'Sí, confirmar',
     };
 
     const onConfirm = () => {
+      // Leer los datos ANTES de limpiar el modal (cleanup destruye los inputs del extraContent)
+      const data = options.getData ? options.getData() : null;
       cleanup();
-      resolve(options.getData ? { confirmed: true, data: options.getData() } : true);
+      resolve(options.getData ? { confirmed: true, data } : true);
     };
 
     const onCancel = () => {

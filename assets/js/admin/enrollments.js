@@ -287,10 +287,27 @@ export const renderEnrollments = () => {
     ${buildEditionPanels(activeGroup)}
   ` : '<div class="px-6 py-10 text-center text-on-surface-variant">Selecciona un curso.</div>';
 
-  container.innerHTML = `
-    <div class="enrollment-tabs-bar">${tabsHtml}</div>
-    <div class="bg-white">${contentHtml}</div>
-  `;
+  // ── Render con nodos persistentes (evita el parpadeo/salto al cambiar de tab) ──
+  let tabBarEl = container.querySelector('.enrollment-tabs-bar');
+  if (!tabBarEl) {
+    tabBarEl = document.createElement('div');
+    tabBarEl.className = 'enrollment-tabs-bar';
+    container.appendChild(tabBarEl);
+  }
+  tabBarEl.innerHTML = tabsHtml;
+
+  let contentEl = container.querySelector('.enrollment-content');
+  if (!contentEl) {
+    contentEl = document.createElement('div');
+    contentEl.className = 'bg-white enrollment-content';
+    container.appendChild(contentEl);
+  }
+  contentEl.innerHTML = contentHtml;
+
+  // Restaurar scroll de forma SÍNCRONA (sin esperar frames => sin parpadeo)
+  if (prevScrollY > 0) window.scrollTo(0, prevScrollY);
+  if (prevContainerTop > 0) container.scrollTop = prevContainerTop;
+  if (prevTabScrollLeft > 0) tabBarEl.scrollLeft = prevTabScrollLeft;
 
   // ── Bind tab clicks ──
   container.querySelectorAll('.enrollment-tab').forEach(btn => {
@@ -540,15 +557,6 @@ export const renderEnrollments = () => {
       }
     });
   });
-
-  // ── Restaurar scroll tras el re-render ──
-  const restoreScroll = () => {
-    if (prevScrollY > 0) window.scrollTo(0, prevScrollY);
-    if (prevContainerTop > 0) container.scrollTop = prevContainerTop;
-    const newTabBar = container.querySelector('.enrollment-tabs-bar');
-    if (newTabBar && prevTabScrollLeft > 0) newTabBar.scrollLeft = prevTabScrollLeft;
-  };
-  requestAnimationFrame(() => requestAnimationFrame(restoreScroll));
 };
 
 // ─────────────────────────────────────────

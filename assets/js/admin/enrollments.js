@@ -90,6 +90,8 @@ export const renderEnrollments = () => {
   // Guardar posición de scroll antes de re-renderizar (evita saltar al inicio al cambiar de tab)
   const prevScrollY = window.scrollY;
   const prevContainerTop = container.scrollTop;
+  const tabBar = container.querySelector('.enrollment-tabs-bar');
+  const prevTabScrollLeft = tabBar ? tabBar.scrollLeft : 0;
 
   const query = (state.enrollmentQuery || '').trim().toLowerCase();
 
@@ -540,10 +542,13 @@ export const renderEnrollments = () => {
   });
 
   // ── Restaurar scroll tras el re-render ──
-  requestAnimationFrame(() => {
+  const restoreScroll = () => {
     if (prevScrollY > 0) window.scrollTo(0, prevScrollY);
     if (prevContainerTop > 0) container.scrollTop = prevContainerTop;
-  });
+    const newTabBar = container.querySelector('.enrollment-tabs-bar');
+    if (newTabBar && prevTabScrollLeft > 0) newTabBar.scrollLeft = prevTabScrollLeft;
+  };
+  requestAnimationFrame(() => requestAnimationFrame(restoreScroll));
 };
 
 // ─────────────────────────────────────────

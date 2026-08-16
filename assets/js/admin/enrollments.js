@@ -87,6 +87,10 @@ export const renderEnrollments = () => {
   const container = document.getElementById('enrollments-accordion');
   if (!container) return;
 
+  // Guardar posición de scroll antes de re-renderizar (evita saltar al inicio al cambiar de tab)
+  const prevScrollY = window.scrollY;
+  const prevContainerTop = container.scrollTop;
+
   const query = (state.enrollmentQuery || '').trim().toLowerCase();
 
   const filtered = state.enrollments.filter(group => {
@@ -533,6 +537,12 @@ export const renderEnrollments = () => {
         showToast(err.message || 'Error al eliminar la matrícula', 'error');
       }
     });
+  });
+
+  // ── Restaurar scroll tras el re-render ──
+  requestAnimationFrame(() => {
+    if (prevScrollY > 0) window.scrollTo(0, prevScrollY);
+    if (prevContainerTop > 0) container.scrollTop = prevContainerTop;
   });
 };
 

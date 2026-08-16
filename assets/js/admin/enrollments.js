@@ -2,13 +2,49 @@ import { el, escapeHtml, formatDate, apiFetch, showToast, showConfirmModal, open
 import { state } from './state.js';
 
 // Toggle del selector de código manual en la confirmación de emisión masiva
-window.toggleBulkCode = () => {
+window.toggleBulkCode = async () => {
   const mode = document.getElementById('bulk-code-mode')?.value;
   const start = document.getElementById('bulk-code-start');
   const hint = document.getElementById('bulk-code-hint');
-  const show = mode === 'manual';
-  if (start) start.classList.toggle('hidden', !show);
-  if (hint) hint.classList.toggle('hidden', !show);
+  const container = document.getElementById('bulk-code-per-student');
+
+  if (start) start.classList.toggle('hidden', mode !== 'manual');
+  if (hint) hint.classList.toggle('hidden', mode !== 'manual');
+
+  if (mode !== 'por-alumno') {
+    if (container) { container.classList.add('hidden'); container.innerHTML = ''; }
+    return;
+  }
+  if (!container) return;
+
+  const edicionId = document.getElementById('bulk-code-mode')?.dataset.edicionId;
+  container.classList.remove('hidden');
+  container.innerHTML = '<p class="text-[11px] text-slate-500 mt-2">Cargando alumnos pendientes…</p>';
+
+  try {
+    const res = await apiFetch(`/api/matriculas/pendientes/${edicionId}`);
+    const pendientes = (res && res.pendientes) || [];
+    if (pendientes.length === 0) {
+      container.innerHTML = '<p class="text-[11px] text-amber-600 mt-2">No hay alumnos pendientes por certificar.</p>';
+      return;
+    }
+    container.innerHTML = `
+      <p class="text-[11px] text-slate-500 mt-2 mb-1.5">Asigna un código a cada alumno (${pendientes.length} pendiente${pendientes.length === 1 ? '' : 's'}). No importa el orden: cada código se asigna a su alumno.</p>
+      <div class="max-h-56 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100 bg-white">
+        ${pendientes.map(p => `
+          <div class="flex items-center gap-2 px-3 py-2">
+            <span class="text-[11px] text-slate-400 font-mono w-8 shrink-0">#${p.matricula_id}</span>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-semibold text-slate-700 truncate">${escapeHtml(p.alumno_nombre)}</p>
+              <p class="text-[10px] text-slate-400">DNI ${escapeHtml(p.alumno_dni || '—')}</p>
+            </div>
+            <input type="text" data-matricula-id="${p.matricula_id}" class="bulk-code-per-student-input w-36 shrink-0 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-secondary focus:ring-1 focus:ring-secondary" placeholder="PE-0000-26">
+          </div>`).join('')}
+      </div>
+    `;
+  } catch (err) {
+    container.innerHTML = `<p class="text-[11px] text-red-600 mt-2">${escapeHtml(err.message || 'Error al cargar los alumnos pendientes.')}</p>`;
+  }
 };
 
 // ─────────────────────────────────────────
@@ -304,18 +340,26 @@ export const renderEnrollments = () => {
           extraContent: `
             <div class="flex flex-col gap-1.5 mt-3">
               <label for="bulk-code-mode" class="text-xs font-semibold text-slate-600">Código de los certificados</label>
-              <select id="bulk-code-mode" onchange="window.toggleBulkCode()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary">
+              <select id="bulk-code-mode" data-edicion-id="${edicionId}" onchange="window.toggleBulkCode()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary">
                 <option value="auto">Automático</option>
                 <option value="manual">Manual (desde un número inicial)</option>
+                <option value="por-alumno">Manual (un código por alumno)</option>
               </select>
               <input type="text" id="bulk-code-start" class="hidden w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary mt-1 placeholder:text-slate-400" placeholder="N° inicial (ej: 1564)">
               <p id="bulk-code-hint" class="hidden text-[11px] text-slate-500 mt-1">Se generarán de forma correlativa: PE-1564-26, PE-1565-26, PE-1566-26…</p>
+              <div id="bulk-code-per-student" class="hidden"></div>
             </div>
           `,
           getData: () => {
             const mode = document.getElementById('bulk-code-mode')?.value || 'auto';
             const start = document.getElementById('bulk-code-start')?.value.trim() || '';
-            return { mode, start };
+            let codigos = [];
+            if (mode === 'por-alumno') {
+              codigos = Array.from(document.querySelectorAll('.bulk-code-per-student-input'))
+                .filter(inp => inp.value.trim())
+                .map(inp => ({ matricula_id: Number(inp.dataset.matriculaId), codigo: inp.value.trim() }));
+            }
+            return { mode, start, codigos };
           }
         }
       );
@@ -330,6 +374,8 @@ export const renderEnrollments = () => {
         const body = { edicion_id: Number(edicionId) };
         if (bulkCode.mode === 'manual' && bulkCode.start) {
           body.codigo_inicial = bulkCode.start;
+        } else if (bulkCode.mode === 'por-alumno' && bulkCode.codigos && bulkCode.codigos.length > 0) {
+          body.codigos = bulkCode.codigos;
         }
         const res = await apiFetch('/api/certificados/bulk-generate', {
           method: 'POST',

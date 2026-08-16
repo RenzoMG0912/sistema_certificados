@@ -7,6 +7,7 @@ router.use(authMiddleware);
 router.get('/', matriculasController.list);
 router.get('/grouped', matriculasController.listGrouped);
 router.get('/by-edicion/:edicion_id', matriculasController.getByEdicion);
+router.get('/pendientes/:edicion_id', matriculasController.getPendientesByEdicion);
 router.get('/by-course/:curso_id', matriculasController.getByCourse);
 router.post('/', matriculasController.create);
 router.post('/bulk', matriculasController.bulkCreate);

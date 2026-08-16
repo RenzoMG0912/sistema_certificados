@@ -87,6 +87,37 @@ async function codigoManualEnUso(codigo) {
   return rows.length > 0;
 }
 
+// Prepara y valida una lista de códigos manuales asignados a matrículas específicas.
+// Retorna un Map<matricula_id, codigo> o lanza Error con mensaje para el usuario.
+async function prepararCodigosManuales(codigos, pendMatriculaIds) {
+  const map = new Map();
+  if (!Array.isArray(codigos) || codigos.length === 0) return map;
+
+  const seen = new Set();
+  for (const entry of codigos) {
+    const mat = Number(entry && entry.matricula_id);
+    if (!mat || !entry.codigo) {
+      throw new Error('Cada código debe incluir matricula_id y codigo');
+    }
+    const cod = normalizarCodigoManual(entry.codigo);
+    if (!cod) throw new Error(`Código inválido para la matrícula ${mat}`);
+    if (seen.has(cod)) throw new Error(`El código ${cod} se repite en la lista.`);
+    seen.add(cod);
+    map.set(mat, cod);
+  }
+
+  for (const mid of pendMatriculaIds) {
+    if (!map.has(mid)) throw new Error('Falta el código de uno o más alumnos pendientes.');
+  }
+  for (const mid of map.keys()) {
+    if (!pendMatriculaIds.includes(mid)) throw new Error(`La matrícula ${mid} no está pendiente o no pertenece a esta edición.`);
+  }
+  for (const cod of seen) {
+    if (await codigoManualEnUso(cod)) throw new Error(`El código ${cod} ya está en uso. Usa otro o el modo automático.`);
+  }
+  return map;
+}
+
 module.exports = {
   list: async (req, res, next) => {
     try {
@@ -451,7 +482,7 @@ module.exports = {
   },
 
   bulkGenerate: async (req, res, next) => {
-    const { edicion_id, codigo_inicial } = req.body;
+    const { edicion_id, codigo_inicial, codigos } = req.body;
     if (!edicion_id) {
       return res.status(400).json({ success: false, message: 'edicion_id es requerido' });
     }
@@ -475,6 +506,15 @@ module.exports = {
 
       if (pendRows.length === 0) {
         return res.status(200).json({ success: true, message: 'No hay alumnos pendientes por certificar', count: 0 });
+      }
+
+      // Validar códigos manuales asignados a matrículas específicas (sin orden)
+      const pendMatIds = pendRows.map(r => r.matricula_id);
+      let codigosPorMatricula = new Map();
+      try {
+        codigosPorMatricula = await prepararCodigosManuales(codigos, pendMatIds);
+      } catch (e) {
+        return res.status(400).json({ success: false, message: e.message });
       }
 
       // 2. Auto-select firma_1: find Gerente
@@ -516,7 +556,9 @@ module.exports = {
         const vigencia_anos = 1;
 
         let codigo;
-        if (manualBase) {
+        if (codigosPorMatricula.size > 0) {
+          codigo = codigosPorMatricula.get(row.matricula_id);
+        } else if (manualBase) {
           do {
             codigo = `PE-${String(nextManual).padStart(4, '0')}-${yearSuffixBulk}`;
             nextManual += 1;
@@ -609,6 +651,33 @@ module.exports = {
         return res.status(200).json({ success: true, message: 'No hay alumnos pendientes por certificar', count: 0 });
       }
 
+      // Validar códigos manuales por matrícula (sin orden) contra la memoria mock
+      const pendMockIds = pendientes.map(m => m.id);
+      let codigosPorMatMock = new Map();
+      if (Array.isArray(codigos) && codigos.length > 0) {
+        const seen = new Set();
+        let invalid = null;
+        for (const entry of codigos) {
+          const mat = Number(entry && entry.matricula_id);
+          if (!mat || !entry.codigo) { invalid = 'Cada código debe incluir matricula_id y codigo'; break; }
+          const cod = normalizarCodigoManual(entry.codigo);
+          if (!cod) { invalid = `Código inválido para la matrícula ${mat}`; break; }
+          if (seen.has(cod)) { invalid = `El código ${cod} se repite en la lista.`; break; }
+          seen.add(cod);
+          codigosPorMatMock.set(mat, cod);
+        }
+        if (!invalid) {
+          for (const mid of pendMockIds) if (!codigosPorMatMock.has(mid)) { invalid = 'Falta el código de uno o más alumnos pendientes.'; break; }
+        }
+        if (!invalid) {
+          for (const mid of codigosPorMatMock.keys()) if (!pendMockIds.includes(mid)) { invalid = `La matrícula ${mid} no está pendiente o no pertenece a esta edición.`; break; }
+        }
+        if (!invalid) {
+          for (const cod of seen) if (mockDb.certificados.some(c => c.codigo === cod)) { invalid = `El código ${cod} ya está en uso. Usa otro o el modo automático.`; break; }
+        }
+        if (invalid) return res.status(400).json({ success: false, message: invalid });
+      }
+
       const gerente = mockDb.firmas.find(f => f.cargo && f.cargo.toLowerCase().includes('gerente'));
       if (!gerente) {
         return res.status(404).json({ success: false, message: 'No se encontró una firma de Gerente' });
@@ -637,7 +706,9 @@ module.exports = {
         const vigencia_anos = 1;
 
         let codigo;
-        if (manualBaseMock) {
+        if (codigosPorMatMock.size > 0) {
+          codigo = codigosPorMatMock.get(mat.id);
+        } else if (manualBaseMock) {
           do {
             codigo = `PE-${String(nextManualMock).padStart(4, '0')}-${yearSuffixMock}`;
             nextManualMock += 1;

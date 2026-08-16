@@ -151,6 +151,39 @@ module.exports = {
     }
   },
 
+  getPendientesByEdicion: async (req, res, next) => {
+    const { edicion_id } = req.params;
+    if (!edicion_id) {
+      return res.status(400).json({ success: false, message: 'edicion_id es requerido' });
+    }
+    try {
+      const query = `
+        SELECT m.id AS matricula_id, p.nombres AS alumno_nombre, p.dni AS alumno_dni
+        FROM matriculas m
+        JOIN participantes p ON m.participante_id = p.id
+        LEFT JOIN certificados cert ON cert.matricula_id = m.id
+        WHERE m.edicion_id = ? AND cert.id IS NULL
+        ORDER BY m.id ASC
+      `;
+      const [rows] = await db.query(query, [edicion_id]);
+      return res.status(200).json({ success: true, pendientes: rows });
+    } catch (error) {
+      console.warn('[Mock DB] Retornando matrículas pendientes en memoria');
+      const pendientes = mockDb.matriculas
+        .filter(m => m.edicion_id == edicion_id && !mockDb.certificados.some(c => c.matricula_id == m.id))
+        .map(m => {
+          const p = mockDb.participantes.find(item => item.id == m.participante_id);
+          return {
+            matricula_id: m.id,
+            alumno_nombre: p ? p.nombres : 'Alumno Eliminado',
+            alumno_dni: p ? p.dni : '00000000'
+          };
+        })
+        .sort((a, b) => a.matricula_id - b.matricula_id);
+      return res.status(200).json({ success: true, pendientes });
+    }
+  },
+
   getByCourse: async (req, res, next) => {
     const { curso_id } = req.params;
     try {

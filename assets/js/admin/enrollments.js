@@ -290,6 +290,8 @@ export const renderEnrollments = () => {
   // ── Render con nodos persistentes (evita el parpadeo/salto al cambiar de tab) ──
   let tabBarEl = container.querySelector('.enrollment-tabs-bar');
   if (!tabBarEl) {
+    // Primera carga: limpiar los skeletons estáticos del HTML para que no convivan con el contenido
+    container.innerHTML = '';
     tabBarEl = document.createElement('div');
     tabBarEl.className = 'enrollment-tabs-bar';
     container.appendChild(tabBarEl);
@@ -565,7 +567,6 @@ export const renderEnrollments = () => {
 export const loadEnrollments = async () => {
   const container = document.getElementById('enrollments-accordion');
   if (!container) return;
-  container.innerHTML = '<div class="px-6 py-10 text-center text-on-surface-variant">Cargando...</div>';
 
   const enrollments = await apiFetch('/api/matriculas/grouped');
   state.enrollments = Array.isArray(enrollments) ? enrollments : [];

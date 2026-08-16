@@ -2265,6 +2265,24 @@
               </select>
             </div>
           </div>
+
+          <div class="flex flex-col gap-1.5 pt-2">
+            <label class="text-xs font-semibold text-slate-700 font-title">Código del Certificado</label>
+            <div class="flex items-center gap-6">
+              <label class="inline-flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input type="radio" name="cert-code-mode" value="auto" class="accent-red-700" checked>
+                Automático
+              </label>
+              <label class="inline-flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input type="radio" name="cert-code-mode" value="manual" class="accent-red-700">
+                Manual
+              </label>
+            </div>
+            <div id="cert-code-manual-wrapper" class="hidden">
+              <input type="text" id="cert-code-manual" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all placeholder:text-slate-400" placeholder="Número del certificado (ej: 1564) o código completo PE-1564-26">
+              <p class="mt-1 text-[11px] text-slate-500">Si escribes solo el número, se genera como PE-XXXX-26.</p>
+            </div>
+          </div>
           
           <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
             <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close>Cancelar</button>
@@ -2336,6 +2354,8 @@
             <span id="modal-confirm-badge-text"></span>
           </div>
         </div>
+
+        <div id="modal-confirm-extra" class="hidden mt-4 mb-0 text-left"></div>
 
         <hr class="my-5 border-slate-100 dark:border-slate-800">
         <div class="flex flex-col sm:flex-row gap-3">

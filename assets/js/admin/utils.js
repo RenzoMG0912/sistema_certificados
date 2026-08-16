@@ -187,15 +187,34 @@ export const showConfirmModal = (title, message, confirmText = 'Sí, confirmar',
       }
     }
 
+    // Contenido extra opcional (inputs adicionales dentro del modal de confirmación)
+    const extraWrapper = document.getElementById('modal-confirm-extra');
+    if (extraWrapper) {
+      if (options.extraContent) {
+        extraWrapper.innerHTML = options.extraContent;
+        extraWrapper.classList.remove('hidden');
+        extraWrapper.classList.add('block');
+      } else {
+        extraWrapper.innerHTML = '';
+        extraWrapper.classList.add('hidden');
+        extraWrapper.classList.remove('block');
+      }
+    }
+
     const cleanup = () => {
       closeModal('modal-confirm');
+      if (extraWrapper) {
+        extraWrapper.innerHTML = '';
+        extraWrapper.classList.add('hidden');
+        extraWrapper.classList.remove('block');
+      }
       confirmBtn?.removeEventListener('click', onConfirm);
       cancelBtn?.removeEventListener('click', onCancel);
     };
 
     const onConfirm = () => {
       cleanup();
-      resolve(true);
+      resolve(options.getData ? { confirmed: true, data: options.getData() } : true);
     };
 
     const onCancel = () => {

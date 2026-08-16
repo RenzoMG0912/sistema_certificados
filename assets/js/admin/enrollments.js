@@ -1,6 +1,16 @@
 import { el, escapeHtml, formatDate, apiFetch, showToast, showConfirmModal, openModal, resetForm, closeModal } from './utils.js';
 import { state } from './state.js';
 
+// Toggle del selector de código manual en la confirmación de emisión masiva
+window.toggleBulkCode = () => {
+  const mode = document.getElementById('bulk-code-mode')?.value;
+  const start = document.getElementById('bulk-code-start');
+  const hint = document.getElementById('bulk-code-hint');
+  const show = mode === 'manual';
+  if (start) start.classList.toggle('hidden', !show);
+  if (hint) hint.classList.toggle('hidden', !show);
+};
+
 // ─────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────
@@ -279,7 +289,7 @@ export const renderEnrollments = () => {
         return;
       }
 
-      if (!await showConfirmModal(
+      const confirmed = await showConfirmModal(
         'Confirmar Envío de Certificados',
         `¿Está seguro de que desea generar y enviar los certificados digitales a todos los estudiantes de "${editionName}"?`,
         'Sí, enviar ahora',
@@ -290,18 +300,40 @@ export const renderEnrollments = () => {
             icon: 'fa-solid fa-users',
             text: `TOTAL DE ALUMNOS: ${studentCount}`
           },
-          confirmIcon: 'fa-solid fa-paper-plane'
+          confirmIcon: 'fa-solid fa-paper-plane',
+          extraContent: `
+            <div class="flex flex-col gap-1.5 mt-3">
+              <label for="bulk-code-mode" class="text-xs font-semibold text-slate-600">Código de los certificados</label>
+              <select id="bulk-code-mode" onchange="window.toggleBulkCode()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary">
+                <option value="auto">Automático</option>
+                <option value="manual">Manual (desde un número inicial)</option>
+              </select>
+              <input type="text" id="bulk-code-start" class="hidden w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary mt-1 placeholder:text-slate-400" placeholder="N° inicial (ej: 1564)">
+              <p id="bulk-code-hint" class="hidden text-[11px] text-slate-500 mt-1">Se generarán de forma correlativa: PE-1564-26, PE-1565-26, PE-1566-26…</p>
+            </div>
+          `,
+          getData: () => {
+            const mode = document.getElementById('bulk-code-mode')?.value || 'auto';
+            const start = document.getElementById('bulk-code-start')?.value.trim() || '';
+            return { mode, start };
+          }
         }
-      )) return;
+      );
+      if (!confirmed) return;
+      const bulkCode = confirmed.data || { mode: 'auto', start: '' };
 
       btn.disabled = true;
       const originalHtml = btn.innerHTML;
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[14px]"></i>`;
 
       try {
+        const body = { edicion_id: Number(edicionId) };
+        if (bulkCode.mode === 'manual' && bulkCode.start) {
+          body.codigo_inicial = bulkCode.start;
+        }
         const res = await apiFetch('/api/certificados/bulk-generate', {
           method: 'POST',
-          body: JSON.stringify({ edicion_id: Number(edicionId) })
+          body: JSON.stringify(body)
         });
         if (res.success) {
           showToast(res.message || 'Certificados emitidos y enviados correctamente');

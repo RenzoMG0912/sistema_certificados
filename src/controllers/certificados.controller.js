@@ -67,6 +67,26 @@ function syncIndexStatic() {
   }
 }
 
+// Normaliza un código manual ingresado por el administrador:
+//  - "PE-1564-26"  -> se mantiene
+//  - "1564"        -> se convierte en PE-1564-26 (año actual)
+//  - cualquier otro -> se devuelve tal cual
+function normalizarCodigoManual(input) {
+  const v = String(input || '').trim();
+  if (/^PE-\d+-\d+$/i.test(v)) return v.toUpperCase();
+  const digits = v.replace(/\D/g, '');
+  if (/^\d+$/.test(digits) && digits.length > 0) {
+    const yearSuffix = String(new Date().getFullYear()).slice(-2);
+    return `PE-${String(parseInt(digits, 10)).padStart(4, '0')}-${yearSuffix}`;
+  }
+  return v;
+}
+
+async function codigoManualEnUso(codigo) {
+  const [rows] = await db.query('SELECT id FROM certificados WHERE codigo = ? LIMIT 1', [codigo]);
+  return rows.length > 0;
+}
+
 module.exports = {
   list: async (req, res, next) => {
     try {
@@ -105,7 +125,7 @@ module.exports = {
   },
 
   create: async (req, res, next) => {
-    const { matricula_id, firma_id_1, firma_id_2, fecha_emision, fecha_realizacion, vigencia_anos } = req.body;
+    const { matricula_id, firma_id_1, firma_id_2, fecha_emision, fecha_realizacion, vigencia_anos, codigo: codigoManual } = req.body;
 
     try {
       // 1. Validar matrícula y obtener datos del alumno y del curso en MySQL
@@ -147,8 +167,16 @@ module.exports = {
         }
       }
 
-      // 3. Generar Código y Hash únicos
-      const codigo = await generarCodigoCertificado();
+      // 3. Código manual o automático + Hash único
+      let codigo;
+      if (codigoManual && String(codigoManual).trim()) {
+        codigo = normalizarCodigoManual(codigoManual);
+        if (await codigoManualEnUso(codigo)) {
+          return res.status(400).json({ success: false, message: `El código ${codigo} ya está en uso. Usa otro o el modo automático.` });
+        }
+      } else {
+        codigo = await generarCodigoCertificado();
+      }
       const hashInput = `${codigo}-${matData.alumno_dni}-${matricula_id}-${fecha_emision}-${Math.random()}`;
       const hash = generarHash(hashInput);
 
@@ -310,7 +338,15 @@ module.exports = {
         .map(c => parseInt(c.codigo.split('-')[1], 10))
         .sort((a,b) => b-a);
       const nextNum = yearCerts.length > 0 ? yearCerts[0] + 1 : 1;
-      const codigo = `PE-${nextNum}-${yearSuffix}`;
+      let codigo;
+      if (codigoManual && String(codigoManual).trim()) {
+        codigo = normalizarCodigoManual(codigoManual);
+        if (mockDb.certificados.some(c => c.codigo === codigo)) {
+          return res.status(400).json({ success: false, message: `El código ${codigo} ya está en uso. Usa otro o el modo automático.` });
+        }
+      } else {
+        codigo = `PE-${nextNum}-${yearSuffix}`;
+      }
 
       // Hash
       const hash = generarHash(`${codigo}-${alumno.dni}-${matricula_id}-${fecha_emision}-${Math.random()}`);
@@ -415,7 +451,7 @@ module.exports = {
   },
 
   bulkGenerate: async (req, res, next) => {
-    const { edicion_id } = req.body;
+    const { edicion_id, codigo_inicial } = req.body;
     if (!edicion_id) {
       return res.status(400).json({ success: false, message: 'edicion_id es requerido' });
     }
@@ -470,12 +506,24 @@ module.exports = {
       // 4. Generate certificates for each pending enrollment
       const results = [];
       const emailPromises = [];
+      const manualBase = codigo_inicial ? parseInt(String(codigo_inicial).replace(/\D/g, ''), 10) : null;
+      let nextManual = manualBase;
+      const yearSuffixBulk = String(new Date().getFullYear()).slice(-2);
+
       for (const row of pendRows) {
         const fecha_emision = getPeruDate();
         const fecha_realizacion = row.fecha_inicio ? new Date(row.fecha_inicio).toISOString().split('T')[0] : fecha_emision;
         const vigencia_anos = 1;
 
-        const codigo = await generarCodigoCertificado();
+        let codigo;
+        if (manualBase) {
+          do {
+            codigo = `PE-${String(nextManual).padStart(4, '0')}-${yearSuffixBulk}`;
+            nextManual += 1;
+          } while (await codigoManualEnUso(codigo));
+        } else {
+          codigo = await generarCodigoCertificado();
+        }
         const hashInput = `${codigo}-${row.alumno_dni}-${row.matricula_id}-${fecha_emision}-${Math.random()}`;
         const hash = generarHash(hashInput);
 
@@ -576,6 +624,10 @@ module.exports = {
 
       const results = [];
       const emailPromises = [];
+      const manualBaseMock = codigo_inicial ? parseInt(String(codigo_inicial).replace(/\D/g, ''), 10) : null;
+      let nextManualMock = manualBaseMock;
+      const yearSuffixMock = String(new Date().getFullYear()).slice(-2);
+
       for (const mat of pendientes) {
         const alumno = mockDb.participantes.find(p => p.id == mat.participante_id);
         if (!alumno) continue;
@@ -584,14 +636,21 @@ module.exports = {
         const fecha_realizacion = mat.fecha_inicio ? new Date(mat.fecha_inicio).toISOString().split('T')[0] : fecha_emision;
         const vigencia_anos = 1;
 
-        const yearSuffix = String(new Date().getFullYear()).slice(-2);
-        const pattern = new RegExp(`^PE-\\d{4}-${yearSuffix}$`);
-        const yearCerts = mockDb.certificados
-          .filter(c => pattern.test(c.codigo))
-          .map(c => parseInt(c.codigo.split('-')[1], 10))
-          .sort((a,b) => b-a);
-        const nextNum = yearCerts.length > 0 ? yearCerts[0] + 1 : 1;
-        const codigo = `PE-${nextNum}-${yearSuffix}`;
+        let codigo;
+        if (manualBaseMock) {
+          do {
+            codigo = `PE-${String(nextManualMock).padStart(4, '0')}-${yearSuffixMock}`;
+            nextManualMock += 1;
+          } while (mockDb.certificados.some(c => c.codigo === codigo));
+        } else {
+          const pattern = new RegExp(`^PE-\\d{4}-${yearSuffixMock}$`);
+          const yearCerts = mockDb.certificados
+            .filter(c => pattern.test(c.codigo))
+            .map(c => parseInt(c.codigo.split('-')[1], 10))
+            .sort((a, b) => b - a);
+          const nextNum = yearCerts.length > 0 ? yearCerts[0] + 1 : 1;
+          codigo = `PE-${nextNum}-${yearSuffixMock}`;
+        }
 
         const hash = generarHash(`${codigo}-${alumno.dni}-${mat.id}-${fecha_emision}-${Math.random()}`);
 

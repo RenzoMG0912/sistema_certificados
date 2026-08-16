@@ -29,6 +29,10 @@ const initModalButtons = () => {
   el('btn-new-certificate')?.addEventListener('click', async () => {
     resetForm('form-certificate');
     el('modal-certificate-title').textContent = 'Emitir Certificado Oficial';
+    const codeAuto = document.querySelector('input[name="cert-code-mode"][value="auto"]');
+    if (codeAuto) codeAuto.checked = true;
+    const manualWrapper = el('cert-code-manual-wrapper');
+    if (manualWrapper) manualWrapper.classList.add('hidden');
     const [matriculas, firmas] = await Promise.all([
       apiFetch('/api/matriculas/grouped').catch(() => []),
       apiFetch('/api/firmas').catch(() => [])
@@ -176,21 +180,44 @@ const initForms = () => {
 
   el('form-certificate')?.addEventListener('submit', async event => {
     event.preventDefault();
+
+    const codeMode = document.querySelector('input[name="cert-code-mode"]:checked')?.value || 'auto';
+    const payload = {
+      matricula_id: Number(el('cert-matricula').value),
+      firma_id_1: Number(el('cert-signature-1').value),
+      firma_id_2: el('cert-signature-2').value ? Number(el('cert-signature-2').value) : null,
+      fecha_emision: el('cert-issue-date').value,
+      fecha_realizacion: el('cert-course-date').value,
+      vigencia_anos: Number(el('cert-expiry-years').value)
+    };
+
+    if (codeMode === 'manual') {
+      const codigo = el('cert-code-manual').value.trim();
+      if (!codigo) {
+        showToast('Ingresa el código manual del certificado', 'warning');
+        return;
+      }
+      payload.codigo = codigo;
+    }
+
     await apiFetch('/api/certificados', {
       method: 'POST',
-      body: JSON.stringify({
-        matricula_id: Number(el('cert-matricula').value),
-        firma_id_1: Number(el('cert-signature-1').value),
-        firma_id_2: el('cert-signature-2').value ? Number(el('cert-signature-2').value) : null,
-        fecha_emision: el('cert-issue-date').value,
-        fecha_realizacion: el('cert-course-date').value,
-        vigencia_anos: Number(el('cert-expiry-years').value)
-      })
+      body: JSON.stringify(payload)
     });
 
     showToast('Certificado emitido correctamente');
     closeModal('modal-certificate');
     await loadCertificates();
+  });
+
+  // Toggle Automático / Manual del código de certificado
+  document.querySelectorAll('input[name="cert-code-mode"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const wrapper = el('cert-code-manual-wrapper');
+      if (!wrapper) return;
+      const manual = document.querySelector('input[name="cert-code-mode"]:checked')?.value === 'manual';
+      wrapper.classList.toggle('hidden', !manual);
+    });
   });
 
   el('form-signature')?.addEventListener('submit', async event => {

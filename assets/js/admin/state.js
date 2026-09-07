@@ -27,5 +27,8 @@ export const state = {
   enrollmentEditSelected: new Set(),
   enrollmentEditCourseId: null,
   enrollmentEditCurrent: [],
-  enrollmentEditAvailable: []
+  enrollmentEditAvailable: [],
+  enrollmentEditEdicionId: null,
+  enrollmentEditOriginal: null,
+  ediciones: []
 };

@@ -878,9 +878,13 @@ function goToStep(step) {
 const renderEnrollmentEditCurrentList = () => {
   const container = document.getElementById('enrollment-current-list');
   if (!container) return;
+  if (!state.enrollmentEditEdicionId) {
+    container.innerHTML = '<p class="text-sm text-slate-400 text-center py-3">Selecciona una edición para ver los alumnos.</p>';
+    return;
+  }
   const activeEnrollments = state.enrollmentEditCurrent.filter(item => !state.enrollmentEditToRemove.has(String(item.id)));
   if (activeEnrollments.length === 0) {
-    container.innerHTML = '<p class="text-sm text-slate-400">No hay alumnos matriculados en este curso.</p>';
+    container.innerHTML = '<p class="text-sm text-slate-400 text-center py-3">No hay alumnos matriculados en esta edición.</p>';
     return;
   }
   container.innerHTML = activeEnrollments.map(item => `
@@ -897,6 +901,10 @@ const renderEnrollmentEditCurrentList = () => {
 const renderEnrollmentEditAvailableList = (query) => {
   const container = document.getElementById('enrollment-add-participants-container');
   if (!container) return;
+  if (!state.enrollmentEditEdicionId) {
+    container.innerHTML = '<p class="text-sm text-slate-400 text-center py-3">Selecciona una edición para ver alumnos disponibles.</p>';
+    return;
+  }
   const currentIds = new Set(
     state.enrollmentEditCurrent
       .filter(item => !state.enrollmentEditToRemove.has(String(item.id)))
@@ -958,10 +966,17 @@ export const openEnrollmentEditModal = async (courseId) => {
     saveButton.textContent = 'Guardar';
   }
 
+  const edicionFields = document.getElementById('enrollment-edit-edicion-fields');
+  const studentsSection = document.getElementById('enrollment-edit-students-section');
+  if (edicionFields) edicionFields.classList.add('hidden');
+  if (studentsSection) studentsSection.classList.add('hidden');
+
   state.enrollmentEditCourseId = courseId;
   state.enrollmentEditSelected = new Set();
   state.enrollmentEditToRemove = new Set();
   state.enrollmentEditQuery = '';
+  state.enrollmentEditEdicionId = null;
+  state.enrollmentEditOriginal = null;
 
   const [course, editions, participants] = await Promise.all([
     apiFetch(`/api/cursos/${courseId}`),
@@ -988,11 +1003,33 @@ export const openEnrollmentEditModal = async (courseId) => {
         state.enrollmentEditCurrent = [];
         state.enrollmentEditSelected = new Set();
         state.enrollmentEditToRemove = new Set();
+        state.enrollmentEditEdicionId = null;
+        state.enrollmentEditOriginal = null;
+        if (edicionFields) edicionFields.classList.add('hidden');
+        if (studentsSection) studentsSection.classList.add('hidden');
         renderEnrollmentEditCurrentList();
         renderEnrollmentEditAvailableList(state.enrollmentEditQuery || '');
         return;
       }
+
+      const edicion = state.ediciones.find(e => String(e.id) === String(edId));
       state.enrollmentEditEdicionId = Number(edId);
+      state.enrollmentEditOriginal = edicion ? {
+        codigo_edicion: edicion.codigo_edicion || '',
+        fecha_inicio: edicion.fecha_inicio || '',
+        fecha_fin: edicion.fecha_fin || ''
+      } : null;
+
+      const codigoInput = document.getElementById('enrollment-edit-edicion-codigo');
+      const inicioInput = document.getElementById('enrollment-edit-edicion-inicio');
+      const finInput = document.getElementById('enrollment-edit-edicion-fin');
+      if (codigoInput) codigoInput.value = edicion?.codigo_edicion || '';
+      if (inicioInput) inicioInput.value = edicion?.fecha_inicio || '';
+      if (finInput) finInput.value = edicion?.fecha_fin || '';
+
+      if (edicionFields) edicionFields.classList.remove('hidden');
+      if (studentsSection) studentsSection.classList.remove('hidden');
+
       const currentEnrollments = await apiFetch(`/api/matriculas/by-edicion/${edId}`);
       state.enrollmentEditCurrent = Array.isArray(currentEnrollments) ? currentEnrollments : [];
       state.enrollmentEditSelected = new Set();
@@ -1042,33 +1079,73 @@ export const openEnrollmentEditModal = async (courseId) => {
 
   if (saveButton) {
     saveButton.onclick = async () => {
-      const hasChanges = state.enrollmentEditToRemove.size > 0 || state.enrollmentEditSelected.size > 0;
-      if (hasChanges) {
+      const hasEnrollmentChanges = state.enrollmentEditToRemove.size > 0 || state.enrollmentEditSelected.size > 0;
+      const hasEditionChanges = state.enrollmentEditEdicionId && state.enrollmentEditOriginal && (() => {
+        const cod = document.getElementById('enrollment-edit-edicion-codigo')?.value?.trim() || '';
+        const ini = document.getElementById('enrollment-edit-edicion-inicio')?.value || '';
+        const fin = document.getElementById('enrollment-edit-edicion-fin')?.value || '';
+        return cod !== state.enrollmentEditOriginal.codigo_edicion ||
+               ini !== state.enrollmentEditOriginal.fecha_inicio ||
+               fin !== state.enrollmentEditOriginal.fecha_fin;
+      })();
+
+      if (hasEnrollmentChanges || hasEditionChanges) {
         saveButton.disabled = true;
         const originalText = saveButton.textContent;
         saveButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Guardando...`;
 
         try {
-          if (state.enrollmentEditToRemove.size > 0) {
-            const deletePromises = Array.from(state.enrollmentEditToRemove).map(id =>
-              apiFetch(`/api/matriculas/${id}`, { method: 'DELETE' })
-            );
-            await Promise.all(deletePromises);
-          }
-
-          if (state.enrollmentEditSelected.size > 0 && state.enrollmentEditEdicionId) {
-            await apiFetch('/api/matriculas/bulk', {
-              method: 'POST',
+          if (hasEditionChanges && state.enrollmentEditEdicionId) {
+            const cod = document.getElementById('enrollment-edit-edicion-codigo')?.value?.trim() || '';
+            const ini = document.getElementById('enrollment-edit-edicion-inicio')?.value || '';
+            const fin = document.getElementById('enrollment-edit-edicion-fin')?.value || '';
+            if (!cod || !ini) {
+              showToast('El código y la fecha de inicio son obligatorios', 'warning');
+              saveButton.disabled = false;
+              saveButton.textContent = originalText;
+              return;
+            }
+            if (fin && fin < ini) {
+              showToast('La fecha de fin no puede ser anterior a la fecha de inicio', 'warning');
+              saveButton.disabled = false;
+              saveButton.textContent = originalText;
+              return;
+            }
+            await apiFetch(`/api/ediciones/${state.enrollmentEditEdicionId}`, {
+              method: 'PUT',
               body: JSON.stringify({
-                edicion_id: state.enrollmentEditEdicionId,
-                participante_ids: Array.from(state.enrollmentEditSelected).map(id => Number(id))
+                curso_id: courseId,
+                codigo_edicion: cod,
+                fecha_inicio: ini,
+                fecha_fin: fin || null
               })
             });
           }
 
-          showToast('Matrículas actualizadas correctamente');
+          if (hasEnrollmentChanges) {
+            if (state.enrollmentEditToRemove.size > 0) {
+              const deletePromises = Array.from(state.enrollmentEditToRemove).map(id =>
+                apiFetch(`/api/matriculas/${id}`, { method: 'DELETE' })
+              );
+              await Promise.all(deletePromises);
+            }
+
+            if (state.enrollmentEditSelected.size > 0 && state.enrollmentEditEdicionId) {
+              await apiFetch('/api/matriculas/bulk', {
+                method: 'POST',
+                body: JSON.stringify({
+                  edicion_id: state.enrollmentEditEdicionId,
+                  participante_ids: Array.from(state.enrollmentEditSelected).map(id => Number(id))
+                })
+              });
+            }
+          }
+
+          showToast(hasEditionChanges && hasEnrollmentChanges
+            ? 'Edición y matrículas actualizadas correctamente'
+            : hasEditionChanges ? 'Edición actualizada correctamente' : 'Matrículas actualizadas correctamente');
         } catch (err) {
-          showToast(err.message || 'Error al guardar matrículas', 'error');
+          showToast(err.message || 'Error al guardar', 'error');
           saveButton.disabled = false;
           saveButton.textContent = originalText;
           return;

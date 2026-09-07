@@ -2029,46 +2029,60 @@
           </select>
         </div>
 
-        <div class="mb-5">
-          <h4 class="text-xs font-semibold text-slate-700 font-title mb-2">Alumnos Actualmente Matriculados</h4>
-          <div id="enrollment-current-list" class="space-y-2">
-            <div class="flex items-center gap-3 p-2"><div class="skeleton" style="width:28px;height:28px;border-radius:50%"></div><div class="skeleton" style="height:14px;width:60%"></div></div>
-            <div class="flex items-center gap-3 p-2"><div class="skeleton" style="width:28px;height:28px;border-radius:50%"></div><div class="skeleton" style="height:14px;width:45%"></div></div>
-            <div class="flex items-center gap-3 p-2"><div class="skeleton" style="width:28px;height:28px;border-radius:50%"></div><div class="skeleton" style="height:14px;width:55%"></div></div>
-            <div class="flex items-center gap-3 p-2"><div class="skeleton" style="width:28px;height:28px;border-radius:50%"></div><div class="skeleton" style="height:14px;width:40%"></div></div>
+        <!-- ══════ Campos de edición (solo visibles al seleccionar una edición) ══════ -->
+        <div id="enrollment-edit-edicion-fields" class="hidden mb-5 bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <h4 class="text-xs font-semibold text-slate-700 font-title mb-3">Editar Datos de la Edición</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label for="enrollment-edit-edicion-codigo" class="text-[11px] font-semibold text-slate-500">Código</label>
+              <input type="text" id="enrollment-edit-edicion-codigo" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all mt-1" maxlength="50">
+            </div>
+            <div>
+              <label for="enrollment-edit-edicion-inicio" class="text-[11px] font-semibold text-slate-500">Fecha Inicio</label>
+              <input type="date" id="enrollment-edit-edicion-inicio" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all mt-1">
+            </div>
+            <div>
+              <label for="enrollment-edit-edicion-fin" class="text-[11px] font-semibold text-slate-500">Fecha Fin</label>
+              <input type="date" id="enrollment-edit-edicion-fin" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all mt-1">
+            </div>
           </div>
         </div>
 
-        <div class="border-t border-slate-100 pt-4">
-          <h4 class="text-xs font-semibold text-slate-700 font-title mb-2">Agregar Alumnos Adicionales</h4>
-          <!-- Buscador modal editar matrícula -->
-          <div class="flex gap-2 items-center mb-2">
-            <div class="relative flex-1">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-                <i class="fa-solid fa-magnifying-glass text-xs"></i>
-              </span>
-              <input type="text" id="enrollment-edit-search" placeholder="Buscar por nombre o DNI..." autocomplete="off"
-                class="w-full pl-8 pr-3 py-2 text-sm bg-white border border-slate-200 rounded-xl outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-slate-400">
+        <!-- ══════ Sección de alumnos (solo visibles al seleccionar una edición) ══════ -->
+        <div id="enrollment-edit-students-section" class="hidden">
+          <div class="mb-5">
+            <h4 class="text-xs font-semibold text-slate-700 font-title mb-2">Alumnos Actualmente Matriculados</h4>
+            <div id="enrollment-current-list" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
             </div>
-            <button type="button" id="btn-edit-select-all"
-              class="shrink-0 px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors whitespace-nowrap">
-              Selec. todos
-            </button>
           </div>
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 max-h-44 overflow-y-auto custom-scrollbar" id="enrollment-add-participants-container">
-            <div class="flex items-center gap-3 py-2"><div class="skeleton" style="width:24px;height:24px;border-radius:4px"></div><div class="skeleton" style="height:12px;width:55%"></div></div>
-            <div class="flex items-center gap-3 py-2"><div class="skeleton" style="width:24px;height:24px;border-radius:4px"></div><div class="skeleton" style="height:12px;width:45%"></div></div>
-            <div class="flex items-center gap-3 py-2"><div class="skeleton" style="width:24px;height:24px;border-radius:4px"></div><div class="skeleton" style="height:12px;width:60%"></div></div>
-            <div class="flex items-center gap-3 py-2"><div class="skeleton" style="width:24px;height:24px;border-radius:4px"></div><div class="skeleton" style="height:12px;width:40%"></div></div>
+
+          <div class="border-t border-slate-100 pt-4">
+            <h4 class="text-xs font-semibold text-slate-700 font-title mb-2">Agregar Alumnos Adicionales</h4>
+            <div class="flex gap-2 items-center mb-2">
+              <div class="relative flex-1">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                  <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                </span>
+                <input type="text" id="enrollment-edit-search" placeholder="Buscar por nombre o DNI..." autocomplete="off"
+                  class="w-full pl-8 pr-3 py-2 text-sm bg-white border border-slate-200 rounded-xl outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-slate-400">
+              </div>
+              <button type="button" id="btn-edit-select-all"
+                class="shrink-0 px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors whitespace-nowrap">
+                Selec. todos
+              </button>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 max-h-40 overflow-y-auto custom-scrollbar" id="enrollment-add-participants-container">
+            </div>
           </div>
-          <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
-            <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close id="btn-enrollment-edit-cancel">
-              Cancelar
-            </button>
-            <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="btn-enrollment-edit-save">
-              Guardar
-            </button>
-          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
+          <button class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors" type="button" data-modal-close id="btn-enrollment-edit-cancel">
+            Cancelar
+          </button>
+          <button class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-on-primary font-semibold text-sm transition-all active:scale-[0.98]" type="button" id="btn-enrollment-edit-save">
+            Guardar
+          </button>
         </div>
       </div>
     </div>

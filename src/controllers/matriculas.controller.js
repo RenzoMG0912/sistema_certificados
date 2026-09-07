@@ -295,21 +295,25 @@ module.exports = {
       const cursoNombre = edicionInfo[0]?.nombre || 'Curso';
 
       for (const pid of participante_ids) {
-        const [check] = await db.query(
-          'SELECT id FROM matriculas WHERE participante_id = ? AND edicion_id = ?',
-          [pid, edicion_id]
-        );
-        if (check.length === 0) {
-          const [result] = await db.query(
-            'INSERT INTO matriculas (participante_id, edicion_id) VALUES (?, ?)',
+        try {
+          const [check] = await db.query(
+            'SELECT id FROM matriculas WHERE participante_id = ? AND edicion_id = ?',
             [pid, edicion_id]
           );
-          inserted.push({ id: result.insertId, participante_id: pid, edicion_id });
+          if (check.length === 0) {
+            const [result] = await db.query(
+              'INSERT INTO matriculas (participante_id, edicion_id) VALUES (?, ?)',
+              [pid, edicion_id]
+            );
+            inserted.push({ id: result.insertId, participante_id: pid, edicion_id });
 
-          const [pRows] = await db.query('SELECT nombres FROM participantes WHERE id = ?', [pid]);
-          const alumnoNombre = pRows[0]?.nombres || 'Alumno';
-          await crearNotificacion({ usuario_tipo: 'alumno', usuario_id: pid, titulo: 'Nueva matrícula', mensaje: `Has sido matriculado en "${cursoNombre}".`, tipo: TYPES.SUCCESS });
-          await crearNotificacion({ usuario_tipo: 'admin', usuario_id: 1, titulo: 'Nueva matrícula', mensaje: `${alumnoNombre} fue matriculado en "${cursoNombre}".`, tipo: TYPES.INFO });
+            const [pRows] = await db.query('SELECT nombres FROM participantes WHERE id = ?', [pid]);
+            const alumnoNombre = pRows[0]?.nombres || 'Alumno';
+            await crearNotificacion({ usuario_tipo: 'alumno', usuario_id: pid, titulo: 'Nueva matrícula', mensaje: `Has sido matriculado en "${cursoNombre}".`, tipo: TYPES.SUCCESS });
+            await crearNotificacion({ usuario_tipo: 'admin', usuario_id: 1, titulo: 'Nueva matrícula', mensaje: `${alumnoNombre} fue matriculado en "${cursoNombre}".`, tipo: TYPES.INFO });
+          }
+        } catch (innerErr) {
+          console.error(`Error procesando participante ${pid}:`, innerErr.message);
         }
       }
       return res.status(201).json({ success: true, message: `${inserted.length} matrícula(s) creada(s)`, matriculas: inserted });

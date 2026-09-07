@@ -172,7 +172,7 @@ const initForms = () => {
         edicionId = Number(selectedRadio.value);
       }
 
-      const selected = Array.from(el('enrollment-participants-container').querySelectorAll('.participant-select:checked')).map(input => Number(input.value));
+      const selected = Array.from(state.enrollmentCreateSelected).map(id => Number(id));
 
       if (!cursoId || !edicionId || selected.length === 0) {
         showToast('Selecciona un curso, una edición y al menos un alumno', 'warning');

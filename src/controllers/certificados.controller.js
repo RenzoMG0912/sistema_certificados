@@ -482,7 +482,8 @@ module.exports = {
   },
 
   bulkGenerate: async (req, res, next) => {
-    const { edicion_id, codigo_inicial, codigos } = req.body;
+    const { edicion_id, codigo_inicial, codigos, send_email } = req.body;
+    const shouldSendEmail = send_email !== false;
     if (!edicion_id) {
       return res.status(400).json({ success: false, message: 'edicion_id es requerido' });
     }
@@ -608,29 +609,40 @@ module.exports = {
         await crearNotificacion({ usuario_tipo: 'alumno', usuario_id: row.participante_id, titulo: 'Nuevo certificado emitido', mensaje: `Tu certificado para "${row.curso_nombre}" (código: ${codigo}) ha sido emitido.`, tipo: TYPES.SUCCESS });
 
         // Guardamos la promesa del correo para esperarla al final
-        emailPromises.push(
-          emailService.sendCertificateEmail({
-            email: row.alumno_email,
-            alumno_nombre: row.alumno_nombres,
-            curso_nombre: row.curso_nombre,
-            codigo: codigo,
-            pdf_path: relativePdfPath
-          }, absoluteSavePath).then(res => ({ success: res.success }))
-        );
+        if (shouldSendEmail) {
+          emailPromises.push(
+            emailService.sendCertificateEmail({
+              email: row.alumno_email,
+              alumno_nombre: row.alumno_nombres,
+              curso_nombre: row.curso_nombre,
+              codigo: codigo,
+              pdf_path: relativePdfPath
+            }, absoluteSavePath).then(res => ({ success: res.success }))
+          );
+        }
       }
 
       // Notificar admin
-      await crearNotificacion({ usuario_tipo: 'admin', usuario_id: 1, titulo: 'Certificados generados masivamente', mensaje: `Se generaron ${results.length} certificado(s) para el curso "${pendRows[0]?.curso_nombre || ''}".`, tipo: TYPES.INFO });
+      const adminMsg = shouldSendEmail
+        ? `Se generaron ${results.length} certificado(s) para el curso "${pendRows[0]?.curso_nombre || ''}" y se enviaron por correo.`
+        : `Se generaron ${results.length} certificado(s) para el curso "${pendRows[0]?.curso_nombre || ''}" (sin envío de correo).`;
+      await crearNotificacion({ usuario_tipo: 'admin', usuario_id: 1, titulo: 'Certificados generados masivamente', mensaje: adminMsg, tipo: TYPES.INFO });
 
-      // Esperar a que se completen todos los envíos
-      const emailStatuses = await Promise.all(emailPromises);
-      const sentCount = emailStatuses.filter(s => s.success).length;
+      // Esperar a que se completen todos los envíos (solo si hay)
+      let sentCount = 0;
+      if (emailPromises.length > 0) {
+        const emailStatuses = await Promise.all(emailPromises);
+        sentCount = emailStatuses.filter(s => s.success).length;
+      }
 
       syncIndexStatic();
 
+      const msg = shouldSendEmail
+        ? `${results.length} certificado(s) generado(s) con éxito e intentado enviar por correo. Se enviaron ${sentCount} con éxito.`
+        : `${results.length} certificado(s) generado(s) con éxito (sin envío de correo).`;
       return res.status(201).json({
         success: true,
-        message: `${results.length} certificado(s) generado(s) con éxito e intentado enviar por correo. Se enviaron ${sentCount} con éxito.`,
+        message: msg,
         count: results.length,
         certificados: results
       });
@@ -778,26 +790,34 @@ module.exports = {
         results.push({ matricula_id: mat.id, certificado_id: mockCert.id, codigo });
 
         // Guardamos la promesa del correo para esperarla al final
-        emailPromises.push(
-          emailService.sendCertificateEmail({
-            email: alumno.email,
-            alumno_nombre: alumno.nombres,
-            curso_nombre: curso.nombre,
-            codigo: codigo,
-            pdf_path: relativePdfPath
-          }, absoluteSavePath).then(res => ({ success: res.success }))
-        );
+        if (shouldSendEmail) {
+          emailPromises.push(
+            emailService.sendCertificateEmail({
+              email: alumno.email,
+              alumno_nombre: alumno.nombres,
+              curso_nombre: curso.nombre,
+              codigo: codigo,
+              pdf_path: relativePdfPath
+            }, absoluteSavePath).then(res => ({ success: res.success }))
+          );
+        }
       }
 
-      // Esperar a que se completen todos los envíos
-      const emailStatuses = await Promise.all(emailPromises);
-      const sentCount = emailStatuses.filter(s => s.success).length;
+      // Esperar a que se completen todos los envíos (solo si hay)
+      let sentCount = 0;
+      if (emailPromises.length > 0) {
+        const emailStatuses = await Promise.all(emailPromises);
+        sentCount = emailStatuses.filter(s => s.success).length;
+      }
 
       syncIndexStatic();
 
+      const mockMsg = shouldSendEmail
+        ? `${results.length} certificado(s) generado(s) con éxito (Modo Temporal). Se enviaron ${sentCount} correos con éxito.`
+        : `${results.length} certificado(s) generado(s) con éxito (Modo Temporal, sin envío de correo).`;
       return res.status(201).json({
         success: true,
-        message: `${results.length} certificado(s) generado(s) con éxito (Modo Temporal). Se enviaron ${sentCount} correos con éxito.`,
+        message: mockMsg,
         count: results.length,
         certificados: results
       });

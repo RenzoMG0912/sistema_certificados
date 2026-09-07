@@ -237,6 +237,9 @@ export const renderEnrollments = () => {
                 <button type="button" class="btn-icon btn-bulk-generate-certs text-slate-400 hover:text-primary transition-colors" data-edicion-id="${eid}" title="Emitir certificados para esta edición">
                   <span class="material-symbols-outlined text-[17px]">workspace_premium</span>
                 </button>
+                <button type="button" class="btn-icon btn-bulk-generate-no-email text-slate-400 hover:text-amber-600 transition-colors" data-edicion-id="${eid}" title="Generar certificados sin enviar por correo">
+                  <span class="material-symbols-outlined text-[17px]">picture_as_pdf</span>
+                </button>
                 <button type="button" class="btn-icon btn-delete btn-delete-all-enrollments text-slate-400 hover:text-red-600 transition-colors" data-edicion-id="${eid}" title="Eliminar todas las matrículas de esta edición">
                   <i class="fa-solid fa-trash text-[12px]"></i>
                 </button>
@@ -413,6 +416,99 @@ export const renderEnrollments = () => {
         }
       } catch (err) {
         showToast(err.message || 'Error en emisión masiva', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    });
+  });
+
+  // ── Bind bulk generate certificates WITHOUT email buttons ──
+  container.querySelectorAll('.btn-bulk-generate-no-email').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const edicionId = btn.dataset.edicionId;
+      if (!edicionId) return;
+
+      let editionName = 'esta edición';
+      let studentCount = 0;
+      for (const g of state.enrollments) {
+        const ed = (g.enrollments || []).find(item => String(item.edicion_id) === edicionId);
+        if (ed) {
+          editionName = `${g.curso_nombre} — ${ed.codigo_edicion || 'Edición ' + edicionId}`;
+          studentCount = (g.enrollments || []).filter(item => String(item.edicion_id) === edicionId).length;
+          break;
+        }
+      }
+
+      if (studentCount === 0) {
+        showToast('No hay alumnos matriculados en esta edición', 'warning');
+        return;
+      }
+
+      const confirmed = await showConfirmModal(
+        'Generar Certificados (sin envío)',
+        `¿Está seguro de que desea generar los certificados digitales para todos los estudiantes de "${editionName}" sin enviarlos por correo?`,
+        'Sí, generar ahora',
+        'Cancelar',
+        'warning',
+        {
+          badge: {
+            icon: 'fa-solid fa-file-pdf',
+            text: `TOTAL DE ALUMNOS: ${studentCount}`
+          },
+          confirmIcon: 'fa-solid fa-download',
+          extraContent: `
+            <div class="flex flex-col gap-1.5 mt-3">
+              <label for="bulk-code-mode-no-email" class="text-xs font-semibold text-slate-600">Código de los certificados</label>
+              <select id="bulk-code-mode-no-email" data-edicion-id="${edicionId}" onchange="window.toggleBulkCode()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary">
+                <option value="auto">Automático</option>
+                <option value="manual">Manual (desde un número inicial)</option>
+                <option value="por-alumno">Manual (un código por alumno)</option>
+              </select>
+              <input type="text" id="bulk-code-start-no-email" class="hidden w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-secondary focus:ring-1 focus:ring-secondary mt-1 placeholder:text-slate-400" placeholder="N° inicial (ej: 1564)">
+              <p id="bulk-code-hint-no-email" class="hidden text-[11px] text-slate-500 mt-1">Se generarán de forma correlativa: PE-1564-26, PE-1565-26, PE-1566-26…</p>
+              <div id="bulk-code-per-student-no-email" class="hidden"></div>
+            </div>
+          `,
+          getData: () => {
+            const mode = document.getElementById('bulk-code-mode-no-email')?.value || 'auto';
+            const start = document.getElementById('bulk-code-start-no-email')?.value.trim() || '';
+            let codigos = [];
+            if (mode === 'por-alumno') {
+              codigos = Array.from(document.querySelectorAll('.bulk-code-per-student-input'))
+                .filter(inp => inp.value.trim())
+                .map(inp => ({ matricula_id: Number(inp.dataset.matriculaId), codigo: inp.value.trim() }));
+            }
+            return { mode, start, codigos };
+          }
+        }
+      );
+      if (!confirmed) return;
+      const bulkCode = confirmed.data || { mode: 'auto', start: '' };
+
+      btn.disabled = true;
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[14px]"></i>`;
+
+      try {
+        const body = { edicion_id: Number(edicionId), send_email: false };
+        if (bulkCode.mode === 'manual' && bulkCode.start) {
+          body.codigo_inicial = bulkCode.start;
+        } else if (bulkCode.mode === 'por-alumno' && bulkCode.codigos && bulkCode.codigos.length > 0) {
+          body.codigos = bulkCode.codigos;
+        }
+        const res = await apiFetch('/api/certificados/bulk-generate', {
+          method: 'POST',
+          body: JSON.stringify(body)
+        });
+        if (res.success) {
+          showToast(res.message || 'Certificados generados correctamente (sin envío de correo)');
+        } else {
+          showToast(res.message || 'Error al generar certificados', 'error');
+        }
+      } catch (err) {
+        showToast(err.message || 'Error en generación masiva', 'error');
       } finally {
         btn.disabled = false;
         btn.innerHTML = originalHtml;

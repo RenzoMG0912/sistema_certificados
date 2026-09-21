@@ -1,82 +1,12 @@
 (() => {
   const WA_BASE = 'https://wa.me/51992809049';
+  const waLink = (msg) => `${WA_BASE}?text=${encodeURIComponent(msg)}`;
 
-  const courseData = {
-    'respuesta-emergencias': {
-      title: 'Respuesta a emergencias',
-      duration: '2 horas',
-      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
-      price: 'S/ 100.00',
-      date: '15 Jul 2026',
-      summary: 'Capacitación orientada a preparar al personal para actuar correctamente ante emergencias, evacuaciones, incidentes y situaciones de riesgo dentro de operaciones mineras e industriales.',
-    },
-    'trabajo-altura': {
-      title: 'Trabajo en altura y plataforma elevada',
-      duration: '4 horas',
-      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
-      price: 'S/ 100.00',
-      date: '22 Jul 2026',
-      summary: 'Curso enfocado en el uso seguro de trabajos en altura, líneas de vida, arneses y plataformas elevadas, reduciendo riesgos de caídas y accidentes laborales.',
-    },
-    'equipos-moviles': {
-      title: 'Equipos móviles / Manejo de llantas',
-      duration: '2 horas',
-      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
-      price: 'S/ 100.00',
-      date: '05 Ago 2026',
-      summary: 'Capacitación sobre operación segura de equipos móviles y procedimientos adecuados para el manejo y cambio de llantas en entornos mineros.',
-    },
-    'aislamiento-bloqueo': {
-      title: 'Aislamiento y bloqueo',
-      duration: '3 horas',
-      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
-      price: 'S/ 100.00',
-      date: '14 Oct 2026',
-      summary: 'Curso diseñado para aplicar procedimientos LOTO (Lockout/Tagout), asegurando el aislamiento de energías peligrosas durante mantenimientos y reparaciones.',
-    },
-    'seguridad-electrica': {
-      title: 'Seguridad eléctrica',
-      duration: '3 horas',
-      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
-      price: 'S/ 100.00',
-      date: '07 Oct 2026',
-      summary: 'Capacitación enfocada en la prevención de accidentes eléctricos, identificación de riesgos y aplicación de medidas de protección en trabajos eléctricos.',
-    },
-    'elevacion-izaje': {
-      title: 'Elevación / izaje de cargas',
-      duration: '2 horas',
-      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
-      price: 'S/ 100.00',
-      date: '30 Sep 2026',
-      summary: 'Curso orientado al manejo seguro de maniobras de izaje, uso de accesorios y control de cargas para prevenir incidentes operacionales.',
-    },
-    'incendio-explosion': {
-      title: 'Incendio y explosión',
-      duration: '2 horas',
-      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
-      price: 'S/ 100.00',
-      date: '23 Sep 2026',
-      summary: 'Capacitación sobre prevención, control y respuesta ante incendios y explosiones en áreas industriales y mineras.',
-    },
-    'herramientas-manuales': {
-      title: 'Herramientas manuales y de poder',
-      duration: '2 horas',
-      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
-      price: 'S/ 100.00',
-      date: '16 Sep 2026',
-      summary: 'Curso enfocado en el uso seguro, inspección y mantenimiento básico de herramientas manuales y eléctricas utilizadas en operaciones industriales.',
-    },
-    'sustancias-quimicas': {
-      title: 'Sustancias químicas',
-      duration: '2 horas',
-      trainer: 'Ing. Gregorio A. Escajadillo Sarmiento',
-      price: 'S/ 100.00',
-      date: '12 Ago 2026',
-      summary: 'Capacitación para la manipulación segura de sustancias químicas, lectura de hojas MSDS y control de riesgos químicos en el trabajo.',
-    },
-  };
-
-  window.TEAMHSEC_COURSE_DATA = courseData;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const supportsScrollTimeline =
+    typeof CSS !== 'undefined' &&
+    typeof CSS.supports === 'function' &&
+    CSS.supports('animation-timeline', 'view()');
 
   const initMobileNav = () => {
     const toggle = document.getElementById('nav-toggle');
@@ -120,47 +50,52 @@
     category.addEventListener('change', apply);
   };
 
+  // Los datos del curso viven en el propio HTML (atributos data-*), que es la
+  // única fuente de verdad. Así no hay que duplicarlos en JavaScript.
   const initCourseModal = () => {
     const modal = document.getElementById('course-modal');
     if (!modal) return;
 
     const titleEl = document.getElementById('modal-title');
     const durationEl = document.getElementById('modal-duration');
-    const trainerEl = document.getElementById('modal-trainer');
-    const priceEl = document.getElementById('modal-price');
     const dateEl = document.getElementById('modal-date');
+    const trainerEl = document.getElementById('modal-trainer');
     const summaryEl = document.getElementById('modal-summary');
     const enrollEl = document.getElementById('modal-enroll');
+    let lastFocused = null;
 
-    const open = (data) => {
-      if (!data) return;
-      titleEl.textContent = data.title;
-      durationEl.textContent = data.duration;
-      trainerEl.textContent = data.trainer;
-      if (priceEl) priceEl.textContent = data.price || 'S/ 100.00';
-      if (dateEl) dateEl.textContent = data.date || 'Por confirmar';
-      summaryEl.textContent = data.summary;
+    const open = (card) => {
+      if (!card) return;
+      const d = card.dataset;
+      lastFocused = document.activeElement;
+      titleEl.textContent = d.title || '';
+      durationEl.textContent = d.duration || '';
+      if (dateEl) dateEl.textContent = d.date || 'Por confirmar';
+      if (trainerEl) trainerEl.textContent = d.trainer || '';
+      summaryEl.textContent = d.summary || '';
       if (enrollEl) {
-        const msg = encodeURIComponent(`Hola, quiero inscribirme en ${data.title}`);
-        enrollEl.href = `${WA_BASE}?text=${msg}`;
+        enrollEl.href = waLink(`Hola, quiero inscribirme en el curso ${d.title || ''}`);
       }
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('modal-open');
+      if (enrollEl) enrollEl.focus();
     };
 
     const close = () => {
       modal.classList.remove('is-open');
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('modal-open');
+      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
     };
 
     document.querySelectorAll('[data-course]').forEach((el) => {
       if (el.tagName === 'A') return;
       el.addEventListener('click', (e) => {
+        const card = el.closest('.catalog-card');
+        if (!card) return;
         e.preventDefault();
-        const key = el.dataset.course || '';
-        open(courseData[key]);
+        open(card);
       });
     });
 
@@ -172,26 +107,64 @@
     });
   };
 
+  const initStats = () => {
+    const els = document.querySelectorAll('.stat-count[data-count]');
+    if (!els.length) return;
+
+    const animate = (el) => {
+      const target = parseInt(el.dataset.count, 10) || 0;
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const duration = 1400;
+      const started = performance.now();
+
+      const step = (now) => {
+        const p = Math.min((now - started) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const value = Math.round(target * eased);
+        el.textContent = `${prefix}${value}${suffix}`;
+        if (p < 1) {
+          requestAnimationFrame(step);
+        } else {
+          el.textContent = `${prefix}${target}${suffix}`;
+        }
+      };
+      requestAnimationFrame(step);
+    };
+
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(animate);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animate(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    els.forEach((el) => observer.observe(el));
+  };
+
   const initTestimonials = () => {
     const track = document.getElementById('testimonials-track');
     const wrapper = document.querySelector('.testimonials__wrapper');
-    const prev = document.querySelector('.testimonials__prev');
-    const next = document.querySelector('.testimonials__next');
     const originalCards = track ? [...track.querySelectorAll('.testimonial-card')] : [];
     if (!track || !originalCards.length) return;
-
-    if (prev) prev.style.display = 'none';
-    if (next) next.style.display = 'none';
 
     const total = originalCards.length;
     const COPIES = 3;
     track.innerHTML = '';
     for (let i = 0; i < COPIES; i++) {
-      originalCards.forEach(c => track.appendChild(c.cloneNode(true)));
+      originalCards.forEach((c) => track.appendChild(c.cloneNode(true)));
     }
 
-    let offsetX = 0, copyWidth = 0, cardW = 0;
-    let animId = null, isPaused = false, speed = 0, lastTs = 0;
+    let offsetX = 0, copyWidth = 0, animId = null, isPaused = false, speed = 0, lastTs = 0;
 
     const calc = () => {
       const el = track.querySelector('.testimonial-card');
@@ -199,7 +172,7 @@
       const s = getComputedStyle(el);
       const ml = parseFloat(s.marginLeft) || 0;
       const mr = parseFloat(s.marginRight) || 0;
-      cardW = el.offsetWidth + ml + mr;
+      const cardW = el.offsetWidth + ml + mr;
       copyWidth = total * cardW;
       return copyWidth > 0;
     };
@@ -241,50 +214,166 @@
       }, 300);
     });
 
-    if (calc()) {
+    const boot = () => {
       speed = copyWidth / 30;
       offsetX = 0;
       track.style.transform = 'translateX(0px)';
       start();
+    };
+
+    if (calc()) {
+      boot();
     } else {
       const retry = setInterval(() => {
         if (calc()) {
           clearInterval(retry);
-          speed = copyWidth / 30;
-          offsetX = 0;
-          track.style.transform = 'translateX(0px)';
-          start();
+          boot();
         }
       }, 150);
     }
   };
 
-  const initContactForm = () => {
-    const form = document.getElementById('contact-form');
-    if (!form) return;
+  // Parallax de profundidad: cada capa con data-parallax se desplaza a su
+  // propia velocidad según su distancia al centro del viewport.
+  const initParallax = () => {
+    if (prefersReducedMotion) return;
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const fd = new FormData(form);
-      const nombre = fd.get('nombre') || '';
-      const email = fd.get('email') || '';
-      const telefono = fd.get('telefono') || '';
-      const interes = fd.get('interes') || '';
-      const mensaje = fd.get('mensaje') || '';
+    // En navegadores con animaciones ligadas al scroll, ese efecto ya mueve las
+    // imágenes del catálogo: no duplicamos el trabajo desde JavaScript.
+    if (!supportsScrollTimeline) {
+      document
+        .querySelectorAll('.catalog-card .course-card__image img')
+        .forEach((img) => {
+          if (!img.dataset.parallax) img.dataset.parallax = '0.045';
+        });
+    }
 
-      const text = [
-        'Hola TEAM HSEC, tengo una consulta:',
-        '',
-        `Nombre: ${nombre}`,
-        `Email: ${email}`,
-        telefono ? `Teléfono: ${telefono}` : '',
-        `Interés: ${interes}`,
-        '',
-        `Mensaje: ${mensaje}`,
-      ].filter(Boolean).join('\n');
+    const layers = [...document.querySelectorAll('[data-parallax]')];
+    if (!layers.length) return;
+    let ticking = false;
 
-      window.open(`${WA_BASE}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
-      form.reset();
+    const update = () => {
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+
+      layers.forEach((el) => {
+        const minWidth = parseInt(el.dataset.parallaxMin, 10) || 0;
+        if (minWidth && vw < minWidth) {
+          el.style.transform = '';
+          return;
+        }
+
+        const speed = parseFloat(el.dataset.parallax) || 0;
+        const rect = el.getBoundingClientRect();
+        // Fuera de la pantalla no hay nada que animar.
+        if (rect.bottom < -200 || rect.top > vh + 200) return;
+
+        const centerOffset = rect.top + rect.height / 2 - vh / 2;
+        const y = -centerOffset * speed;
+        el.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0)`;
+      });
+
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  };
+
+  // Tilt 3D con reflejo: la imagen reacciona a la posición del cursor.
+  const initImageTilt = () => {
+    if (prefersReducedMotion) return;
+    if (window.matchMedia('(hover: none)').matches) return;
+
+    const MAX_DEG = 6;
+    const panels = [...document.querySelectorAll('.catalog-card .course-card__image')];
+    if (!panels.length) return;
+
+    panels.forEach((panel) => {
+      let glare = panel.querySelector('.course-card__glare');
+      if (!glare) {
+        glare = document.createElement('span');
+        glare.className = 'course-card__glare';
+        glare.setAttribute('aria-hidden', 'true');
+        panel.appendChild(glare);
+      }
+
+      // El giro se interpola a mano: así no dependemos de la transición CSS,
+      // que en este elemento entra en conflicto con la animación ligada al scroll.
+      let targetX = 0;
+      let targetY = 0;
+      let currentX = 0;
+      let currentY = 0;
+      let frame = null;
+      let hovering = false;
+
+      const EASE = 0.18;
+
+      const applyTilt = (rx, ry) => {
+        panel.style.transform = `rotateX(${rx.toFixed(3)}deg) rotateY(${ry.toFixed(3)}deg) scale(1.05)`;
+      };
+
+      const render = () => {
+        currentX += (targetX - currentX) * EASE;
+        currentY += (targetY - currentY) * EASE;
+
+        const settled =
+          Math.abs(targetX - currentX) < 0.01 && Math.abs(targetY - currentY) < 0.01;
+
+        if (settled) {
+          currentX = targetX;
+          currentY = targetY;
+          frame = null;
+          if (hovering) {
+            applyTilt(currentX, currentY);
+          } else {
+            // En reposo devolvemos el control a la hoja de estilos.
+            panel.style.transform = '';
+          }
+          return;
+        }
+
+        applyTilt(currentX, currentY);
+        frame = requestAnimationFrame(render);
+      };
+
+      const start = () => {
+        if (frame === null) frame = requestAnimationFrame(render);
+      };
+
+      panel.addEventListener('pointerenter', () => {
+        hovering = true;
+        start();
+      });
+
+      panel.addEventListener('pointermove', (event) => {
+        const rect = panel.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const px = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+        const py = Math.min(Math.max((event.clientY - rect.top) / rect.height, 0), 1);
+
+        targetY = (px - 0.5) * 2 * MAX_DEG;
+        targetX = -(py - 0.5) * 2 * MAX_DEG;
+        glare.style.setProperty('--mx', `${(px * 100).toFixed(1)}%`);
+        glare.style.setProperty('--my', `${(py * 100).toFixed(1)}%`);
+        start();
+      });
+
+      panel.addEventListener('pointerleave', () => {
+        hovering = false;
+        targetX = 0;
+        targetY = 0;
+        glare.style.setProperty('--mx', '50%');
+        glare.style.setProperty('--my', '50%');
+        start();
+      });
     });
   };
 
@@ -292,8 +381,10 @@
     initMobileNav();
     initCourseFilters();
     initCourseModal();
+    initStats();
     initTestimonials();
-    initContactForm();
+    initParallax();
+    initImageTilt();
   };
 
   if (document.readyState === 'loading') {

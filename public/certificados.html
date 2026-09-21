@@ -10,6 +10,17 @@
   <link rel="stylesheet" href="/assets/css/main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="icon" type="image/x-icon" href="img/favicon_teamhsec.ico">
+  <script>
+    // Aplica el tema antes del primer paint para evitar el parpadeo (FOUC).
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var dark = saved ? saved === 'dark' : prefersDark;
+        if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+      } catch (e) { /* almacenamiento no disponible */ }
+    })();
+  </script>
 </head>
 <body>
   <script>document.body.classList.add('js-loading');</script>
@@ -32,8 +43,10 @@
         <a href="/login" class="button outline" style="padding: 8px 18px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
           <i class="fa-solid fa-right-to-bracket"></i> Ingresar a la plataforma
         </a>
-        <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">
-          <i class="fa-solid fa-moon"></i>
+        <button class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">
+          <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"><i class="fa-solid fa-sun"></i></span>
+          <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"><i class="fa-solid fa-moon"></i></span>
+          <span class="theme-toggle__knob" aria-hidden="true"></span>
         </button>
       </div>
     </div>

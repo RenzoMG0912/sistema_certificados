@@ -27,8 +27,8 @@
   display: block;
 }
 
-/* Header enhancements */
-.logo-text h2 { display: none; }
+/* Header enhancements
+   El texto del logo (logo-text h2) ahora se muestra, igual que en /certificados */
 .nav-wa {
   display: inline-flex;
   align-items: center;
@@ -216,12 +216,6 @@
 .course-card__meta i {
   color: var(--red);
   width: 14px;
-}
-.course-card__price {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text);
-  margin: 4px 0 0;
 }
 .course-card__stars {
   color: var(--gold);
@@ -726,4 +720,490 @@
   .social-float { width: 32px; border-radius: 6px 0 0 6px; }
   .social-float a { width: 32px; height: 34px; font-size: 14px; }
   .nav-cta { font-size: 11px !important; padding: 8px 12px !important; }
+}
+
+/* ==========================================================================
+   Rediseño 2026 — Hero a dos columnas, conversión y acabados
+   ========================================================================== */
+
+/* Etiqueta superior de sección */
+.section__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 0 0 10px;
+}
+
+/* Hero en dos columnas */
+.hero__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 48px;
+  align-items: center;
+}
+.hero__trust {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0;
+  display: grid;
+  gap: 9px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+}
+.hero__trust li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero__trust i { color: var(--gold); }
+
+/* Indicadores del carrusel del hero — SVG con progreso animado */
+.hero__dots { display: flex; gap: 8px; margin-top: 26px; align-items: center; }
+.dot-progress { width: 26px; height: 4px; overflow: visible; display: block; }
+.dot-track { fill: rgba(255, 255, 255, 0.28); }
+.dot-fill {
+  fill: var(--gold);
+  width: 0;
+}
+.dot-progress.is-active .dot-fill { animation: dotProgress 5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+@keyframes dotProgress {
+  0% { width: 0px; }
+  100% { width: 26px; }
+}
+/* Retardo de activación: cada dot arranca cuando le toca a su slide (5 s por slide) */
+.dot-progress:nth-child(2) .dot-fill { animation-delay: 5s; }
+.dot-progress:nth-child(3) .dot-fill { animation-delay: 10s; }
+.dot-progress:nth-child(4) .dot-fill { animation-delay: 15s; }
+
+/* Tarjeta de conversión del hero */
+.hero__card { justify-content: flex-start; }
+.hero__card-inner { width: 100%; max-width: 400px; }
+.hero__card-tag {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.hero__card-inner h3 { margin: 0; font-size: 20px; line-height: 1.3; }
+.hero__card-inner li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.hero__card-inner li i { color: var(--red); margin-top: 4px; }
+.hero__card-wa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  background: #25d366;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  transition: background 0.2s ease;
+}
+.hero__card-wa:hover { background: #1eb457; }
+
+/* Beneficios como tarjetas */
+.benefits-icons { align-items: stretch; }
+.benefit-icon {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 28px 16px;
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.benefit-icon:hover {
+  transform: translateY(-6px);
+  border-color: var(--red);
+  box-shadow: 0 24px 50px rgba(17, 19, 24, 0.12);
+}
+
+/* Franja CTA de cierre */
+.cta-band {
+  background: linear-gradient(120deg, var(--red), var(--red-dark));
+  color: #fff;
+  padding: 46px 0;
+}
+.cta-band__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.cta-band__text h2 {
+  margin: 0 0 6px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(24px, 3vw, 34px);
+}
+.cta-band__text p { margin: 0; color: rgba(255, 255, 255, 0.88); }
+.cta-band__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Formulario de contacto */
+.contact-form input,
+.contact-form select,
+.contact-form textarea { min-width: 0; }
+.contact-form__note {
+  margin: 0;
+  min-height: 18px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.contact-form__note.is-success { color: #15803d; font-weight: 600; }
+.contact-form__note.is-error { color: var(--red); font-weight: 600; }
+.contact-grid + .contact-map { margin-top: 30px; }
+
+/* Barra de acción móvil */
+.mobile-cta { display: none; }
+
+/* Accesibilidad: foco visible */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Responsive del rediseño */
+@media (max-width: 980px) {
+  .hero__content { grid-template-columns: 1fr; gap: 28px; }
+  .hero__card { justify-content: flex-start; }
+  .hero__card-inner { max-width: 100%; }
+  .cta-band__inner { flex-direction: column; align-items: flex-start; }
+  .cta-band__actions { width: 100%; }
+
+  .mobile-cta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-light);
+    box-shadow: 0 -6px 24px rgba(17, 19, 24, 0.12);
+  }
+  .mobile-cta a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 10px;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .mobile-cta__wa { background: #25d366; color: #fff; }
+  .mobile-cta__courses { color: var(--red); }
+  .wa-fab { display: none; }
+  body { padding-bottom: 52px; }
+}
+
+@media (max-width: 640px) {
+  .social-float { display: none; }
+  .course-card__actions { grid-template-columns: 1fr; }
+}
+
+/* Movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .hero__slide,
+  .hero__slide::after { animation: none; }
+  .hero__slide { opacity: 1; visibility: hidden; }
+  .hero__slide.slide-1 { opacity: 1; visibility: visible; transform: none; clip-path: none; }
+  .dot-progress .dot-fill { animation: none; width: 26px; }
+  .dot-progress:nth-child(n+2) .dot-fill { width: 0; }
+  .js-enabled .reveal { opacity: 1; transform: none; transition: none; }
+  .testimonials__track { transform: none !important; }
+  .js-enabled .hero__text > *,
+  .js-enabled .hero__card-inner { animation: none; }
+  [data-parallax] { transform: none !important; }
+}
+
+/* ==========================================================================
+   Movimiento 2026 — Parallax y reveals escalonados
+   ========================================================================== */
+
+/* Curva y ritmo unificados para las apariciones */
+.js-enabled .reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.js-enabled .reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Escalonado por fila en el catálogo de cursos (3 columnas) */
+.js-enabled #catalog-courses .course-card:nth-child(3n + 2) { transition-delay: 0.08s; }
+.js-enabled #catalog-courses .course-card:nth-child(3n + 3) { transition-delay: 0.16s; }
+
+/* Escalonado en “Por qué elegirnos” (2 columnas) */
+.js-enabled .why-item:nth-child(2n) { transition-delay: 0.08s; }
+
+/* Escalonado en Beneficios (4 columnas) */
+.js-enabled .benefit-icon:nth-child(4n + 2) { transition-delay: 0.08s; }
+.js-enabled .benefit-icon:nth-child(4n + 3) { transition-delay: 0.16s; }
+.js-enabled .benefit-icon:nth-child(4n + 4) { transition-delay: 0.24s; }
+
+/* Capas de parallax */
+[data-parallax] { will-change: transform; }
+
+/* Evita que las capas que sobresalen generen scroll horizontal */
+.hero { overflow: hidden; }
+
+/* El fondo del hero se extiende para poder desplazarse sin dejar huecos */
+.hero__bg { inset: -20% 0; }
+
+/* Halo dorado decorativo detrás del titular */
+.hero__glow {
+  position: absolute;
+  top: -8%;
+  left: -10%;
+  width: 48vw;
+  height: 48vw;
+  max-width: 640px;
+  max-height: 640px;
+  background: radial-gradient(circle at center, rgba(215, 163, 7, 0.28), rgba(215, 163, 7, 0) 68%);
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+/* Parallax interno de las imágenes del catálogo */
+.course-card__image img {
+  position: relative;
+  height: 124%;
+  top: -12%;
+}
+
+/* Entrada del hero al cargar */
+.js-enabled .hero__text > * {
+  animation: heroRise 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+}
+.js-enabled .hero__text > *:nth-child(1) { animation-delay: 0.06s; }
+.js-enabled .hero__text > *:nth-child(2) { animation-delay: 0.14s; }
+.js-enabled .hero__text > *:nth-child(3) { animation-delay: 0.22s; }
+.js-enabled .hero__text > *:nth-child(4) { animation-delay: 0.3s; }
+.js-enabled .hero__text > *:nth-child(5) { animation-delay: 0.38s; }
+.js-enabled .hero__text > *:nth-child(6) { animation-delay: 0.46s; }
+.js-enabled .hero__card-inner {
+  animation: heroRise 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.34s backwards;
+}
+@keyframes heroRise {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ajuste del escalonado en pantallas menores */
+@media (max-width: 980px) {
+  .js-enabled #catalog-courses .course-card:nth-child(3n + 2),
+  .js-enabled #catalog-courses .course-card:nth-child(3n + 3) { transition-delay: 0s; }
+  .js-enabled #catalog-courses .course-card:nth-child(2n) { transition-delay: 0.08s; }
+  .js-enabled .benefit-icon:nth-child(4n + 2),
+  .js-enabled .benefit-icon:nth-child(4n + 3),
+  .js-enabled .benefit-icon:nth-child(4n + 4) { transition-delay: 0s; }
+  .js-enabled .benefit-icon:nth-child(2n) { transition-delay: 0.08s; }
+}
+
+@media (max-width: 640px) {
+  .js-enabled #catalog-courses .course-card,
+  .js-enabled .benefit-icon,
+  .js-enabled .why-item { transition-delay: 0s !important; }
+}
+
+/* ==========================================================================
+   Imágenes 2026 — Tilt 3D, reflejo y animaciones ligadas al scroll
+   ========================================================================== */
+
+/* Perspectiva en la tarjeta: el giro de la imagen gana profundidad real */
+.catalog-card { perspective: 900px; }
+
+/* Tilt 3D de la imagen del curso.
+   Sin transition: el giro lo interpola JavaScript, porque una transición CSS aquí
+   entra en conflicto con la animación ligada al scroll del mismo elemento. */
+.catalog-card .course-card__image {
+  transform: rotateX(0deg) rotateY(0deg) scale(1.05);
+}
+
+/* Reflejo que sigue al cursor */
+.course-card__glare {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.4),
+    rgba(255, 255, 255, 0) 55%
+  );
+}
+.catalog-card .course-card__image:hover .course-card__glare { opacity: 1; }
+
+/* La etiqueta de categoría queda por encima del reflejo */
+.catalog-card .course-card__badge { z-index: 2; }
+
+/* Animaciones ligadas al scroll: nativas del navegador, sin JavaScript */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .catalog-card .course-card__image {
+      animation: imageWipe linear both;
+      animation-timeline: view();
+      animation-range: entry 4% cover 34%;
+    }
+    .catalog-card .course-card__image img {
+      animation: imageSettle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 48%;
+    }
+  }
+}
+
+/* La imagen se descubre de arriba hacia abajo */
+@keyframes imageWipe {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* La imagen se asienta dentro de su marco */
+@keyframes imageSettle {
+  from { transform: scale(1.14) translateY(-2%); }
+  to { transform: scale(1) translateY(0); }
+}
+
+/* Sin movimiento: imagen entera, sin giro ni reflejo */
+@media (prefers-reduced-motion: reduce) {
+  .catalog-card .course-card__image { transform: none; }
+  .catalog-card .course-card__image img { animation: none; }
+  .course-card__glare { display: none; }
+}
+
+/* ==========================================================================
+   Movimiento Apple — toda la landing
+   Tokens: la curva de Apple (spring suave, sin rebote) y una de entrada.
+   ========================================================================== */
+:root {
+  --ease-apple: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-apple-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Scroll suave y consistente */
+html { scroll-behavior: smooth; }
+
+/* — Apariciones: sustituyen al reveal anterior con la curva Apple — */
+.js-enabled .reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(0.985);
+  transition:
+    opacity 0.9s var(--ease-apple-out),
+    transform 0.9s var(--ease-apple-out);
+  will-change: opacity, transform;
+}
+.js-enabled .reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* La barra dorada de cada sección crece al aparecer (detalle de composición) */
+.section__bar {
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.8s var(--ease-apple) 0.25s;
+}
+.reveal.is-visible .section__bar,
+.section__header.is-visible .section__bar {
+  transform: scaleX(1);
+}
+
+/* — Botones: presión táctil, respuesta inmediata y salida suave — */
+.button, .nav-wa, .hero__card-inner .button {
+  transition:
+    transform 0.45s var(--ease-apple),
+    box-shadow 0.45s var(--ease-apple),
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+.button:active, .nav-wa:active { transform: scale(0.96); transition-duration: 0.08s; }
+.button:hover { transform: translateY(-1px); }
+
+/* Botón primario con brillo que barre al pasar el cursor (sheen) */
+.button.primary, .button.gold { position: relative; overflow: hidden; }
+.button.primary::after, .button.gold::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255,255,255,0.28), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.7s var(--ease-apple);
+  pointer-events: none;
+}
+.button.primary:hover::after, .button.gold:hover::after { left: 130%; }
+
+/* — Tarjetas: elevación flotante con la curva Apple — */
+.why-item,
+.benefit-icon,
+.testimonial-card,
+.course-card,
+.hero__card-inner {
+  transition:
+    transform 0.6s var(--ease-apple),
+    box-shadow 0.6s var(--ease-apple),
+    border-color 0.4s ease;
+}
+.why-item:hover,
+.benefit-icon:hover,
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -14px rgba(0, 0, 0, 0.22);
+}
+
+/* Iconos de beneficios: micro-escala al pasar el cursor */
+.benefit-icon i, .why-item i { transition: transform 0.5s var(--ease-apple); }
+.benefit-icon:hover i, .why-item:hover i { transform: scale(1.12); }
+
+/* Imagen de curso: zoom mínimo al pasar el cursor */
+.course-card__image img {
+  transition: transform 0.8s var(--ease-apple);
+}
+.course-card:hover .course-card__image img { transform: scale(1.05) !important; }
+
+/* — Header: fondo más sólido al hacer scroll (profundidad al estilo Apple) — */
+.header-scrolled { box-shadow: 0 1px 0 var(--border), 0 8px 24px -16px rgba(0,0,0,0.25); }
+
+/* — Footer: aparición suave del bloque completo — */
+.footer { animation: footerIn 1s var(--ease-apple-out) both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+@supports not (animation-timeline: view()) {
+  .footer { animation: none; }
+}
+@keyframes footerIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* — Movimiento reducido: todo estático, como manda el criterio — */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .button.primary::after, .button.gold::after { display: none; }
+  .footer { animation: none; }
+  .why-item:hover, .benefit-icon:hover, .course-card:hover { transform: none; }
+  .section__bar { transform: none; transition: none; }
 }

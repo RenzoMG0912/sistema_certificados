@@ -4,23 +4,29 @@ document.body.classList.add('js-enabled');
 (() => {
   const html = document.documentElement;
   const toggle = document.getElementById('theme-toggle');
-  const icon = toggle ? toggle.querySelector('i') : null;
-  const saved = localStorage.getItem('theme');
-  const isDark = saved === 'dark';
 
-  if (isDark) {
-    html.setAttribute('data-theme', 'dark');
-    if (icon) { icon.className = 'fa-solid fa-sun'; }
-    if (toggle) { toggle.title = 'Modo claro'; }
-  }
+  let saved = null;
+  try { saved = localStorage.getItem('theme'); } catch (e) { saved = null; }
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = saved ? saved === 'dark' : prefersDark;
+
+  // El tema ya puede venir aplicado desde un script inline pre-paint; aquí solo
+  // lo sincronizamos y actualizamos el icono del botón.
+  const syncToggle = (dark) => {
+    if (!toggle) return;
+    toggle.setAttribute('aria-checked', dark ? 'true' : 'false');
+    toggle.title = dark ? 'Modo claro' : 'Modo oscuro';
+  };
+
+  html.setAttribute('data-theme', isDark ? 'dark' : '');
+  syncToggle(isDark);
 
   if (toggle) {
     toggle.addEventListener('click', () => {
       const now = html.getAttribute('data-theme') === 'dark';
       html.setAttribute('data-theme', now ? '' : 'dark');
-      localStorage.setItem('theme', now ? 'light' : 'dark');
-      if (icon) { icon.className = now ? 'fa-solid fa-moon' : 'fa-solid fa-sun'; }
-      toggle.title = now ? 'Modo oscuro' : 'Modo claro';
+      try { localStorage.setItem('theme', now ? 'light' : 'dark'); } catch (e) { /* sin almacenamiento */ }
+      syncToggle(!now);
     });
   }
 })();
@@ -113,12 +119,15 @@ const initPage = () => {
     ticking = false;
   };
 
+  const header = document.querySelector('.nav');
   window.addEventListener('scroll', () => {
     if (!ticking) {
       window.requestAnimationFrame(updateActiveOnScroll);
       ticking = true;
     }
-  });
+    // Profundidad: el header gana sombra al abandonar el top
+    if (header) header.classList.toggle('header-scrolled', window.scrollY > 8);
+  }, { passive: true });
   window.addEventListener('resize', updateActiveOnScroll);
   updateActiveOnScroll();
 

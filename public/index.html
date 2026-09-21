@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#b3000a">
   <title>TEAM HSEC - Capacitación en Seguridad Industrial</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,11 +15,31 @@
   <link rel="stylesheet" href="/assets/css/landing.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="icon" type="image/x-icon" href="img/favicon_teamhsec.ico">
+  <script>
+    // Aplica el tema antes del primer paint para evitar el parpadeo (FOUC).
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var dark = saved ? saved === 'dark' : prefersDark;
+        if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+      } catch (e) { /* almacenamiento no disponible */ }
+    })();
+  </script>
 </head>
 
 <body>
   <script>document.body.classList.add('js-loading');</script>
   <script>window.onpageshow = (e) => { if (e.persisted) location.reload(); };</script>
+  <script>
+    // Red de seguridad: si app.js no llega a cargar, mostramos la página igual.
+    setTimeout(function () { document.body.classList.remove('js-loading'); }, 2500);
+  </script>
+  <noscript>
+    <style>
+      body.js-loading { opacity: 1 !important; }
+    </style>
+  </noscript>
 
   <!-- Top bar -->
   <div class="top-info">
@@ -39,6 +60,9 @@
     <div class="container nav">
       <a href="#inicio" class="logo">
         <img class="logo-img" src="img/logo_teamhsec.webp" alt="TEAM HSEC">
+        <div class="logo-text">
+          <h2>TEAM HSEC</h2>
+        </div>
       </a>
       <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
         <i class="fa-solid fa-bars"></i>
@@ -54,8 +78,10 @@
         <a href="/login" class="button outline nav-platform">
           <i class="fa-solid fa-right-to-bracket"></i> Ingresar a la plataforma
         </a>
-        <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">
-          <i class="fa-solid fa-moon"></i>
+        <button class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">
+          <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"><i class="fa-solid fa-sun"></i></span>
+          <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"><i class="fa-solid fa-moon"></i></span>
+          <span class="theme-toggle__knob" aria-hidden="true"></span>
         </button>
       </div>
     </div>
@@ -64,26 +90,35 @@
   <main>
     <!-- Hero -->
     <section class="hero" id="inicio">
-      <div class="hero__bg">
+      <div class="hero__glow" data-parallax="0.22" aria-hidden="true"></div>
+      <div class="hero__bg" data-parallax="0.12">
         <div class="hero__slide slide-1"></div>
         <div class="hero__slide slide-2"></div>
         <div class="hero__slide slide-3"></div>
         <div class="hero__slide slide-4"></div>
       </div>
       <div class="container hero__content">
-        <div class="hero__text">
+        <div class="hero__text" data-parallax="-0.05" data-parallax-min="980">
           <p class="badge">Capacítate • Crece • Impacta</p>
           <h1>Especialízate y adquiere mejores <span class="text-gold">oportunidades laborales</span></h1>
           <p>
             TEAM HSEC ofrece cursos profesionales y actualizados con enfoque práctico
             para impulsar tu perfil y abrir nuevas oportunidades en el mercado laboral.
           </p>
-          <div class="hero__stats">
-            <div class="hero__stat"><i class="fa-solid fa-users"></i><span>+5000 alumnos capacitados</span></div>
-          </div>
+          <ul class="hero__trust">
+            <li><i class="fa-solid fa-circle-check"></i> Certificados QR verificables</li>
+            <li><i class="fa-solid fa-circle-check"></i> Docentes certificados</li>
+            <li><i class="fa-solid fa-circle-check"></i> Aval del Colegio de Ingenieros</li>
+          </ul>
           <div class="actions">
             <a class="button gold" href="#cursos">Ver cursos</a>
             <a class="button outline-red" href="/certificados">Validar certificado</a>
+          </div>
+          <div class="hero__dots" aria-hidden="true">
+            <svg viewBox="0 0 26 4" class="dot-progress is-active"><rect class="dot-track" x="0" y="0" width="26" height="4" rx="2"/><rect class="dot-fill" x="0" y="0" width="26" height="4" rx="2"/></svg>
+            <svg viewBox="0 0 26 4" class="dot-progress"><rect class="dot-track" x="0" y="0" width="26" height="4" rx="2"/><rect class="dot-fill" x="0" y="0" width="26" height="4" rx="2"/></svg>
+            <svg viewBox="0 0 26 4" class="dot-progress"><rect class="dot-track" x="0" y="0" width="26" height="4" rx="2"/><rect class="dot-fill" x="0" y="0" width="26" height="4" rx="2"/></svg>
+            <svg viewBox="0 0 26 4" class="dot-progress"><rect class="dot-track" x="0" y="0" width="26" height="4" rx="2"/><rect class="dot-fill" x="0" y="0" width="26" height="4" rx="2"/></svg>
           </div>
         </div>
 
@@ -93,24 +128,24 @@
     <!-- Stats bar -->
     <section class="stats-bar">
       <div class="container stats-bar__grid">
-        <div class="stats-bar__item">
+        <div class="stats-bar__item reveal">
           <i class="fa-solid fa-users"></i>
-          <strong>+5000</strong>
+          <strong class="stat-count" data-count="5000" data-prefix="+">+5000</strong>
           <span>Alumnos capacitados</span>
         </div>
-        <div class="stats-bar__item">
+        <div class="stats-bar__item reveal">
           <i class="fa-solid fa-book-open"></i>
-          <strong>+150</strong>
+          <strong class="stat-count" data-count="150" data-prefix="+">+150</strong>
           <span>Cursos impartidos</span>
         </div>
-        <div class="stats-bar__item">
+        <div class="stats-bar__item reveal">
           <i class="fa-solid fa-star"></i>
-          <strong>98%</strong>
+          <strong class="stat-count" data-count="98" data-suffix="%">98%</strong>
           <span>Satisfacción</span>
         </div>
-        <div class="stats-bar__item">
+        <div class="stats-bar__item reveal">
           <i class="fa-solid fa-award"></i>
-          <strong>+10</strong>
+          <strong class="stat-count" data-count="10" data-prefix="+">+10</strong>
           <span>Años de experiencia</span>
         </div>
       </div>
@@ -120,6 +155,7 @@
     <section class="section soft" id="nosotros">
       <div class="container why-split">
         <div class="why-split__text reveal">
+          <p class="section__eyebrow">Sobre nosotros</p>
           <h2>¿Por qué elegir <span class="text-red">TEAM HSEC</span>?</h2>
           <p>
             Somos una empresa de capacitación especializada en seguridad minera, industrial y ocupacional.
@@ -128,20 +164,20 @@
           </p>
           <a href="#contacto" class="button gold">Conócenos más</a>
         </div>
-        <div class="why-grid reveal is-visible">
-          <div class="why-item"><i class="fa-solid fa-hard-hat"></i>
+        <div class="why-grid">
+          <div class="why-item reveal"><i class="fa-solid fa-hard-hat"></i>
             <h4>Especialistas en seguridad industrial</h4>
           </div>
-          <div class="why-item"><i class="fa-solid fa-qrcode"></i>
+          <div class="why-item reveal"><i class="fa-solid fa-qrcode"></i>
             <h4>Certificados QR verificables</h4>
           </div>
-          <div class="why-item"><i class="fa-solid fa-user-graduate"></i>
+          <div class="why-item reveal"><i class="fa-solid fa-user-graduate"></i>
             <h4>Docentes certificados</h4>
           </div>
-          <div class="why-item"><i class="fa-solid fa-book-open"></i>
+          <div class="why-item reveal"><i class="fa-solid fa-book-open"></i>
             <h4>Cursos actualizados</h4>
           </div>
-          <div class="why-item"><i class="fa-solid fa-headset"></i>
+          <div class="why-item reveal"><i class="fa-solid fa-headset"></i>
             <h4>Atención personalizada</h4>
           </div>
         </div>
@@ -152,21 +188,22 @@
     <section class="section benefits-row reveal">
       <div class="container">
         <div class="section__header">
+          <p class="section__eyebrow">Ventajas</p>
           <h2>Beneficios</h2>
           <div class="section__bar"></div>
         </div>
         <div class="benefits-icons">
-          <div class="benefit-icon"><i class="fa-solid fa-qrcode"></i><span>Certificados QR</span>
+          <div class="benefit-icon reveal"><i class="fa-solid fa-qrcode"></i><span>Certificados QR</span>
             <p class="benefit-icon__desc">Verificables al instante</p>
           </div>
-          <div class="benefit-icon"><i class="fa-solid fa-user-tie"></i><span>Docentes especialistas</span>
+          <div class="benefit-icon reveal"><i class="fa-solid fa-user-tie"></i><span>Docentes especialistas</span>
             <p class="benefit-icon__desc">Con amplia experiencia</p>
           </div>
-          <div class="benefit-icon"><img src="img/cip.webp" alt="CIP" class="benefit-icon__logo"><span>Colegio de
+          <div class="benefit-icon reveal"><img src="img/cip.webp" alt="CIP" class="benefit-icon__logo"><span>Colegio de
               Ingenieros</span>
             <p class="benefit-icon__desc">Aval institucional</p>
           </div>
-          <div class="benefit-icon"><i class="fa-solid fa-headset"></i><span>Soporte 24/7</span>
+          <div class="benefit-icon reveal"><i class="fa-solid fa-headset"></i><span>Soporte 24/7</span>
             <p class="benefit-icon__desc">Siempre contigo</p>
           </div>
         </div>
@@ -177,8 +214,10 @@
     <section class="section soft" id="cursos">
       <div class="container">
         <div class="section__header">
+          <p class="section__eyebrow">Catálogo</p>
           <h2>Catálogo de <span class="text-red">cursos</span></h2>
           <div class="section__bar"></div>
+          <p class="section__subtitle">Cursos con certificado QR verificable. Consulta el próximo inicio de cada uno.</p>
         </div>
         <div class="filters">
           <input type="text" id="course-search" placeholder="Buscar cursos por título...">
@@ -190,177 +229,230 @@
           </select>
         </div>
         <div class="grid grid--3" id="catalog-courses">
-          <article class="course-card catalog-card" data-course="equipos-moviles" data-category="Operaciones"
-            data-title="equipos moviles manejo llantas">
+
+          <article class="course-card catalog-card reveal" data-course="equipos-moviles" data-category="Operaciones"
+            data-title="Equipos móviles / Manejo de llantas" data-duration="2 horas" data-date="19 Ago 2026"
+            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+            data-summary="Capacitación sobre operación segura de equipos móviles y procedimientos adecuados para el manejo y cambio de llantas en entornos mineros.">
             <div class="course-card__image">
-              <img src="img/landing_page/equipos_moviles.webp" alt="Equipos móviles">
+              <img src="img/landing_page/equipos_moviles.webp" alt="Equipos móviles" loading="lazy" width="600"
+                height="400">
+              <span class="course-card__badge">Operaciones</span>
             </div>
             <div class="course-card__body">
               <h3>Equipos móviles / Manejo de llantas</h3>
               <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                   class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
               <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> 19 Ago 2026</li>
+                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 19 Ago 2026</li>
                 <li><i class="fa-regular fa-clock"></i> 2 horas</li>
               </ul>
-
               <div class="course-card__actions">
-                <button class="button ghost" data-course="equipos-moviles">Más información</button>
+                <button class="button ghost" type="button" data-course="equipos-moviles">Más información</button>
               </div>
             </div>
           </article>
-          <article class="course-card catalog-card" data-course="trabajo-altura" data-category="Seguridad"
-            data-title="trabajo altura plataforma elevada">
+
+          <article class="course-card catalog-card reveal" data-course="trabajo-altura" data-category="Seguridad"
+            data-title="Trabajo en altura y plataforma elevada" data-duration="4 horas" data-date="26 Ago 2026"
+            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+            data-summary="Curso enfocado en el uso seguro de trabajos en altura, líneas de vida, arneses y plataformas elevadas, reduciendo riesgos de caídas y accidentes laborales.">
             <div class="course-card__image">
-              <img src="img/landing_page/trabajo_altura.webp" alt="Trabajo en altura">
+              <img src="img/landing_page/trabajo_altura.webp" alt="Trabajo en altura" loading="lazy" width="600"
+                height="400">
+              <span class="course-card__badge">Seguridad</span>
             </div>
             <div class="course-card__body">
               <h3>Trabajo en altura y plataforma elevada</h3>
               <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                   class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
               <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> 26 Ago 2026</li>
+                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 26 Ago 2026</li>
                 <li><i class="fa-regular fa-clock"></i> 4 horas</li>
               </ul>
-
               <div class="course-card__actions">
-                <button class="button ghost" data-course="trabajo-altura">Más información</button>
+                <button class="button ghost" type="button" data-course="trabajo-altura">Más información</button>
               </div>
             </div>
           </article>
-          <article class="course-card catalog-card" data-course="respuesta-emergencias" data-category="Seguridad"
-            data-title="respuesta emergencias">
+
+          <article class="course-card catalog-card reveal" data-course="respuesta-emergencias" data-category="Seguridad"
+            data-title="Respuesta a emergencias" data-duration="2 horas" data-date="02 Sep 2026"
+            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+            data-summary="Capacitación orientada a preparar al personal para actuar correctamente ante emergencias, evacuaciones, incidentes y situaciones de riesgo dentro de operaciones mineras e industriales.">
             <div class="course-card__image">
-              <img src="img/landing_page/respuesta_emergencias.webp" alt="Respuesta a emergencias">
+              <img src="img/landing_page/respuesta_emergencias.webp" alt="Respuesta a emergencias" loading="lazy"
+                width="600" height="400">
+              <span class="course-card__badge">Seguridad</span>
             </div>
             <div class="course-card__body">
               <h3>Respuesta a emergencias</h3>
               <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                   class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
               <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> 02 Sep 2026</li>
+                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 02 Sep 2026</li>
                 <li><i class="fa-regular fa-clock"></i> 2 horas</li>
               </ul>
-
               <div class="course-card__actions">
-                <button class="button ghost" data-course="respuesta-emergencias">Más información</button>
+                <button class="button ghost" type="button" data-course="respuesta-emergencias">Más información</button>
               </div>
             </div>
           </article>
-          <article class="course-card catalog-card" data-course="sustancias-quimicas" data-category="Salud Ocupacional"
-            data-title="sustancias quimicas">
+
+          <article class="course-card catalog-card reveal" data-course="sustancias-quimicas" data-category="Salud Ocupacional"
+            data-title="Sustancias químicas" data-duration="2 horas" data-date="09 Sep 2026"
+            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+            data-summary="Capacitación para la manipulación segura de sustancias químicas, lectura de hojas MSDS y control de riesgos químicos en el trabajo.">
             <div class="course-card__image">
-              <img src="img/landing_page/sustancias_quimicas.webp" alt="Sustancias químicas">
+              <img src="img/landing_page/sustancias_quimicas.webp" alt="Sustancias químicas" loading="lazy" width="600"
+                height="400">
+              <span class="course-card__badge">Salud Ocupacional</span>
             </div>
             <div class="course-card__body">
               <h3>Sustancias químicas</h3>
               <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                   class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
               <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> 09 Sep 2026</li>
+                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 09 Sep 2026</li>
                 <li><i class="fa-regular fa-clock"></i> 2 horas</li>
               </ul>
-
               <div class="course-card__actions">
-                <button class="button ghost" data-course="sustancias-quimicas">Más información</button>
+                <button class="button ghost" type="button" data-course="sustancias-quimicas">Más información</button>
               </div>
             </div>
           </article>
-          <article class="course-card catalog-card" data-course="herramientas-manuales" data-category="Operaciones"
-            data-title="herramientas manuales poder">
+
+          <article class="course-card catalog-card reveal" data-course="herramientas-manuales" data-category="Operaciones"
+            data-title="Herramientas manuales y de poder" data-duration="2 horas" data-date="16 Sep 2026"
+            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+            data-summary="Curso enfocado en el uso seguro, inspección y mantenimiento básico de herramientas manuales y eléctricas utilizadas en operaciones industriales.">
             <div class="course-card__image">
-              <img src="img/landing_page/herramientas_manuales.webp" alt="Herramientas manuales">
+              <img src="img/landing_page/herramientas_manuales.webp" alt="Herramientas manuales" loading="lazy"
+                width="600" height="400">
+              <span class="course-card__badge">Operaciones</span>
             </div>
             <div class="course-card__body">
               <h3>Herramientas manuales y de poder</h3>
               <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                   class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
               <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> 16 Sep 2026</li>
+                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 16 Sep 2026</li>
                 <li><i class="fa-regular fa-clock"></i> 2 horas</li>
               </ul>
-
               <div class="course-card__actions">
-                <button class="button ghost" data-course="herramientas-manuales">Más información</button>
+                <button class="button ghost" type="button" data-course="herramientas-manuales">Más información</button>
               </div>
             </div>
           </article>
-          <article class="course-card catalog-card" data-course="incendio-explosion" data-category="Seguridad"
-            data-title="incendio explosion">
+
+          <article class="course-card catalog-card reveal" data-course="incendio-explosion" data-category="Seguridad"
+            data-title="Incendio y explosión" data-duration="2 horas" data-date="23 Sep 2026"
+            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+            data-summary="Capacitación sobre prevención, control y respuesta ante incendios y explosiones en áreas industriales y mineras.">
             <div class="course-card__image">
-              <img src="img/landing_page/incendio_explosion.webp" alt="Incendio y explosión">
+              <img src="img/landing_page/incendio_explosion.webp" alt="Incendio y explosión" loading="lazy" width="600"
+                height="400">
+              <span class="course-card__badge">Seguridad</span>
             </div>
             <div class="course-card__body">
               <h3>Incendio y explosión</h3>
               <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                   class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
               <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> 23 Sep 2026</li>
+                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 23 Sep 2026</li>
                 <li><i class="fa-regular fa-clock"></i> 2 horas</li>
               </ul>
-
               <div class="course-card__actions">
-                <button class="button ghost" data-course="incendio-explosion">Más información</button>
+                <button class="button ghost" type="button" data-course="incendio-explosion">Más información</button>
               </div>
             </div>
           </article>
-          <article class="course-card catalog-card" data-course="elevacion-izaje" data-category="Operaciones"
-            data-title="elevacion izaje cargas">
+
+          <article class="course-card catalog-card reveal" data-course="elevacion-izaje" data-category="Operaciones"
+            data-title="Elevación / izaje de carga" data-duration="2 horas" data-date="30 Sep 2026"
+            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+            data-summary="Curso orientado al manejo seguro de maniobras de izaje, uso de accesorios y control de cargas para prevenir incidentes operacionales.">
             <div class="course-card__image">
-              <img src="img/landing_page/izaje_cargas.webp" alt="Izaje de cargas">
+              <img src="img/landing_page/izaje_cargas.webp" alt="Izaje de cargas" loading="lazy" width="600"
+                height="400">
+              <span class="course-card__badge">Operaciones</span>
             </div>
             <div class="course-card__body">
               <h3>Elevación / izaje de carga</h3>
               <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                   class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
               <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> 30 Sep 2026</li>
+                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 30 Sep 2026</li>
                 <li><i class="fa-regular fa-clock"></i> 2 horas</li>
               </ul>
-
               <div class="course-card__actions">
-                <button class="button ghost" data-course="elevacion-izaje">Más información</button>
+                <button class="button ghost" type="button" data-course="elevacion-izaje">Más información</button>
               </div>
             </div>
           </article>
-          <article class="course-card catalog-card" data-course="seguridad-electrica" data-category="Seguridad"
-            data-title="seguridad electrica">
+
+          <article class="course-card catalog-card reveal" data-course="seguridad-electrica" data-category="Seguridad"
+            data-title="Seguridad eléctrica" data-duration="3 horas" data-date="07 Oct 2026"
+            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+            data-summary="Capacitación enfocada en la prevención de accidentes eléctricos, identificación de riesgos y aplicación de medidas de protección en trabajos eléctricos.">
             <div class="course-card__image">
-              <img src="img/landing_page/seguridad_electrica.webp" alt="Seguridad eléctrica">
+              <img src="img/landing_page/seguridad_electrica.webp" alt="Seguridad eléctrica" loading="lazy" width="600"
+                height="400">
+              <span class="course-card__badge">Seguridad</span>
             </div>
             <div class="course-card__body">
               <h3>Seguridad eléctrica</h3>
               <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                   class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
               <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> 07 Oct 2026</li>
+                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 07 Oct 2026</li>
                 <li><i class="fa-regular fa-clock"></i> 3 horas</li>
               </ul>
-
               <div class="course-card__actions">
-                <button class="button ghost" data-course="seguridad-electrica">Más información</button>
+                <button class="button ghost" type="button" data-course="seguridad-electrica">Más información</button>
               </div>
             </div>
           </article>
-          <article class="course-card catalog-card" data-course="aislamiento-bloqueo" data-category="Seguridad"
-            data-title="aislamiento bloqueo loto">
+
+          <article class="course-card catalog-card reveal" data-course="aislamiento-bloqueo" data-category="Seguridad"
+            data-title="Aislamiento y bloqueo" data-duration="3 horas" data-date="14 Oct 2026"
+            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+            data-summary="Curso diseñado para aplicar procedimientos LOTO (Lockout/Tagout), asegurando el aislamiento de energías peligrosas durante mantenimientos y reparaciones.">
             <div class="course-card__image">
-              <img src="img/landing_page/aislamiento_bloqueo.webp" alt="Aislamiento y bloqueo">
+              <img src="img/landing_page/aislamiento_bloqueo.webp" alt="Aislamiento y bloqueo" loading="lazy"
+                width="600" height="400">
+              <span class="course-card__badge">Seguridad</span>
             </div>
             <div class="course-card__body">
               <h3>Aislamiento y bloqueo</h3>
               <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                   class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
               <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> 14 Oct 2026</li>
+                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 14 Oct 2026</li>
                 <li><i class="fa-regular fa-clock"></i> 3 horas</li>
               </ul>
-
               <div class="course-card__actions">
-                <button class="button ghost" data-course="aislamiento-bloqueo">Más información</button>
+                <button class="button ghost" type="button" data-course="aislamiento-bloqueo">Más información</button>
               </div>
             </div>
           </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA de cierre -->
+    <section class="cta-band reveal">
+      <div class="container cta-band__inner">
+        <div class="cta-band__text">
+          <h2>¿Listo para tu próxima certificación?</h2>
+          <p>Escríbenos y te ayudamos a elegir el curso ideal para tu perfil profesional.</p>
+        </div>
+        <div class="cta-band__actions">
+          <a class="button gold"
+            href="https://wa.me/51992809049?text=Hola%2C%20quiero%20informaci%C3%B3n%20para%20certificarme%20con%20TEAM%20HSEC"
+            target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Hablar por WhatsApp</a>
+          <a class="button outline-red" href="#contacto">Solicitar información</a>
         </div>
       </div>
     </section>
@@ -369,13 +461,12 @@
     <section class="section testimonials reveal" id="testimonios">
       <div class="container">
         <div class="section__header">
+          <p class="section__eyebrow">Testimonios</p>
           <h2>Testimonios</h2>
           <div class="section__bar"></div>
           <p class="section__subtitle">Lo que dicen nuestros alumnos</p>
         </div>
         <div class="testimonials__wrapper">
-          <button class="testimonials__nav testimonials__prev" aria-label="Anterior"><i
-              class="fa-solid fa-chevron-left"></i></button>
           <div class="testimonials__track" id="testimonials-track">
             <article class="testimonial-card">
               <div class="testimonial-card__avatar">CM</div>
@@ -405,8 +496,6 @@
                 post-capacitación es muy bueno."</blockquote>
             </article>
           </div>
-          <button class="testimonials__nav testimonials__next" aria-label="Siguiente"><i
-              class="fa-solid fa-chevron-right"></i></button>
         </div>
       </div>
     </section>
@@ -415,16 +504,17 @@
     <section class="section partners reveal">
       <div class="container">
         <div class="section__header">
+          <p class="section__eyebrow">Confianza</p>
           <h2>Empresas que confían en nosotros</h2>
           <div class="section__bar"></div>
         </div>
         <div class="partners__logos" id="partners-track">
-          <img src="img/landing_page/empresa1.png" alt="Empresa aliada 1">
-          <img src="img/landing_page/empresa2.png" alt="Empresa aliada 2">
-          <img src="img/landing_page/empresa3.png" alt="Empresa aliada 3">
-          <img src="img/landing_page/empresa4.png" alt="Empresa aliada 4">
-          <img src="img/landing_page/empresa5.png" alt="Empresa aliada 5">
-          <img src="img/landing_page/empresa6.png" alt="Empresa aliada 6">
+          <img src="img/landing_page/empresa1.png" alt="Empresa aliada 1" loading="lazy">
+          <img src="img/landing_page/empresa2.png" alt="Empresa aliada 2" loading="lazy">
+          <img src="img/landing_page/empresa3.png" alt="Empresa aliada 3" loading="lazy">
+          <img src="img/landing_page/empresa4.png" alt="Empresa aliada 4" loading="lazy">
+          <img src="img/landing_page/empresa5.png" alt="Empresa aliada 5" loading="lazy">
+          <img src="img/landing_page/empresa6.png" alt="Empresa aliada 6" loading="lazy">
         </div>
       </div>
     </section>
@@ -433,6 +523,7 @@
     <section class="section soft contact-section" id="contacto">
       <div class="container">
         <div class="section__header">
+          <p class="section__eyebrow">Contacto</p>
           <h2>Contacta con <span class="text-red">nosotros</span></h2>
           <div class="section__bar"></div>
         </div>
@@ -469,17 +560,16 @@
                   class="fa-brands fa-whatsapp"></i></a>
             </div>
           </div>
+        </div>
 
-          <div class="contact-map">
-            <iframe title="Ubicación TEAM HSEC"
-              src="https://maps.google.com/maps?q=Haras+de+Huampani+Ate+Lima&hl=es&z=15&output=embed" loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
-            </iframe>
-            <a href="https://maps.app.goo.gl/ATDnvth3KC1fwMaP7" target="_blank" rel="noopener"
-              class="contact-map__link">
-              <i class="fa-solid fa-map-location-dot"></i> Abrir en Google Maps
-            </a>
-          </div>
+        <div class="contact-map">
+          <iframe title="Ubicación TEAM HSEC"
+            src="https://maps.google.com/maps?q=Haras+de+Huampani+Ate+Lima&hl=es&z=15&output=embed" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
+          </iframe>
+          <a href="https://maps.app.goo.gl/ATDnvth3KC1fwMaP7" target="_blank" rel="noopener" class="contact-map__link">
+            <i class="fa-solid fa-map-location-dot"></i> Abrir en Google Maps
+          </a>
         </div>
       </div>
     </section>
@@ -526,10 +616,6 @@
   <div class="footer-copy">
     <div class="container footer-copy__row">
       <span>© 2026 TEAM HSEC E.I.R.L. Todos los derechos reservados.</span>
-      <span class="footer-copy__legal">
-        <a href="#">Política de privacidad</a>
-        <a href="#">Términos y condiciones</a>
-      </span>
     </div>
   </div>
 
@@ -549,6 +635,17 @@
     <i class="fa-brands fa-whatsapp"></i>
   </a>
 
+  <!-- Barra de acción móvil -->
+  <div class="mobile-cta">
+    <a class="mobile-cta__wa" href="https://wa.me/51992809049?text=Hola,%20quiero%20información%20sobre%20cursos%20de%20TEAM%20HSEC"
+      target="_blank" rel="noopener">
+      <i class="fa-brands fa-whatsapp"></i> WhatsApp
+    </a>
+    <a class="mobile-cta__courses" href="#cursos">
+      <i class="fa-solid fa-book-open"></i> Ver cursos
+    </a>
+  </div>
+
   <!-- Modal curso -->
   <div class="modal" id="course-modal" aria-hidden="true">
     <div class="modal__backdrop" data-modal-close></div>
@@ -567,13 +664,12 @@
             <span class="modal__value" id="modal-duration"></span>
           </div>
           <div>
-            <span class="modal__label">Entrenador</span>
-            <span class="modal__value" id="modal-trainer"></span>
-          </div>
-
-          <div>
             <span class="modal__label">Inicio</span>
             <span class="modal__value" id="modal-date"></span>
+          </div>
+          <div>
+            <span class="modal__label">Entrenador</span>
+            <span class="modal__value" id="modal-trainer"></span>
           </div>
         </div>
         <p class="modal__summary" id="modal-summary"></p>

@@ -229,30 +229,81 @@ ul { padding-left: 20px; margin: 0; }
 	position: absolute;
 	inset: 0;
 	opacity: 0;
-	animation: heroSlide 16s infinite;
-	animation-timing-function: ease-in-out;
+	visibility: hidden;
+	animation: heroSlide 20s infinite;
 	background-size: cover;
 	background-position: center;
 	filter: saturate(1.05);
-	will-change: opacity;
+	will-change: opacity, transform, filter, clip-path;
 }
+/* Sombreado original (sin cambios) */
 .hero__slide::after {
 	content: "";
 	position: absolute;
 	inset: 0;
 	background: var(--hero-overlay);
 }
-.slide-1 { background-image: url("/assets/img/pexels-chetanvlad-2892618.webp"); animation-delay: 0s; }
-.slide-2 { background-image: url("/assets/img/colsan-ltda-LMb98OOtoYU-unsplash.webp"); animation-delay: 4s; }
-.slide-3 { background-image: url("/assets/img/ehmitrich-Q3WVbAfdOoY-unsplash.webp"); animation-delay: 8s; }
-.slide-4 { background-image: url("/assets/img/pexels-deyler-rivera-segura-1300296248-29506742.webp"); animation-delay: 12s; }
 
+/* — Efectos distintos por slide (2026) —
+   Cada imagen entra con su propio movimiento; el velo rojo no cambia. */
+
+/* Slide 1 — revelado con cortina: se descubre de abajo hacia arriba con leve zoom. */
+.slide-1 {
+	animation: heroSlide 20s infinite, heroCurtain 20s cubic-bezier(0.32, 0.72, 0, 1) infinite;
+}
+@keyframes heroCurtain {
+	0% { clip-path: inset(100% 0 0 0); transform: scale(1.14); }
+	8% { clip-path: inset(0 0 0 0); transform: scale(1.14); }
+	33% { clip-path: inset(0 0 0 0); transform: scale(1.06); }
+	34%, 100% { clip-path: inset(0 0 0 0); transform: scale(1.06); }
+}
+
+/* Slide 2 — paneo lateral cinematográfico: la cámara atraviesa la imagen (travelling). */
+.slide-2 {
+	animation: heroSlide 20s infinite, heroPan 20s linear infinite;
+	transform: scale(1.3);
+}
+@keyframes heroPan {
+	0% { background-position: 0% 50%; }
+	8% { background-position: 0% 50%; }
+	33% { background-position: 100% 50%; }
+	34%, 100% { background-position: 100% 50%; }
+}
+
+/* Slide 3 — enfoque fotográfico: entra desenfocada y toma nitidez como una cámara. */
+.slide-3 {
+	animation: heroSlide 20s infinite, heroFocus 20s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+@keyframes heroFocus {
+	0% { filter: blur(14px) saturate(1.6) brightness(0.85); transform: scale(1.12); }
+	8% { filter: blur(0px) saturate(1.05) brightness(1); transform: scale(1.12); }
+	33% { filter: blur(0px) saturate(1.05) brightness(1); transform: scale(1.06); }
+	34%, 100% { filter: blur(0px) saturate(1.05) brightness(1); transform: scale(1.06); }
+}
+
+/* Slide 4 — deslizamiento diagonal: entra corriendo en diagonal y se asienta con deriva sutil. */
+.slide-4 {
+	animation: heroSlide 20s infinite, heroDiagonal 20s cubic-bezier(0.32, 0.72, 0, 1) infinite;
+}
+@keyframes heroDiagonal {
+	0% { transform: scale(1.15) translate(-4%, -4%); }
+	8% { transform: scale(1.15) translate(0, 0); }
+	33% { transform: scale(1.08) translate(1.5%, 1%); }
+	34%, 100% { transform: scale(1.08) translate(1.5%, 1%); }
+}
+.slide-1 { background-image: url("/assets/img/pexels-chetanvlad-2892618.webp"); animation-delay: 0s, 0s; }
+.slide-2 { background-image: url("/assets/img/colsan-ltda-LMb98OOtoYU-unsplash.webp"); animation-delay: 5s, 5s; }
+.slide-3 { background-image: url("/assets/img/ehmitrich-Q3WVbAfdOoY-unsplash.webp"); animation-delay: 10s, 10s; }
+.slide-4 { background-image: url("/assets/img/pexels-deyler-rivera-segura-1300296248-29506742.webp"); animation-delay: 15s, 15s; }
+
+/* Ciclo: revelado con zoom, pausa con Ken Burns continuo, salida suave */
 @keyframes heroSlide {
-	0% { opacity: 0; transform: scale(1.04); }
-	6% { opacity: 1; transform: scale(1.02); }
-	24% { opacity: 1; transform: scale(1.01); }
-	32% { opacity: 0; transform: scale(1.04); }
-	100% { opacity: 0; transform: scale(1.04); }
+	0% { opacity: 0; visibility: hidden; }
+	1% { opacity: 0; visibility: visible; }
+	8% { opacity: 1; visibility: visible; }
+	26% { opacity: 1; visibility: visible; }
+	33% { opacity: 0; visibility: visible; }
+	34%, 100% { opacity: 0; visibility: hidden; }
 }
 @keyframes pageFadeIn {
 	from { opacity: 0; }
@@ -1028,4 +1079,77 @@ body.modal-open {
 }
 [data-theme="dark"] .theme-toggle:hover {
   background: var(--bg);
-}
+}
+/* ==========================================================================
+   Toggle de tema — switch deslizante estilo Apple
+   ========================================================================== */
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 66px;
+  height: 36px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: var(--bg-soft, #f1f1f4);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.5s var(--ease-apple, cubic-bezier(0.32, 0.72, 0, 1)),
+    border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.theme-toggle:hover {
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.25);
+  transform: none;
+}
+.theme-toggle__icon {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  font-size: 16px;
+  color: var(--gold);
+  transition: opacity 0.45s var(--ease-apple, ease), transform 0.5s var(--ease-apple, ease), color 0.4s ease;
+}
+.theme-toggle__icon--sun { left: 9px; }
+.theme-toggle__icon--moon { right: 9px; color: var(--red); }
+
+/* Pastilla deslizante — posicionada de forma absoluta: siempre centrada en su lado */
+.theme-toggle__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #ffffff, #e8e8ee);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.06);
+  transition: transform 0.5s var(--ease-apple, cubic-bezier(0.32, 0.72, 0, 1)), background 0.5s ease;
+}
+[data-theme="dark"] .theme-toggle__knob {
+  background: linear-gradient(145deg, #2c2c34, #1d1d24);
+}
+[data-theme="dark"] .theme-toggle { background: rgba(255, 255, 255, 0.08); }
+[data-theme="dark"] .theme-toggle__icon--sun { color: #fbbf24; }
+
+/* Estado oscuro: la pastilla viaja a la derecha (66 - 30 - 2*3 = 30px).
+   Los dos iconos permanecen SIEMPRE visibles: el knob solo indica el modo activo. */
+[data-theme="dark"] .theme-toggle__knob { transform: translateX(30px); }
+
+/* Iconos: amarillo fijo para el sol, rojo para la luna, sin apagarse nunca */
+.theme-toggle__icon--sun { color: #fbbf24; }
+.theme-toggle__icon--moon { color: var(--red); }
+
+/* El icono del modo ACTIVO se agranda levemente; el inactivo queda un punto menor */
+.theme-toggle__icon--sun,
+.theme-toggle__icon--moon { transform: translateY(-50%) scale(1); }
+[data-theme="dark"] .theme-toggle__icon--sun { transform: translateY(-50%) scale(0.8); }
+[data-theme="dark"] .theme-toggle__icon--moon { transform: translateY(-50%) scale(1); }
+.theme-toggle__icon--moon { transform: translateY(-50%) scale(0.8); }
+[data-theme=""] .theme-toggle__icon--sun,
+html:not([data-theme="dark"]) .theme-toggle__icon--sun { transform: translateY(-50%) scale(1); }
+html:not([data-theme="dark"]) .theme-toggle__icon--moon { transform: translateY(-50%) scale(0.8); }

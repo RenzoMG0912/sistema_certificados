@@ -4,681 +4,727 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#b3000a">
-  <title>TEAM HSEC - Capacitación en Seguridad Industrial</title>
+  <meta name="theme-color" content="#f7f4ef">
+  <title>TEAM HSEC — Tu aliado para la seguridad industrial</title>
+  <meta name="description"
+    content="TEAM HSEC: cursos de seguridad minera, industrial y ocupacional con certificados QR verificables.">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Pacifico&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/main.css">
-  <link rel="stylesheet" href="/assets/css/landing.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/assets/css/landing.css">
   <link rel="icon" type="image/x-icon" href="img/favicon_teamhsec.ico">
-  <script>
-    // Aplica el tema antes del primer paint para evitar el parpadeo (FOUC).
-    (function () {
-      try {
-        var saved = localStorage.getItem('theme');
-        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var dark = saved ? saved === 'dark' : prefersDark;
-        if (dark) document.documentElement.setAttribute('data-theme', 'dark');
-      } catch (e) { /* almacenamiento no disponible */ }
-    })();
-  </script>
 </head>
 
 <body>
-  <script>document.body.classList.add('js-loading');</script>
-  <script>window.onpageshow = (e) => { if (e.persisted) location.reload(); };</script>
-  <script>
-    // Red de seguridad: si app.js no llega a cargar, mostramos la página igual.
-    setTimeout(function () { document.body.classList.remove('js-loading'); }, 2500);
-  </script>
-  <noscript>
-    <style>
-      body.js-loading { opacity: 1 !important; }
-    </style>
-  </noscript>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-  <!-- Top bar -->
-  <div class="top-info">
-    <div class="container top-info__row">
-      <div class="top-info__left">
-        <span class="dot"></span>
-        <span>Capacitación especializada en HSEC</span>
-        <span class="sep">|</span>
-        <a href="https://wa.me/51992809049"><i class="icon fa-brands fa-whatsapp"></i>+51 992 809 049</a>
-        <span class="sep">|</span>
-        <a href="mailto:contacto@teamhsec.com"><i class="icon fa-regular fa-envelope"></i>contacto@teamhsec.com</a>
-      </div>
-    </div>
+  <!-- ================= FONDO TRANSFORMABLE ================= -->
+  <div class="bg-wrap" aria-hidden="true">
+    <div class="bg-halo"></div>
+    <div class="bg-mountains"></div>
+    <div class="bg-figure"></div>
+
+    <!-- Cinta superior-izquierda -->
+    <svg class="ribbon ribbon--tr" preserveAspectRatio="none" viewBox="0 0 1440 900">
+      <path class="rb-fill-a" d="M -80 -40 L 700 -60 C 560 130 320 170 -80 240 Z"></path>
+      <path class="rb-fill-b" d="M -80 -40 L 640 -60 C 510 100 280 140 -80 200 Z"></path>
+      <path class="rb-gold ribbon__gold" d="M -80 -30 L 720 -50 C 580 140 330 180 -80 250 Z"></path>
+    </svg>
+
+    <!-- Cinta inferior-derecha (esquina, como la referencia) -->
+    <svg class="ribbon ribbon--bl" preserveAspectRatio="none" viewBox="0 0 1440 900">
+      <path class="rb-fill-a" d="M 1500 1050 L 820 960 C 1000 830 1240 800 1500 860 Z"></path>
+      <path class="rb-fill-b" d="M 1500 1050 L 760 970 C 940 860 1220 835 1500 890 Z"></path>
+      <path class="rb-gold" d="M 1500 1040 L 840 950 C 1020 820 1260 790 1500 850 Z"></path>
+    </svg>
+
+    <!-- Velo esmerilado: unifica y suaviza el fondo para que el texto respire -->
+    <div class="bg-frost" aria-hidden="true"></div>
   </div>
 
-  <!-- Header -->
-  <header class="site-header">
-    <div class="container nav">
-      <a href="#inicio" class="logo">
-        <img class="logo-img" src="img/logo_teamhsec.webp" alt="TEAM HSEC">
-        <div class="logo-text">
-          <h2>TEAM HSEC</h2>
+  <div class="page">
+    <!-- ================= NAVBAR ================= -->
+    <header class="nav" id="nav">
+      <div class="container nav__inner">
+        <div class="nav__left">
+          <button class="nav__link nav__link--desk" data-mega="features" aria-expanded="false" aria-controls="mega-features">
+            Cursos <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <button class="nav__link nav__link--desk" data-mega="solutions" aria-expanded="false" aria-controls="mega-solutions">
+            Empresas <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <a class="nav__link nav__link--desk" href="/certificados">Certificados</a>
+          <a class="nav__link nav__link--desk" href="#nosotros">Nosotros</a>
         </div>
-      </a>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-      <nav class="nav-links" id="nav-links">
-        <a class="active" href="#inicio">Inicio</a>
-        <a href="#nosotros">Nosotros</a>
+
+        <a class="nav__center nav__logo-script" href="#inicio" aria-label="TEAM HSEC — inicio">Team <em>HSEC</em></a>
+
+        <div class="nav__right">
+          <a class="btn btn--outline-gold" href="/login">Acceder</a>
+          <a class="btn btn--red"
+            href="https://wa.me/51992809049?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20cursos%20de%20TEAM%20HSEC"
+            target="_blank" rel="noopener">Inscríbete</a>
+          <button class="nav__toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links-mobile"
+            aria-label="Abrir menú"><i class="fa-solid fa-bars"></i></button>
+        </div>
+      </div>
+
+      <!-- Menú móvil -->
+      <nav class="nav__links-mobile" id="nav-links-mobile" aria-label="Navegación móvil">
         <a href="#cursos">Cursos</a>
         <a href="/certificados">Certificados</a>
-        <a href="#contacto">Contacto</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#testimonios">Testimonios</a>
+        <a href="/login">Acceder a la plataforma</a>
       </nav>
-      <div class="nav-actions">
-        <a href="/login" class="button outline nav-platform">
-          <i class="fa-solid fa-right-to-bracket"></i> Ingresar a la plataforma
+    </header>
+
+    <!-- Backdrop de mega-menús -->
+    <div class="mega-backdrop" id="mega-backdrop"></div>
+
+    <!-- ================= MEGA-MENÚ: CURSOS ================= -->
+    <div class="mega" id="mega-features" role="menu" aria-label="Cursos por categoría">
+      <div class="mega__col">
+        <p class="mega__label">Por categoría</p>
+        <a class="mega__item" href="#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-shield-halved"></i></span>
+          <span><strong>Seguridad</strong><span>Altura, LOTO, eléctrica, incendio</span></span>
         </a>
-        <button class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">
-          <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"><i class="fa-solid fa-sun"></i></span>
-          <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"><i class="fa-solid fa-moon"></i></span>
-          <span class="theme-toggle__knob" aria-hidden="true"></span>
-        </button>
+        <a class="mega__item" href="#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-truck-monster"></i></span>
+          <span><strong>Operaciones</strong><span>Equipos móviles, izaje, herramientas</span></span>
+        </a>
+        <a class="mega__item" href="#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-flask"></i></span>
+          <span><strong>Salud Ocupacional</strong><span>Sustancias químicas y materiales</span></span>
+        </a>
+      </div>
+      <div class="mega__col">
+        <p class="mega__label">Destacados</p>
+        <a class="mega__item" href="#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-person-falling"></i></span>
+          <span><strong>Trabajo en altura</strong><span>Próximo inicio: 26 Ago 2026</span></span>
+        </a>
+        <a class="mega__item" href="#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-kit-medical"></i></span>
+          <span><strong>Respuesta a emergencias</strong><span>Próximo inicio: 02 Sep 2026</span></span>
+        </a>
+        <a class="mega__item" href="#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-bolt"></i></span>
+          <span><strong>Seguridad eléctrica</strong><span>Próximo inicio: 07 Oct 2026</span></span>
+        </a>
+      </div>
+      <div class="mega__col mega__col--promo">
+        <div class="mega__promo">
+          <div class="mega__promo-art"><i class="fa-solid fa-qrcode"></i></div>
+          <strong>Certificados <em>QR</em></strong>
+          <p>Valida la autenticidad de cualquier certificado TEAM HSEC escaneando el código o por código + DNI.</p>
+          <a class="btn" href="/certificados" data-mega-close>Verificar ahora</a>
+        </div>
       </div>
     </div>
-  </header>
 
-  <main>
-    <!-- Hero -->
-    <section class="hero" id="inicio">
-      <div class="hero__glow" data-parallax="0.22" aria-hidden="true"></div>
-      <div class="hero__bg" data-parallax="0.12">
-        <div class="hero__slide slide-1"></div>
-        <div class="hero__slide slide-2"></div>
-        <div class="hero__slide slide-3"></div>
-        <div class="hero__slide slide-4"></div>
+    <!-- ================= MEGA-MENÚ: EMPRESAS ================= -->
+    <div class="mega" id="mega-solutions" role="menu" aria-label="Soluciones para empresas">
+      <div class="mega__col">
+        <p class="mega__label">Por necesidad</p>
+        <a class="mega__item" href="#contacto" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-users"></i></span>
+          <span><strong>Capacitación de personal</strong><span>Programas para equipos y cuadrillas</span></span>
+        </a>
+        <a class="mega__item" href="#contacto" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-building"></i></span>
+          <span><strong>Contratistas y mineras</strong><span>Cumplimiento normativo HSEC</span></span>
+        </a>
+        <a class="mega__item" href="#contacto" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-clipboard-check"></i></span>
+          <span><strong>Verificación de certificados</strong><span>Confirma la vigencia de tu personal</span></span>
+        </a>
       </div>
-      <div class="container hero__content">
-        <div class="hero__text" data-parallax="-0.05" data-parallax-min="980">
-          <p class="badge">Capacítate • Crece • Impacta</p>
-          <h1>Especialízate y adquiere mejores <span class="text-gold">oportunidades laborales</span></h1>
-          <p>
+      <div class="mega__col mega__col--promo">
+        <div class="mega__promo">
+          <div class="mega__promo-art"><i class="fa-brands fa-whatsapp"></i></div>
+          <strong>Hablemos de <em>tu equipo</em></strong>
+          <p>Cuéntanos cuántas personas necesitas certificar y armamos el programa a tu medida.</p>
+          <a class="btn" href="https://wa.me/51992809049" target="_blank" rel="noopener" data-mega-close>Contactar</a>
+        </div>
+      </div>
+    </div>
+
+    <main id="contenido">
+      <!-- ================= HERO ================= -->
+      <section class="hero" id="inicio">
+        <div class="hero__media" aria-hidden="true">
+          <img src="img/landing_page/pexels-chetanvlad-2892618.webp" alt="" width="1920" height="1019" fetchpriority="high">
+        </div>
+        <div class="hero__tint" aria-hidden="true"></div>
+        <div class="container hero__content">
+          <span class="hero__pill">Capacítate · Crece · Impacta</span>
+          <h1 class="hero__title reveal">Especialízate y adquiere mejores <em>oportunidades laborales</em></h1>
+          <p class="hero__sub reveal">
             TEAM HSEC ofrece cursos profesionales y actualizados con enfoque práctico
             para impulsar tu perfil y abrir nuevas oportunidades en el mercado laboral.
           </p>
-          <ul class="hero__trust">
-            <li><i class="fa-solid fa-circle-check"></i> Certificados QR verificables</li>
-            <li><i class="fa-solid fa-circle-check"></i> Docentes certificados</li>
-            <li><i class="fa-solid fa-circle-check"></i> Aval del Colegio de Ingenieros</li>
-          </ul>
-          <div class="actions">
-            <a class="button gold" href="#cursos">Ver cursos</a>
-            <a class="button outline-red" href="/certificados">Validar certificado</a>
-          </div>
-          <div class="hero__dots" aria-hidden="true">
-            <svg viewBox="0 0 26 4" class="dot-progress is-active"><rect class="dot-track" x="0" y="0" width="26" height="4" rx="2"/><rect class="dot-fill" x="0" y="0" width="26" height="4" rx="2"/></svg>
-            <svg viewBox="0 0 26 4" class="dot-progress"><rect class="dot-track" x="0" y="0" width="26" height="4" rx="2"/><rect class="dot-fill" x="0" y="0" width="26" height="4" rx="2"/></svg>
-            <svg viewBox="0 0 26 4" class="dot-progress"><rect class="dot-track" x="0" y="0" width="26" height="4" rx="2"/><rect class="dot-fill" x="0" y="0" width="26" height="4" rx="2"/></svg>
-            <svg viewBox="0 0 26 4" class="dot-progress"><rect class="dot-track" x="0" y="0" width="26" height="4" rx="2"/><rect class="dot-fill" x="0" y="0" width="26" height="4" rx="2"/></svg>
+          <p class="hero__trust reveal"><i class="fa-solid fa-users"></i> +5000 alumnos capacitados</p>
+          <div class="hero__actions reveal">
+            <a class="btn btn--gold" href="#cursos">Ver cursos</a>
+            <a class="btn btn--outline-light" href="/certificados">Validar certificado</a>
           </div>
         </div>
+        <a class="hero__scroll" href="#stats" aria-label="Bajar a estadísticas">
+          <i class="fa-solid fa-chevron-down"></i>
+        </a>
+      </section>
 
-      </div>
-    </section>
-
-    <!-- Stats bar -->
-    <section class="stats-bar">
-      <div class="container stats-bar__grid">
-        <div class="stats-bar__item reveal">
-          <i class="fa-solid fa-users"></i>
-          <strong class="stat-count" data-count="5000" data-prefix="+">+5000</strong>
-          <span>Alumnos capacitados</span>
-        </div>
-        <div class="stats-bar__item reveal">
-          <i class="fa-solid fa-book-open"></i>
-          <strong class="stat-count" data-count="150" data-prefix="+">+150</strong>
-          <span>Cursos impartidos</span>
-        </div>
-        <div class="stats-bar__item reveal">
-          <i class="fa-solid fa-star"></i>
-          <strong class="stat-count" data-count="98" data-suffix="%">98%</strong>
-          <span>Satisfacción</span>
-        </div>
-        <div class="stats-bar__item reveal">
-          <i class="fa-solid fa-award"></i>
-          <strong class="stat-count" data-count="10" data-prefix="+">+10</strong>
-          <span>Años de experiencia</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Por qué elegirnos -->
-    <section class="section soft" id="nosotros">
-      <div class="container why-split">
-        <div class="why-split__text reveal">
-          <p class="section__eyebrow">Sobre nosotros</p>
-          <h2>¿Por qué elegir <span class="text-red">TEAM HSEC</span>?</h2>
-          <p>
-            Somos una empresa de capacitación especializada en seguridad minera, industrial y ocupacional.
-            Ofrecemos cursos de actualización para el público en general y profesionales, con certificados QR
-            válidos reconocidos en convocatorias laborales.
-          </p>
-          <a href="#contacto" class="button gold">Conócenos más</a>
-        </div>
-        <div class="why-grid">
-          <div class="why-item reveal"><i class="fa-solid fa-hard-hat"></i>
-            <h4>Especialistas en seguridad industrial</h4>
-          </div>
-          <div class="why-item reveal"><i class="fa-solid fa-qrcode"></i>
-            <h4>Certificados QR verificables</h4>
-          </div>
-          <div class="why-item reveal"><i class="fa-solid fa-user-graduate"></i>
-            <h4>Docentes certificados</h4>
-          </div>
-          <div class="why-item reveal"><i class="fa-solid fa-book-open"></i>
-            <h4>Cursos actualizados</h4>
-          </div>
-          <div class="why-item reveal"><i class="fa-solid fa-headset"></i>
-            <h4>Atención personalizada</h4>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Beneficios -->
-    <section class="section benefits-row reveal">
-      <div class="container">
-        <div class="section__header">
-          <p class="section__eyebrow">Ventajas</p>
-          <h2>Beneficios</h2>
-          <div class="section__bar"></div>
-        </div>
-        <div class="benefits-icons">
-          <div class="benefit-icon reveal"><i class="fa-solid fa-qrcode"></i><span>Certificados QR</span>
-            <p class="benefit-icon__desc">Verificables al instante</p>
-          </div>
-          <div class="benefit-icon reveal"><i class="fa-solid fa-user-tie"></i><span>Docentes especialistas</span>
-            <p class="benefit-icon__desc">Con amplia experiencia</p>
-          </div>
-          <div class="benefit-icon reveal"><img src="img/cip.webp" alt="CIP" class="benefit-icon__logo"><span>Colegio de
-              Ingenieros</span>
-            <p class="benefit-icon__desc">Aval institucional</p>
-          </div>
-          <div class="benefit-icon reveal"><i class="fa-solid fa-headset"></i><span>Soporte 24/7</span>
-            <p class="benefit-icon__desc">Siempre contigo</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Catálogo de cursos -->
-    <section class="section soft" id="cursos">
-      <div class="container">
-        <div class="section__header">
-          <p class="section__eyebrow">Catálogo</p>
-          <h2>Catálogo de <span class="text-red">cursos</span></h2>
-          <div class="section__bar"></div>
-          <p class="section__subtitle">Cursos con certificado QR verificable. Consulta el próximo inicio de cada uno.</p>
-        </div>
-        <div class="filters">
-          <input type="text" id="course-search" placeholder="Buscar cursos por título...">
-          <select id="course-category">
-            <option value="">Todas las categorías</option>
-            <option value="Seguridad">Seguridad</option>
-            <option value="Operaciones">Operaciones</option>
-            <option value="Salud Ocupacional">Salud Ocupacional</option>
-          </select>
-        </div>
-        <div class="grid grid--3" id="catalog-courses">
-
-          <article class="course-card catalog-card reveal" data-course="equipos-moviles" data-category="Operaciones"
-            data-title="Equipos móviles / Manejo de llantas" data-duration="2 horas" data-date="19 Ago 2026"
-            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
-            data-summary="Capacitación sobre operación segura de equipos móviles y procedimientos adecuados para el manejo y cambio de llantas en entornos mineros.">
-            <div class="course-card__image">
-              <img src="img/landing_page/equipos_moviles.webp" alt="Equipos móviles" loading="lazy" width="600"
-                height="400">
-              <span class="course-card__badge">Operaciones</span>
+      <!-- ================= STATS ================= -->
+      <section class="stats" id="stats">
+        <div class="container stats__grid">
+          <div class="stat reveal">
+            <span class="stat__ico"><i class="fa-solid fa-users"></i></span>
+            <div>
+              <div class="stat__num">+5,000</div>
+              <div class="stat__label">Profesionales capacitados</div>
+              <div class="stat__desc">Impulsamos el desarrollo de tu equipo.</div>
             </div>
-            <div class="course-card__body">
-              <h3>Equipos móviles / Manejo de llantas</h3>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 19 Ago 2026</li>
-                <li><i class="fa-regular fa-clock"></i> 2 horas</li>
-              </ul>
-              <div class="course-card__actions">
-                <button class="button ghost" type="button" data-course="equipos-moviles">Más información</button>
+          </div>
+          <div class="stat reveal">
+            <span class="stat__ico"><i class="fa-solid fa-shield-halved"></i></span>
+            <div>
+              <div class="stat__num">+200</div>
+              <div class="stat__label">Cursos disponibles</div>
+              <div class="stat__desc">En modalidad presencial, virtual y blended.</div>
+            </div>
+          </div>
+          <div class="stat reveal">
+            <span class="stat__ico"><i class="fa-solid fa-building"></i></span>
+            <div>
+              <div class="stat__num">+150</div>
+              <div class="stat__label">Empresas confían en nosotros</div>
+              <div class="stat__desc">Aliados en la gestión de su talento humano.</div>
+            </div>
+          </div>
+          <div class="stat reveal">
+            <span class="stat__ico"><i class="fa-solid fa-certificate"></i></span>
+            <div>
+              <div class="stat__num">98%</div>
+              <div class="stat__label">Satisfacción de nuestros alumnos</div>
+              <div class="stat__desc">Calidad y compromiso en cada curso.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PILARES ================= -->
+      <section class="section" id="nosotros">
+        <div class="container">
+          <div class="section__head reveal">
+            <p class="section__eyebrow">Sobre nosotros</p>
+            <h2 class="section__title">Capacítate para <em>un mejor futuro</em></h2>
+          </div>
+          <div class="pillars__grid">
+            <article class="pillar reveal">
+              <div class="pillar__media">
+                <img src="img\landing_page\pexels-deyler-rivera-segura-1300296248-29506742.webp" alt="Capacitación práctica en altura" loading="lazy"
+                  width="600" height="450">
               </div>
-            </div>
-          </article>
-
-          <article class="course-card catalog-card reveal" data-course="trabajo-altura" data-category="Seguridad"
-            data-title="Trabajo en altura y plataforma elevada" data-duration="4 horas" data-date="26 Ago 2026"
-            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
-            data-summary="Curso enfocado en el uso seguro de trabajos en altura, líneas de vida, arneses y plataformas elevadas, reduciendo riesgos de caídas y accidentes laborales.">
-            <div class="course-card__image">
-              <img src="img/landing_page/trabajo_altura.webp" alt="Trabajo en altura" loading="lazy" width="600"
-                height="400">
-              <span class="course-card__badge">Seguridad</span>
-            </div>
-            <div class="course-card__body">
-              <h3>Trabajo en altura y plataforma elevada</h3>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 26 Ago 2026</li>
-                <li><i class="fa-regular fa-clock"></i> 4 horas</li>
-              </ul>
-              <div class="course-card__actions">
-                <button class="button ghost" type="button" data-course="trabajo-altura">Más información</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="course-card catalog-card reveal" data-course="respuesta-emergencias" data-category="Seguridad"
-            data-title="Respuesta a emergencias" data-duration="2 horas" data-date="02 Sep 2026"
-            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
-            data-summary="Capacitación orientada a preparar al personal para actuar correctamente ante emergencias, evacuaciones, incidentes y situaciones de riesgo dentro de operaciones mineras e industriales.">
-            <div class="course-card__image">
-              <img src="img/landing_page/respuesta_emergencias.webp" alt="Respuesta a emergencias" loading="lazy"
-                width="600" height="400">
-              <span class="course-card__badge">Seguridad</span>
-            </div>
-            <div class="course-card__body">
-              <h3>Respuesta a emergencias</h3>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 02 Sep 2026</li>
-                <li><i class="fa-regular fa-clock"></i> 2 horas</li>
-              </ul>
-              <div class="course-card__actions">
-                <button class="button ghost" type="button" data-course="respuesta-emergencias">Más información</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="course-card catalog-card reveal" data-course="sustancias-quimicas" data-category="Salud Ocupacional"
-            data-title="Sustancias químicas" data-duration="2 horas" data-date="09 Sep 2026"
-            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
-            data-summary="Capacitación para la manipulación segura de sustancias químicas, lectura de hojas MSDS y control de riesgos químicos en el trabajo.">
-            <div class="course-card__image">
-              <img src="img/landing_page/sustancias_quimicas.webp" alt="Sustancias químicas" loading="lazy" width="600"
-                height="400">
-              <span class="course-card__badge">Salud Ocupacional</span>
-            </div>
-            <div class="course-card__body">
-              <h3>Sustancias químicas</h3>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 09 Sep 2026</li>
-                <li><i class="fa-regular fa-clock"></i> 2 horas</li>
-              </ul>
-              <div class="course-card__actions">
-                <button class="button ghost" type="button" data-course="sustancias-quimicas">Más información</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="course-card catalog-card reveal" data-course="herramientas-manuales" data-category="Operaciones"
-            data-title="Herramientas manuales y de poder" data-duration="2 horas" data-date="16 Sep 2026"
-            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
-            data-summary="Curso enfocado en el uso seguro, inspección y mantenimiento básico de herramientas manuales y eléctricas utilizadas en operaciones industriales.">
-            <div class="course-card__image">
-              <img src="img/landing_page/herramientas_manuales.webp" alt="Herramientas manuales" loading="lazy"
-                width="600" height="400">
-              <span class="course-card__badge">Operaciones</span>
-            </div>
-            <div class="course-card__body">
-              <h3>Herramientas manuales y de poder</h3>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 16 Sep 2026</li>
-                <li><i class="fa-regular fa-clock"></i> 2 horas</li>
-              </ul>
-              <div class="course-card__actions">
-                <button class="button ghost" type="button" data-course="herramientas-manuales">Más información</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="course-card catalog-card reveal" data-course="incendio-explosion" data-category="Seguridad"
-            data-title="Incendio y explosión" data-duration="2 horas" data-date="23 Sep 2026"
-            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
-            data-summary="Capacitación sobre prevención, control y respuesta ante incendios y explosiones en áreas industriales y mineras.">
-            <div class="course-card__image">
-              <img src="img/landing_page/incendio_explosion.webp" alt="Incendio y explosión" loading="lazy" width="600"
-                height="400">
-              <span class="course-card__badge">Seguridad</span>
-            </div>
-            <div class="course-card__body">
-              <h3>Incendio y explosión</h3>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 23 Sep 2026</li>
-                <li><i class="fa-regular fa-clock"></i> 2 horas</li>
-              </ul>
-              <div class="course-card__actions">
-                <button class="button ghost" type="button" data-course="incendio-explosion">Más información</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="course-card catalog-card reveal" data-course="elevacion-izaje" data-category="Operaciones"
-            data-title="Elevación / izaje de carga" data-duration="2 horas" data-date="30 Sep 2026"
-            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
-            data-summary="Curso orientado al manejo seguro de maniobras de izaje, uso de accesorios y control de cargas para prevenir incidentes operacionales.">
-            <div class="course-card__image">
-              <img src="img/landing_page/izaje_cargas.webp" alt="Izaje de cargas" loading="lazy" width="600"
-                height="400">
-              <span class="course-card__badge">Operaciones</span>
-            </div>
-            <div class="course-card__body">
-              <h3>Elevación / izaje de carga</h3>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 30 Sep 2026</li>
-                <li><i class="fa-regular fa-clock"></i> 2 horas</li>
-              </ul>
-              <div class="course-card__actions">
-                <button class="button ghost" type="button" data-course="elevacion-izaje">Más información</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="course-card catalog-card reveal" data-course="seguridad-electrica" data-category="Seguridad"
-            data-title="Seguridad eléctrica" data-duration="3 horas" data-date="07 Oct 2026"
-            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
-            data-summary="Capacitación enfocada en la prevención de accidentes eléctricos, identificación de riesgos y aplicación de medidas de protección en trabajos eléctricos.">
-            <div class="course-card__image">
-              <img src="img/landing_page/seguridad_electrica.webp" alt="Seguridad eléctrica" loading="lazy" width="600"
-                height="400">
-              <span class="course-card__badge">Seguridad</span>
-            </div>
-            <div class="course-card__body">
-              <h3>Seguridad eléctrica</h3>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 07 Oct 2026</li>
-                <li><i class="fa-regular fa-clock"></i> 3 horas</li>
-              </ul>
-              <div class="course-card__actions">
-                <button class="button ghost" type="button" data-course="seguridad-electrica">Más información</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="course-card catalog-card reveal" data-course="aislamiento-bloqueo" data-category="Seguridad"
-            data-title="Aislamiento y bloqueo" data-duration="3 horas" data-date="14 Oct 2026"
-            data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
-            data-summary="Curso diseñado para aplicar procedimientos LOTO (Lockout/Tagout), asegurando el aislamiento de energías peligrosas durante mantenimientos y reparaciones.">
-            <div class="course-card__image">
-              <img src="img/landing_page/aislamiento_bloqueo.webp" alt="Aislamiento y bloqueo" loading="lazy"
-                width="600" height="400">
-              <span class="course-card__badge">Seguridad</span>
-            </div>
-            <div class="course-card__body">
-              <h3>Aislamiento y bloqueo</h3>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <ul class="course-card__meta">
-                <li><i class="fa-regular fa-calendar"></i> Próximo inicio: 14 Oct 2026</li>
-                <li><i class="fa-regular fa-clock"></i> 3 horas</li>
-              </ul>
-              <div class="course-card__actions">
-                <button class="button ghost" type="button" data-course="aislamiento-bloqueo">Más información</button>
-              </div>
-            </div>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA de cierre -->
-    <section class="cta-band reveal">
-      <div class="container cta-band__inner">
-        <div class="cta-band__text">
-          <h2>¿Listo para tu próxima certificación?</h2>
-          <p>Escríbenos y te ayudamos a elegir el curso ideal para tu perfil profesional.</p>
-        </div>
-        <div class="cta-band__actions">
-          <a class="button gold"
-            href="https://wa.me/51992809049?text=Hola%2C%20quiero%20informaci%C3%B3n%20para%20certificarme%20con%20TEAM%20HSEC"
-            target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Hablar por WhatsApp</a>
-          <a class="button outline-red" href="#contacto">Solicitar información</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Testimonios -->
-    <section class="section testimonials reveal" id="testimonios">
-      <div class="container">
-        <div class="section__header">
-          <p class="section__eyebrow">Testimonios</p>
-          <h2>Testimonios</h2>
-          <div class="section__bar"></div>
-          <p class="section__subtitle">Lo que dicen nuestros alumnos</p>
-        </div>
-        <div class="testimonials__wrapper">
-          <div class="testimonials__track" id="testimonials-track">
-            <article class="testimonial-card">
-              <div class="testimonial-card__avatar">CM</div>
-              <h4>Carlos Mendoza</h4>
-              <p class="testimonial-card__role">Supervisor de Seguridad — Minera del Centro</p>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <blockquote>"Los cursos de TEAM HSEC me ayudaron a actualizar mis conocimientos en seguridad industrial.
-                El certificado QR facilitó su validación en mi empresa."</blockquote>
+              <h3>Capacítate</h3>
+              <p>Cursos de seguridad minera, industrial y ocupacional con enfoque práctico,
+                impartidos por ingenieros certificados y actualizados a la normativa vigente.</p>
             </article>
-            <article class="testimonial-card">
-              <div class="testimonial-card__avatar">JP</div>
-              <h4>Jorge Paredes</h4>
-              <p class="testimonial-card__role">Técnico de Mantenimiento — Industria Manufacturera</p>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <blockquote>"Capacitación práctica y directa al punto. Me inscribí en tres cursos y todos superaron mis
-                expectativas."</blockquote>
+            <article class="pillar pillar--active reveal">
+              <div class="pillar__media">
+                <img src="\img\landing_page\certificado-diploma-graduacion-enrollado_23-2148769714.webp" alt="Certificación emitida" loading="lazy"
+                  width="600" height="450">
+              </div>
+              <h3>Certifícate</h3>
+              <p>Recibe tu certificado físico y digital con código único, firmas autorizadas
+                con CIP y vigencia registrada en nuestro sistema oficial.</p>
             </article>
-            <article class="testimonial-card">
-              <div class="testimonial-card__avatar">MF</div>
-              <h4>María Flores</h4>
-              <p class="testimonial-card__role">Coordinadora SST — Empresa Logística</p>
-              <div class="course-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-              <blockquote>"Recomiendo TEAM HSEC a todo profesional que busque certificarse con respaldo. El soporte
-                post-capacitación es muy bueno."</blockquote>
+            <article class="pillar reveal">
+              <div class="pillar__media">
+                <img src="\img\landing_page\VERIFICA.webp" alt="Verificación QR" loading="lazy"
+                  width="600" height="450">
+              </div>
+              <h3>Verifícalo</h3>
+              <p>Cualquier empresa puede validar la autenticidad de tu certificado escaneando
+                el QR o ingresando código y DNI en línea.</p>
             </article>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Empresas -->
-    <section class="section partners reveal">
-      <div class="container">
-        <div class="section__header">
-          <p class="section__eyebrow">Confianza</p>
-          <h2>Empresas que confían en nosotros</h2>
-          <div class="section__bar"></div>
+      <!-- ================= BENTO ================= -->
+      <section class="section" style="padding-top: 0;">
+        <div class="container">
+          <div class="section__head reveal">
+            <p class="section__eyebrow">Ventajas</p>
+            <h2 class="section__title">TEAM HSEC hace el <em>trabajo pesado</em></h2>
+            <p class="section__sub">Nosotros nos encargamos de la formación, el registro y la verificación.
+              Tú solo te enfocas en crecer.</p>
+          </div>
+          <div class="bento">
+            <article class="bento__card bento__card--wide reveal">
+              
+              <h3>Certificados con QR y código único</h3>
+              <p>Cada certificado lleva un código correlativo PE-XXXX-YY y un hash de seguridad.
+                El QR conduce a una página de verificación en tiempo real con historial de auditoría.</p>
+              <div class="bento__media">
+                <img src="img/landing_page/aislamiento_bloqueo.webp" alt="Verificación de certificados" loading="lazy"
+                  width="800" height="450">
+              </div>
+            </article>
+            <article class="bento__card bento__card--cip reveal">
+              <h3>Ingenieros con CIP</h3>
+              <p>Entrenadores certificados con amplia experiencia en operaciones mineras e industriales.</p>
+              <div class="bento__credential">
+                <img class="bento__credential-seal" src="img/cip.webp"
+                  alt="Sello del Colegio de Ingenieros del Perú" width="256" height="256" loading="lazy"
+                  decoding="async">
+                <div class="bento__credential-meta">
+                  <span class="bento__credential-code">CIP N° {{CIP_CODE}}</span>
+                  <span class="bento__credential-note">Ingenieros colegiados y habilitados<br>Colegio de Ingenieros del Perú</span>
+                </div>
+              </div>
+            </article>
+            <article class="bento__card reveal">
+              
+              <h3>Temarios actualizados</h3>
+              <p>Programas alineados a la normativa vigente y a las exigencias del sector.</p>
+            </article>
+            <article class="bento__card reveal">
+             
+              <h3>Atención personalizada</h3>
+              <p>Te acompañamos antes, durante y después de tu capacitación.</p>
+            </article>
+            <article class="bento__card reveal">
+              
+              <h3>Respaldo institucional</h3>
+              <p>Certificados avalados por el Colegio de Ingenieros del Perú.</p>
+            </article>
+          </div>
         </div>
-        <div class="partners__logos" id="partners-track">
-          <img src="img/landing_page/empresa1.png" alt="Empresa aliada 1" loading="lazy">
-          <img src="img/landing_page/empresa2.png" alt="Empresa aliada 2" loading="lazy">
-          <img src="img/landing_page/empresa3.png" alt="Empresa aliada 3" loading="lazy">
-          <img src="img/landing_page/empresa4.png" alt="Empresa aliada 4" loading="lazy">
-          <img src="img/landing_page/empresa5.png" alt="Empresa aliada 5" loading="lazy">
-          <img src="img/landing_page/empresa6.png" alt="Empresa aliada 6" loading="lazy">
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Contacto -->
-    <section class="section soft contact-section" id="contacto">
-      <div class="container">
-        <div class="section__header">
-          <p class="section__eyebrow">Contacto</p>
-          <h2>Contacta con <span class="text-red">nosotros</span></h2>
-          <div class="section__bar"></div>
+      <!-- ================= CURSOS ================= -->
+      <section class="section" id="cursos">
+        <div class="container">
+          <div class="section__head reveal">
+            <p class="section__eyebrow">Próximos cursos</p>
+            <h2 class="section__title">Capacítate para <em>un mejor futuro</em></h2>
+            <p class="section__sub">Encuentra el curso ideal para ti o tu empresa. Cursos con certificado QR verificable.</p>
+          </div>
+
+          <div class="filters reveal">
+            <input type="text" id="course-search" placeholder="Buscar cursos por título…" aria-label="Buscar cursos">
+            <select id="course-category" aria-label="Filtrar por categoría">
+              <option value="">Todas las categorías</option>
+              <option value="Seguridad">Seguridad</option>
+              <option value="Operaciones">Operaciones</option>
+              <option value="Salud Ocupacional">Salud Ocupacional</option>
+            </select>
+          </div>
+
+          <div class="courses" id="catalog-courses">
+
+            <article class="course reveal" data-course="equipos-moviles" data-category="Operaciones"
+              data-title="Equipos móviles / Manejo de llantas" data-duration="2 horas" data-date="19 Ago 2026"
+              data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+              data-summary="Capacitación sobre operación segura de equipos móviles y procedimientos adecuados para el manejo y cambio de llantas en entornos mineros.">
+              <div class="course__media">
+                <img src="img/landing_page/equipos_moviles.webp" alt="Equipos móviles" loading="lazy" width="600" height="400">
+                <span class="course__badge">Operaciones</span>
+              </div>
+              <div class="course__body">
+                <h3>Equipos móviles / Manejo de llantas</h3>
+                <ul class="course__meta">
+                  <li><i class="fa-regular fa-calendar"></i> 19 Ago 2026</li>
+                  <li><i class="fa-regular fa-clock"></i> 2 horas</li>
+                </ul>
+                <button class="course__link" type="button" data-course="equipos-moviles">
+                  Más información <span class="course__go"><i class="fa-solid fa-arrow-right"></i></span>
+                </button>
+              </div>
+            </article>
+
+            <article class="course reveal" data-course="trabajo-altura" data-category="Seguridad"
+              data-title="Trabajo en altura y plataforma elevada" data-duration="4 horas" data-date="26 Ago 2026"
+              data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+              data-summary="Curso enfocado en el uso seguro de trabajos en altura, líneas de vida, arneses y plataformas elevadas, reduciendo riesgos de caídas y accidentes laborales.">
+              <div class="course__media">
+                <img src="img/landing_page/trabajo_altura.webp" alt="Trabajo en altura" loading="lazy" width="600" height="400">
+                <span class="course__badge">Seguridad</span>
+              </div>
+              <div class="course__body">
+                <h3>Trabajo en altura y plataforma elevada</h3>
+                <ul class="course__meta">
+                  <li><i class="fa-regular fa-calendar"></i> 26 Ago 2026</li>
+                  <li><i class="fa-regular fa-clock"></i> 4 horas</li>
+                </ul>
+                <button class="course__link" type="button" data-course="trabajo-altura">
+                  Más información <span class="course__go"><i class="fa-solid fa-arrow-right"></i></span>
+                </button>
+              </div>
+            </article>
+
+            <article class="course reveal" data-course="respuesta-emergencias" data-category="Seguridad"
+              data-title="Respuesta a emergencias" data-duration="2 horas" data-date="02 Sep 2026"
+              data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+              data-summary="Capacitación orientada a preparar al personal para actuar correctamente ante emergencias, evacuaciones, incidentes y situaciones de riesgo dentro de operaciones mineras e industriales.">
+              <div class="course__media">
+                <img src="img/landing_page/respuesta_emergencias.webp" alt="Respuesta a emergencias" loading="lazy" width="600" height="400">
+                <span class="course__badge">Seguridad</span>
+              </div>
+              <div class="course__body">
+                <h3>Respuesta a emergencias</h3>
+                <ul class="course__meta">
+                  <li><i class="fa-regular fa-calendar"></i> 02 Sep 2026</li>
+                  <li><i class="fa-regular fa-clock"></i> 2 horas</li>
+                </ul>
+                <button class="course__link" type="button" data-course="respuesta-emergencias">
+                  Más información <span class="course__go"><i class="fa-solid fa-arrow-right"></i></span>
+                </button>
+              </div>
+            </article>
+
+            <article class="course reveal" data-course="sustancias-quimicas" data-category="Salud Ocupacional"
+              data-title="Sustancias químicas" data-duration="2 horas" data-date="09 Sep 2026"
+              data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+              data-summary="Capacitación para la manipulación segura de sustancias químicas, lectura de hojas MSDS y control de riesgos químicos en el trabajo.">
+              <div class="course__media">
+                <img src="img/landing_page/sustancias_quimicas.webp" alt="Sustancias químicas" loading="lazy" width="600" height="400">
+                <span class="course__badge">Salud Ocupacional</span>
+              </div>
+              <div class="course__body">
+                <h3>Sustancias químicas</h3>
+                <ul class="course__meta">
+                  <li><i class="fa-regular fa-calendar"></i> 09 Sep 2026</li>
+                  <li><i class="fa-regular fa-clock"></i> 2 horas</li>
+                </ul>
+                <button class="course__link" type="button" data-course="sustancias-quimicas">
+                  Más información <span class="course__go"><i class="fa-solid fa-arrow-right"></i></span>
+                </button>
+              </div>
+            </article>
+
+            <article class="course reveal" data-course="herramientas-manuales" data-category="Operaciones"
+              data-title="Herramientas manuales y de poder" data-duration="2 horas" data-date="16 Sep 2026"
+              data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+              data-summary="Curso enfocado en el uso seguro, inspección y mantenimiento básico de herramientas manuales y eléctricas utilizadas en operaciones industriales.">
+              <div class="course__media">
+                <img src="img/landing_page/herramientas_manuales.webp" alt="Herramientas manuales" loading="lazy" width="600" height="400">
+                <span class="course__badge">Operaciones</span>
+              </div>
+              <div class="course__body">
+                <h3>Herramientas manuales y de poder</h3>
+                <ul class="course__meta">
+                  <li><i class="fa-regular fa-calendar"></i> 16 Sep 2026</li>
+                  <li><i class="fa-regular fa-clock"></i> 2 horas</li>
+                </ul>
+                <button class="course__link" type="button" data-course="herramientas-manuales">
+                  Más información <span class="course__go"><i class="fa-solid fa-arrow-right"></i></span>
+                </button>
+              </div>
+            </article>
+
+            <article class="course reveal" data-course="incendio-explosion" data-category="Seguridad"
+              data-title="Incendio y explosión" data-duration="2 horas" data-date="23 Sep 2026"
+              data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+              data-summary="Capacitación sobre prevención, control y respuesta ante incendios y explosiones en áreas industriales y mineras.">
+              <div class="course__media">
+                <img src="img/landing_page/incendio_explosion.webp" alt="Incendio y explosión" loading="lazy" width="600" height="400">
+                <span class="course__badge">Seguridad</span>
+              </div>
+              <div class="course__body">
+                <h3>Incendio y explosión</h3>
+                <ul class="course__meta">
+                  <li><i class="fa-regular fa-calendar"></i> 23 Sep 2026</li>
+                  <li><i class="fa-regular fa-clock"></i> 2 horas</li>
+                </ul>
+                <button class="course__link" type="button" data-course="incendio-explosion">
+                  Más información <span class="course__go"><i class="fa-solid fa-arrow-right"></i></span>
+                </button>
+              </div>
+            </article>
+
+            <article class="course reveal" data-course="elevacion-izaje" data-category="Operaciones"
+              data-title="Elevación / izaje de carga" data-duration="2 horas" data-date="30 Sep 2026"
+              data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+              data-summary="Curso orientado al manejo seguro de maniobras de izaje, uso de accesorios y control de cargas para prevenir incidentes operacionales.">
+              <div class="course__media">
+                <img src="img/landing_page/izaje_cargas.webp" alt="Izaje de cargas" loading="lazy" width="600" height="400">
+                <span class="course__badge">Operaciones</span>
+              </div>
+              <div class="course__body">
+                <h3>Elevación / izaje de carga</h3>
+                <ul class="course__meta">
+                  <li><i class="fa-regular fa-calendar"></i> 30 Sep 2026</li>
+                  <li><i class="fa-regular fa-clock"></i> 2 horas</li>
+                </ul>
+                <button class="course__link" type="button" data-course="elevacion-izaje">
+                  Más información <span class="course__go"><i class="fa-solid fa-arrow-right"></i></span>
+                </button>
+              </div>
+            </article>
+
+            <article class="course reveal" data-course="seguridad-electrica" data-category="Seguridad"
+              data-title="Seguridad eléctrica" data-duration="3 horas" data-date="07 Oct 2026"
+              data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+              data-summary="Capacitación enfocada en la prevención de accidentes eléctricos, identificación de riesgos y aplicación de medidas de protección en trabajos eléctricos.">
+              <div class="course__media">
+                <img src="img/landing_page/seguridad_electrica.webp" alt="Seguridad eléctrica" loading="lazy" width="600" height="400">
+                <span class="course__badge">Seguridad</span>
+              </div>
+              <div class="course__body">
+                <h3>Seguridad eléctrica</h3>
+                <ul class="course__meta">
+                  <li><i class="fa-regular fa-calendar"></i> 07 Oct 2026</li>
+                  <li><i class="fa-regular fa-clock"></i> 3 horas</li>
+                </ul>
+                <button class="course__link" type="button" data-course="seguridad-electrica">
+                  Más información <span class="course__go"><i class="fa-solid fa-arrow-right"></i></span>
+                </button>
+              </div>
+            </article>
+
+            <article class="course reveal" data-course="aislamiento-bloqueo" data-category="Seguridad"
+              data-title="Aislamiento y bloqueo" data-duration="3 horas" data-date="14 Oct 2026"
+              data-trainer="Ing. Gregorio A. Escajadillo Sarmiento"
+              data-summary="Curso diseñado para aplicar procedimientos LOTO (Lockout/Tagout), asegurando el aislamiento de energías peligrosas durante mantenimientos y reparaciones.">
+              <div class="course__media">
+                <img src="img/landing_page/aislamiento_bloqueo.webp" alt="Aislamiento y bloqueo" loading="lazy" width="600" height="400">
+                <span class="course__badge">Seguridad</span>
+              </div>
+              <div class="course__body">
+                <h3>Aislamiento y bloqueo</h3>
+                <ul class="course__meta">
+                  <li><i class="fa-regular fa-calendar"></i> 14 Oct 2026</li>
+                  <li><i class="fa-regular fa-clock"></i> 3 horas</li>
+                </ul>
+                <button class="course__link" type="button" data-course="aislamiento-bloqueo">
+                  Más información <span class="course__go"><i class="fa-solid fa-arrow-right"></i></span>
+                </button>
+              </div>
+            </article>
+
+          </div>
         </div>
-        <div class="contact-grid">
-          <div class="contact-info">
-            <div class="contact-info__item">
-              <i class="fa-solid fa-location-dot"></i>
-              <div>
-                <strong>Dirección</strong>
-                <p>Mza. C Lote. 21 Dpto. Lima, Urb. Haras de Huampani (Frente a la Urb. Jardines de Ñaña), Ate — Lima
-                </p>
+      </section>
+
+      <!-- ================= TESTIMONIOS ================= -->
+      <section class="section" id="testimonios" style="padding-top: 0;">
+        <div class="container">
+          <div class="section__head reveal">
+            <p class="section__eyebrow">Testimonios</p>
+            <h2 class="section__title">Lo que dicen nuestros <em>alumnos</em></h2>
+          </div>
+          <div class="testi">
+            <article class="testi__card reveal">
+              <div class="testi__stars">★★★★★</div>
+              <p class="testi__text">"Los cursos de TEAM HSEC me ayudaron a actualizar mis conocimientos en seguridad
+                industrial. El certificado QR facilitó su validación en mi empresa."</p>
+              <div class="testi__who">
+                <div class="testi__avatar">CM</div>
+                <div>
+                  <div class="testi__name">Carlos Mendoza</div>
+                  <div class="testi__role">Supervisor de Seguridad — Minera del Centro</div>
+                </div>
+              </div>
+            </article>
+            <article class="testi__card reveal">
+              <div class="testi__stars">★★★★★</div>
+              <p class="testi__text">"Capacitación práctica y directa al punto. Me inscribí en tres cursos y todos
+                superaron mis expectativas."</p>
+              <div class="testi__who">
+                <div class="testi__avatar">JP</div>
+                <div>
+                  <div class="testi__name">Jorge Paredes</div>
+                  <div class="testi__role">Técnico de Mantenimiento — Industria Manufacturera</div>
+                </div>
+              </div>
+            </article>
+            <article class="testi__card reveal">
+              <div class="testi__stars">★★★★★</div>
+              <p class="testi__text">"Recomiendo TEAM HSEC a todo profesional que busque certificarse con respaldo.
+                El soporte post-capacitación es muy bueno."</p>
+              <div class="testi__who">
+                <div class="testi__avatar">MF</div>
+                <div>
+                  <div class="testi__name">María Flores</div>
+                  <div class="testi__role">Coordinadora SST — Empresa Logística</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BANDA CTA ROJA ================= -->
+      <section class="cta">
+        <div class="container">
+          <h2 class="cta__title reveal">TEAM HSEC hace las tareas.<br>Tú haces <em>el trabajo.</em></h2>
+          <p class="cta__sub reveal">Escríbenos y te ayudamos a elegir el curso ideal para tu perfil profesional.</p>
+          <div class="cta__actions reveal">
+            <a class="btn btn--gold"
+              href="https://wa.me/51992809049?text=Hola%2C%20quiero%20informaci%C3%B3n%20para%20certificarme%20con%20TEAM%20HSEC"
+              target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Hablar por WhatsApp</a>
+            <a class="btn btn--ghost-light" href="mailto:contacto@teamhsec.com">Solicitar información</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= CONTACTO ================= -->
+      <section class="contact" id="contacto">
+        <div class="container">
+          <div class="section__head section__head--center reveal">
+            <p class="section__eyebrow">Contacto</p>
+            <h2 class="section__title">Contacta con <em>nosotros</em></h2>
+            <p class="section__sub">Estamos listos para ayudarte a elegir el curso ideal para tu perfil.</p>
+          </div>
+          <div class="contact__card reveal">
+            <div class="contact__info">
+              <div class="contact__item">
+                <span class="contact__ico"><i class="fa-solid fa-location-dot"></i></span>
+                <div>
+                  <strong>Dirección</strong>
+                  <p>Mza. C Lote. 21 Dpto. Lima, Urb. Haras de Huampani (Frente a la Urb. Jardines de Ñaña), Ate — Lima</p>
+                </div>
+              </div>
+              <div class="contact__item">
+                <span class="contact__ico"><i class="fa-brands fa-whatsapp"></i></span>
+                <div>
+                  <strong>Teléfono</strong>
+                  <p><a href="https://wa.me/51992809049" target="_blank" rel="noopener">+51 992 809 049</a></p>
+                </div>
+              </div>
+              <div class="contact__item">
+                <span class="contact__ico"><i class="fa-regular fa-envelope"></i></span>
+                <div>
+                  <strong>Email</strong>
+                  <p><a href="mailto:contacto@teamhsec.com">contacto@teamhsec.com</a></p>
+                </div>
+              </div>
+              <div class="contact__social">
+                <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/51992809049" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
               </div>
             </div>
-            <div class="contact-info__item">
-              <i class="fa-brands fa-whatsapp"></i>
-              <div>
-                <strong>Teléfono</strong>
-                <p><a href="https://wa.me/51992809049">+51 992 809 049</a></p>
+            <div class="contact__map-wrap">
+              <div class="contact__map">
+                <iframe title="Ubicación TEAM HSEC"
+                  src="https://maps.google.com/maps?q=Haras+de+Huampani+Ate+Lima&hl=es&z=15&output=embed"
+                  loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
               </div>
-            </div>
-            <div class="contact-info__item">
-              <i class="fa-regular fa-envelope"></i>
-              <div>
-                <strong>Email</strong>
-                <p><a href="mailto:contacto@teamhsec.com">contacto@teamhsec.com</a></p>
-              </div>
-            </div>
-            <div class="contact-info__social">
-              <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><i
-                  class="fa-brands fa-facebook-f"></i></a>
-              <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><i
-                  class="fa-brands fa-instagram"></i></a>
-              <a href="https://wa.me/51992809049" target="_blank" rel="noopener" aria-label="WhatsApp"><i
-                  class="fa-brands fa-whatsapp"></i></a>
+              <a class="contact__map-link" href="https://maps.app.goo.gl/ATDnvth3KC1fwMaP7" target="_blank" rel="noopener">
+                <i class="fa-solid fa-map-location-dot"></i> Abrir en Google Maps
+              </a>
             </div>
           </div>
         </div>
+      </section>
+    </main>
 
-        <div class="contact-map">
-          <iframe title="Ubicación TEAM HSEC"
-            src="https://maps.google.com/maps?q=Haras+de+Huampani+Ate+Lima&hl=es&z=15&output=embed" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
-          </iframe>
-          <a href="https://maps.app.goo.gl/ATDnvth3KC1fwMaP7" target="_blank" rel="noopener" class="contact-map__link">
-            <i class="fa-solid fa-map-location-dot"></i> Abrir en Google Maps
-          </a>
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__grid">
+          <div class="footer__brand">
+            <img class="footer__logo" src="img/logo_teamhsec.webp" alt="TEAM HSEC" loading="lazy" decoding="async">
+            <p>Formación profesional en seguridad minera, industrial y ocupacional que impulsa tu carrera.</p>
+            <div class="footer__credential">
+              <img src="img/cip.webp" alt="" width="256" height="256" loading="lazy" decoding="async">
+              <span>Certificados avalados por el <strong>Colegio de Ingenieros del Perú</strong></span>
+            </div>
+          </div>
+          <div>
+            <h4>Enlaces</h4>
+            <ul class="footer__links">
+              <li><a href="#inicio">Inicio</a></li>
+              <li><a href="#nosotros">Nosotros</a></li>
+              <li><a href="#cursos">Cursos</a></li>
+              <li><a href="/certificados">Certificados</a></li>
+              <li><a href="/login">Plataforma</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Cursos populares</h4>
+            <ul class="footer__links">
+              <li><a href="#cursos">Respuesta a emergencias</a></li>
+              <li><a href="#cursos">Trabajo en altura</a></li>
+              <li><a href="#cursos">Seguridad eléctrica</a></li>
+              <li><a href="#cursos">Sustancias químicas</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Contacto</h4>
+            <ul class="footer__links">
+              <li><a href="https://wa.me/51992809049" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> +51 992 809 049</a></li>
+              <li><a href="mailto:contacto@teamhsec.com"><i class="fa-regular fa-envelope"></i> contacto@teamhsec.com</a></li>
+              <li><span><i class="fa-solid fa-location-dot"></i> Ate, Lima — Perú</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer__bottom">
+          <span>© 2026 TEAM HSEC E.I.R.L. Todos los derechos reservados.</span>
+          <div class="footer__social">
+            <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/51992809049" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer footer--dark">
-    <div class="container footer__grid">
-      <div class="footer__brand">
-        <img src="img/logo_teamhsec.webp" alt="TEAM HSEC" class="footer__logo">
-        <p>Formación profesional en seguridad minera, industrial y ocupacional que impulsa tu carrera.</p>
-      </div>
-      <div>
-        <h3>Enlaces rápidos</h3>
-        <ul class="footer__links">
-          <li><a href="#inicio">Inicio</a></li>
-          <li><a href="#nosotros">Nosotros</a></li>
-          <li><a href="#cursos">Cursos</a></li>
-          <li><a href="/certificados">Certificados</a></li>
-          <li><a href="/login">Plataforma</a></li>
-          <li><a href="#contacto">Contacto</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Cursos populares</h3>
-        <ul class="footer__links">
-          <li><a href="#cursos">Respuesta a emergencias</a></li>
-          <li><a href="#cursos">Trabajo en altura</a></li>
-          <li><a href="#cursos">Seguridad eléctrica</a></li>
-          <li><a href="#cursos">Sustancias químicas</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Contáctanos</h3>
-        <ul class="footer__contact">
-          <li><i class="fa-brands fa-whatsapp"></i> <a href="https://wa.me/51992809049">+51 992 809 049</a></li>
-          <li><i class="fa-regular fa-envelope"></i> <a href="mailto:contacto@teamhsec.com">contacto@teamhsec.com</a>
-          </li>
-          <li><i class="fa-solid fa-location-dot"></i> Ate, Lima — Perú</li>
-        </ul>
-      </div>
-    </div>
-  </footer>
-  <div class="footer-copy">
-    <div class="container footer-copy__row">
-      <span>© 2026 TEAM HSEC E.I.R.L. Todos los derechos reservados.</span>
-    </div>
+    </footer>
   </div>
 
-  <!-- Social flotante -->
-  <div class="social-float" aria-label="Redes sociales">
-    <a href="https://wa.me/51992809049" class="social-float__wa" target="_blank" rel="noopener" aria-label="WhatsApp"><i
-        class="fa-brands fa-whatsapp"></i></a>
-    <a href="https://facebook.com" class="social-float__fb" target="_blank" rel="noopener" aria-label="Facebook"><i
-        class="fa-brands fa-facebook-f"></i></a>
-    <a href="https://instagram.com" class="social-float__ig" target="_blank" rel="noopener" aria-label="Instagram"><i
-        class="fa-brands fa-instagram"></i></a>
-  </div>
+  <!-- ================= PÍLDORA FLOTANTE ================= -->
+  <nav class="float-pill" aria-label="Accesos rápidos">
+    <a href="#cursos" class="is-active"><i class="fa-solid fa-book-open"></i> Cursos</a>
+    <a href="/certificados"><i class="fa-solid fa-qrcode"></i> Verificar</a>
+    <a href="https://wa.me/51992809049" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+  </nav>
 
-  <!-- WhatsApp FAB -->
-  <a href="https://wa.me/51992809049?text=Hola,%20quiero%20información%20sobre%20cursos%20de%20TEAM%20HSEC"
-    class="wa-fab" target="_blank" rel="noopener" aria-label="Chatear por WhatsApp">
-    <i class="fa-brands fa-whatsapp"></i>
-  </a>
-
-  <!-- Barra de acción móvil -->
-  <div class="mobile-cta">
-    <a class="mobile-cta__wa" href="https://wa.me/51992809049?text=Hola,%20quiero%20información%20sobre%20cursos%20de%20TEAM%20HSEC"
-      target="_blank" rel="noopener">
-      <i class="fa-brands fa-whatsapp"></i> WhatsApp
+  <!-- ================= WIDGET LATERAL ================= -->
+  <aside class="side-widget" aria-label="Marca y preferencias de vista">
+    <a class="side-widget__brand" href="#inicio" aria-label="TEAM HSEC — volver al inicio">
+      <img src="img/logo_RV.webp" alt="" width="256" height="256" loading="lazy" decoding="async">
     </a>
-    <a class="mobile-cta__courses" href="#cursos">
-      <i class="fa-solid fa-book-open"></i> Ver cursos
-    </a>
-  </div>
+    <span class="side-widget__sep" aria-hidden="true"></span>
+    <button type="button" title="Tema oscuro" aria-label="Cambiar a tema oscuro" data-theme-dark aria-pressed="false"><i class="fa-solid fa-moon"></i></button>
+    <button type="button" title="Tema claro" aria-label="Cambiar a tema claro" data-theme-day aria-pressed="true"><i class="fa-solid fa-sun"></i></button>
+  </aside>
 
-  <!-- Modal curso -->
+  <!-- ================= MODAL CURSO ================= -->
   <div class="modal" id="course-modal" aria-hidden="true">
     <div class="modal__backdrop" data-modal-close></div>
     <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <button class="modal__close" type="button" aria-label="Cerrar" data-modal-close>
         <i class="fa-solid fa-xmark"></i>
       </button>
-      <div class="modal__header">
-        <p class="modal__tag">Detalle del curso</p>
-        <h3 id="modal-title"></h3>
-      </div>
-      <div class="modal__content">
-        <div class="modal__meta">
-          <div>
-            <span class="modal__label">Duración</span>
-            <span class="modal__value" id="modal-duration"></span>
-          </div>
-          <div>
-            <span class="modal__label">Inicio</span>
-            <span class="modal__value" id="modal-date"></span>
-          </div>
-          <div>
-            <span class="modal__label">Entrenador</span>
-            <span class="modal__value" id="modal-trainer"></span>
-          </div>
+      <p class="modal__tag">Detalle del curso</p>
+      <h3 id="modal-title"></h3>
+      <div class="modal__meta">
+        <div>
+          <span class="modal__label">Duración</span>
+          <span class="modal__value" id="modal-duration"></span>
         </div>
-        <p class="modal__summary" id="modal-summary"></p>
-        <a href="#" id="modal-enroll" class="button primary" target="_blank" rel="noopener">Inscribirme por WhatsApp</a>
+        <div>
+          <span class="modal__label">Inicio</span>
+          <span class="modal__value" id="modal-date"></span>
+        </div>
+        <div>
+          <span class="modal__label">Entrenador</span>
+          <span class="modal__value" id="modal-trainer"></span>
+        </div>
       </div>
+      <p class="modal__summary" id="modal-summary"></p>
+      <a href="#" id="modal-enroll" class="btn btn--gold" target="_blank" rel="noopener">Inscribirme por WhatsApp</a>
     </div>
   </div>
 
-  <script src="/assets/js/app.js" defer></script>
   <script src="/assets/js/landing.js" defer></script>
 </body>
 

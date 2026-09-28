@@ -362,12 +362,13 @@ const init = async () => {
   initModalButtons();
   initForms();
 
-  if (!localStorage.getItem('admin_token')) {
+  // Sesión válida si el token está en cualquiera de los dos almacenes
+  if (!localStorage.getItem('admin_token') && !sessionStorage.getItem('admin_token')) {
     window.location.href = '/login';
     return;
   }
 
-  const userData = localStorage.getItem('admin_user');
+  const userData = localStorage.getItem('admin_user') || sessionStorage.getItem('admin_user');
   if (userData && el('user-display-header')) {
     try {
       el('user-display-header').textContent = JSON.parse(userData).nombre || 'Administrador TEAM HSEC';
@@ -380,6 +381,8 @@ const init = async () => {
     event.preventDefault();
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_user');
+    sessionStorage.removeItem('admin_token');
+    sessionStorage.removeItem('admin_user');
     window.location.href = '/login';
   });
 

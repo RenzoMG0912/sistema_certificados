@@ -50,7 +50,12 @@
     <!-- ================= NAVBAR ================= -->
     <header class="nav" id="nav">
       <div class="container nav__inner">
-        <div class="nav__left">
+        <a class="nav__brand" href="#inicio" aria-label="TEAM HSEC — inicio">
+          <img src="img/logo_teamhsec.webp" alt="" height="40">
+          <span class="nav__logo-script">Team <em>HSEC</em></span>
+        </a>
+
+        <nav class="nav__left" aria-label="Navegación principal">
           <button class="nav__link nav__link--desk" data-mega="features" aria-expanded="false" aria-controls="mega-features">
             Cursos <i class="fa-solid fa-chevron-down"></i>
           </button>
@@ -59,15 +64,11 @@
           </button>
           <a class="nav__link nav__link--desk" href="/certificados">Certificados</a>
           <a class="nav__link nav__link--desk" href="#nosotros">Nosotros</a>
-        </div>
-
-        <a class="nav__center nav__logo-script" href="#inicio" aria-label="TEAM HSEC — inicio">Team <em>HSEC</em></a>
+        </nav>
 
         <div class="nav__right">
           <a class="btn btn--outline-gold" href="/login">Acceder</a>
-          <a class="btn btn--red"
-            href="https://wa.me/51992809049?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20cursos%20de%20TEAM%20HSEC"
-            target="_blank" rel="noopener">Inscríbete</a>
+          <a class="btn btn--red btn--wa" href="https://wa.me/51992809049?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20cursos%20de%20TEAM%20HSEC" target="_blank" rel="noopener" aria-label="Inscríbete por WhatsApp"><i class="fa-brands fa-whatsapp"></i> Inscríbete</a>
           <button class="nav__toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links-mobile"
             aria-label="Abrir menú"><i class="fa-solid fa-bars"></i></button>
         </div>
@@ -92,30 +93,30 @@
         <p class="mega__label">Por categoría</p>
         <a class="mega__item" href="#cursos" data-mega-close>
           <span class="mega__ico"><i class="fa-solid fa-shield-halved"></i></span>
-          <span><strong>Seguridad</strong><span>Altura, LOTO, eléctrica, incendio</span></span>
+          <span class="mega__txt"><strong>Seguridad</strong><span>Altura, LOTO, eléctrica, incendio</span></span>
         </a>
         <a class="mega__item" href="#cursos" data-mega-close>
           <span class="mega__ico"><i class="fa-solid fa-truck-monster"></i></span>
-          <span><strong>Operaciones</strong><span>Equipos móviles, izaje, herramientas</span></span>
+          <span class="mega__txt"><strong>Operaciones</strong><span>Equipos móviles, izaje, herramientas</span></span>
         </a>
         <a class="mega__item" href="#cursos" data-mega-close>
           <span class="mega__ico"><i class="fa-solid fa-flask"></i></span>
-          <span><strong>Salud Ocupacional</strong><span>Sustancias químicas y materiales</span></span>
+          <span class="mega__txt"><strong>Salud Ocupacional</strong><span>Sustancias químicas y materiales</span></span>
         </a>
       </div>
       <div class="mega__col">
         <p class="mega__label">Destacados</p>
         <a class="mega__item" href="#cursos" data-mega-close>
           <span class="mega__ico"><i class="fa-solid fa-person-falling"></i></span>
-          <span><strong>Trabajo en altura</strong><span>Próximo inicio: 26 Ago 2026</span></span>
+          <span class="mega__txt"><strong>Trabajo en altura</strong><span>Próximo inicio: 26 Ago 2026</span></span>
         </a>
         <a class="mega__item" href="#cursos" data-mega-close>
           <span class="mega__ico"><i class="fa-solid fa-kit-medical"></i></span>
-          <span><strong>Respuesta a emergencias</strong><span>Próximo inicio: 02 Sep 2026</span></span>
+          <span class="mega__txt"><strong>Respuesta a emergencias</strong><span>Próximo inicio: 02 Sep 2026</span></span>
         </a>
         <a class="mega__item" href="#cursos" data-mega-close>
           <span class="mega__ico"><i class="fa-solid fa-bolt"></i></span>
-          <span><strong>Seguridad eléctrica</strong><span>Próximo inicio: 07 Oct 2026</span></span>
+          <span class="mega__txt"><strong>Seguridad eléctrica</strong><span>Próximo inicio: 07 Oct 2026</span></span>
         </a>
       </div>
       <div class="mega__col mega__col--promo">
@@ -134,15 +135,15 @@
         <p class="mega__label">Por necesidad</p>
         <a class="mega__item" href="#contacto" data-mega-close>
           <span class="mega__ico"><i class="fa-solid fa-users"></i></span>
-          <span><strong>Capacitación de personal</strong><span>Programas para equipos y cuadrillas</span></span>
+          <span class="mega__txt"><strong>Capacitación de personal</strong><span>Programas para equipos y cuadrillas</span></span>
         </a>
         <a class="mega__item" href="#contacto" data-mega-close>
           <span class="mega__ico"><i class="fa-solid fa-building"></i></span>
-          <span><strong>Contratistas y mineras</strong><span>Cumplimiento normativo HSEC</span></span>
+          <span class="mega__txt"><strong>Contratistas y mineras</strong><span>Cumplimiento normativo HSEC</span></span>
         </a>
         <a class="mega__item" href="#contacto" data-mega-close>
           <span class="mega__ico"><i class="fa-solid fa-clipboard-check"></i></span>
-          <span><strong>Verificación de certificados</strong><span>Confirma la vigencia de tu personal</span></span>
+          <span class="mega__txt"><strong>Verificación de certificados</strong><span>Confirma la vigencia de tu personal</span></span>
         </a>
       </div>
       <div class="mega__col mega__col--promo">
@@ -228,7 +229,7 @@
           <div class="pillars__grid">
             <article class="pillar reveal">
               <div class="pillar__media">
-                <img src="img\landing_page\pexels-deyler-rivera-segura-1300296248-29506742.webp" alt="Capacitación práctica en altura" loading="lazy"
+                <img src="\img\landing_page\capacitacion.webp" alt="Capacitación práctica en altura" loading="lazy"
                   width="600" height="450">
               </div>
               <h3>Capacítate</h3>
@@ -285,7 +286,6 @@
                   alt="Sello del Colegio de Ingenieros del Perú" width="256" height="256" loading="lazy"
                   decoding="async">
                 <div class="bento__credential-meta">
-                  <span class="bento__credential-code">CIP N° {{CIP_CODE}}</span>
                   <span class="bento__credential-note">Ingenieros colegiados y habilitados<br>Colegio de Ingenieros del Perú</span>
                 </div>
               </div>

@@ -510,12 +510,15 @@
         });
       }
 
-      // Check if already logged in as admin or student
-      if (localStorage.getItem('admin_token')) {
+      // Sesión activa: busca en ambos almacenes (persistente y de pestaña)
+      const getAuth = (key) => {
+        try { return localStorage.getItem(key) || sessionStorage.getItem(key); } catch (e) { return null; }
+      };
+      if (getAuth('admin_token')) {
         window.location.href = '/admin/dashboard';
         return;
       }
-      if (localStorage.getItem('student_token')) {
+      if (getAuth('student_token')) {
         window.location.href = '/student/dashboard';
         return;
       }
@@ -575,13 +578,21 @@
             const data = await response.json();
 
             if (response.ok && data.token) {
-              // Store token and user data based on role
+              // "Recordar mi sesión" decide la persistencia:
+              //   marcado    -> localStorage  (sobrevive al cierre del navegador)
+              //   sin marcar -> sessionStorage (solo dura la pestaña actual)
+              const remember = document.getElementById('remember')?.checked === true;
+              const store = remember ? localStorage : sessionStorage;
+              const other = remember ? sessionStorage : localStorage;
+              ['admin_token', 'admin_user', 'student_token', 'student_user']
+                .forEach((key) => { try { other.removeItem(key); } catch (e) { /* sin almacenamiento */ } });
+
               if (data.rol === 'admin') {
-                localStorage.setItem('admin_token', data.token);
-                localStorage.setItem('admin_user', JSON.stringify(data.usuario || { email }));
+                store.setItem('admin_token', data.token);
+                store.setItem('admin_user', JSON.stringify(data.usuario || { email }));
               } else {
-                localStorage.setItem('student_token', data.token);
-                localStorage.setItem('student_user', JSON.stringify(data.estudiante || { email }));
+                store.setItem('student_token', data.token);
+                store.setItem('student_user', JSON.stringify(data.estudiante || { email }));
               }
 
               alertBox.className = 'alert alert-success';

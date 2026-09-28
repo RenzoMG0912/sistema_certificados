@@ -41,12 +41,15 @@
 
   const apiFetch = async (url, options = {}) => {
     const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-    const token = localStorage.getItem(TOKEN_KEY);
+    // El token puede vivir en localStorage (sesión recordada) o en sessionStorage
+    const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
     if (token) headers.Authorization = `Bearer ${token}`;
     const response = await fetch(url, { ...options, headers });
     if (response.status === 401 || response.status === 403) {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
+      sessionStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(USER_KEY);
     window.location.href = '/login';
       return;
     }
@@ -72,7 +75,7 @@
   let studentStats = null;
 
   // ========== AUTH CHECK ==========
-  if (!localStorage.getItem(TOKEN_KEY)) {
+  if (!localStorage.getItem(TOKEN_KEY) && !sessionStorage.getItem(TOKEN_KEY)) {
     window.location.href = '/login';
     return;
   }
@@ -669,6 +672,8 @@
   el('logout-btn')?.addEventListener('click', () => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(USER_KEY);
     window.location.href = '/login';
   });
 

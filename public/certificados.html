@@ -1,204 +1,367 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f4ef">
   <title>TEAM HSEC | Certificados</title>
+  <meta name="description" content="Verifica la autenticidad de los certificados TEAM HSEC por QR, código o DNI.">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/assets/css/landing.css">
+  <link rel="stylesheet" href="/assets/css/certificados.css">
   <link rel="icon" type="image/x-icon" href="img/favicon_teamhsec.ico">
+
   <script>
-    // Aplica el tema antes del primer paint para evitar el parpadeo (FOUC).
+    // Pre-paint: aplica el tema guardado antes del primer render (evita FOUC).
     (function () {
       try {
-        var saved = localStorage.getItem('theme');
-        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var dark = saved ? saved === 'dark' : prefersDark;
-        if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+        if (localStorage.getItem('hsec-theme') === 'dark') {
+          document.documentElement.classList.add('theme-dark-init');
+        }
       } catch (e) { /* almacenamiento no disponible */ }
     })();
   </script>
 </head>
+
 <body>
-  <script>document.body.classList.add('js-loading');</script>
-  <header class="site-header">
-    <div class="container nav">
-      <div class="logo">
-        <img class="logo-img" src="img/logo_teamhsec.webp" alt="TEAM HSEC">
-        <div class="logo-text">
-          <h2>TEAM HSEC</h2>
+  <script>
+    try {
+      if (localStorage.getItem('hsec-theme') === 'dark') document.body.classList.add('dark-mode');
+    } catch (e) { /* almacenamiento no disponible */ }
+  </script>
+
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <!-- ================= FONDO TRANSFORMABLE (misma morfología del landing) ================= -->
+  <div class="bg-wrap" aria-hidden="true">
+    <div class="bg-halo"></div>
+    <div class="bg-mountains"></div>
+    <div class="bg-figure"></div>
+
+    <svg class="ribbon ribbon--tr" preserveAspectRatio="none" viewBox="0 0 1440 900">
+      <path class="rb-fill-a" d="M -80 -40 L 700 -60 C 560 130 320 170 -80 240 Z"></path>
+      <path class="rb-fill-b" d="M -80 -40 L 640 -60 C 510 100 280 140 -80 200 Z"></path>
+      <path class="rb-gold ribbon__gold" d="M -80 -30 L 720 -50 C 580 140 330 180 -80 250 Z"></path>
+    </svg>
+
+    <svg class="ribbon ribbon--bl" preserveAspectRatio="none" viewBox="0 0 1440 900">
+      <path class="rb-fill-a" d="M 1500 1050 L 820 960 C 1000 830 1240 800 1500 860 Z"></path>
+      <path class="rb-fill-b" d="M 1500 1050 L 760 970 C 940 860 1220 835 1500 890 Z"></path>
+      <path class="rb-gold" d="M 1500 1040 L 840 950 C 1020 820 1260 790 1500 850 Z"></path>
+    </svg>
+
+    <div class="bg-frost" aria-hidden="true"></div>
+  </div>
+
+  <div class="page">
+    <!-- ================= NAVBAR (idéntico al del landing) ================= -->
+    <header class="nav" id="nav">
+      <div class="container nav__inner">
+        <a class="nav__brand" href="/" aria-label="TEAM HSEC — inicio">
+          <img src="img/logo_teamhsec.webp" alt="" height="40">
+          <span class="nav__logo-script">Team <em>HSEC</em></span>
+        </a>
+
+        <nav class="nav__left" aria-label="Navegación principal">
+          <button class="nav__link nav__link--desk" data-mega="features" aria-expanded="false" aria-controls="mega-features">
+            Cursos <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <button class="nav__link nav__link--desk" data-mega="solutions" aria-expanded="false" aria-controls="mega-solutions">
+            Empresas <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <a class="nav__link nav__link--desk is-current" href="/certificados" aria-current="page">Certificados</a>
+          <a class="nav__link nav__link--desk" href="/#nosotros">Nosotros</a>
+        </nav>
+
+        <div class="nav__right">
+          <a class="btn btn--outline-gold" href="/login">Acceder</a>
+          <a class="btn btn--red btn--wa" href="https://wa.me/51992809049?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20cursos%20de%20TEAM%20HSEC" target="_blank" rel="noopener" aria-label="Inscríbete por WhatsApp"><i class="fa-brands fa-whatsapp"></i> Inscríbete</a>
+          <button class="nav__toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links-mobile" aria-label="Abrir menú"><i class="fa-solid fa-bars"></i></button>
         </div>
       </div>
-      <nav class="nav-links">
-        <a href="/">Inicio</a>
-        <a href="/#nosotros">Nosotros</a>
+
+      <!-- Menú móvil -->
+      <nav class="nav__links-mobile" id="nav-links-mobile" aria-label="Navegación móvil">
         <a href="/#cursos">Cursos</a>
-        <a class="active" href="/certificados">Certificados</a>
-        <a href="/#contacto">Contacto</a>
+        <a href="/certificados">Certificados</a>
+        <a href="/#nosotros">Nosotros</a>
+        <a href="/#testimonios">Testimonios</a>
+        <a href="/login">Acceder a la plataforma</a>
       </nav>
-      <div class="nav-actions">
-        <a href="/login" class="button outline" style="padding: 8px 18px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-          <i class="fa-solid fa-right-to-bracket"></i> Ingresar a la plataforma
+    </header>
+
+    <!-- Backdrop de mega-menús -->
+    <div class="mega-backdrop" id="mega-backdrop"></div>
+
+    <!-- ================= MEGA-MENÚ: CURSOS ================= -->
+    <div class="mega" id="mega-features" role="menu" aria-label="Cursos por categoría">
+      <div class="mega__col">
+        <p class="mega__label">Por categoría</p>
+        <a class="mega__item" href="/#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-shield-halved"></i></span>
+          <span class="mega__txt"><strong>Seguridad</strong><span>Altura, LOTO, eléctrica, incendio</span></span>
         </a>
-        <button class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Cambiar modo oscuro/claro" title="Modo oscuro">
-          <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"><i class="fa-solid fa-sun"></i></span>
-          <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"><i class="fa-solid fa-moon"></i></span>
-          <span class="theme-toggle__knob" aria-hidden="true"></span>
-        </button>
+        <a class="mega__item" href="/#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-truck-monster"></i></span>
+          <span class="mega__txt"><strong>Operaciones</strong><span>Equipos móviles, izaje, herramientas</span></span>
+        </a>
+        <a class="mega__item" href="/#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-flask"></i></span>
+          <span class="mega__txt"><strong>Salud Ocupacional</strong><span>Sustancias químicas y materiales</span></span>
+        </a>
+      </div>
+      <div class="mega__col">
+        <p class="mega__label">Destacados</p>
+        <a class="mega__item" href="/#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-person-falling"></i></span>
+          <span class="mega__txt"><strong>Trabajo en altura</strong><span>Próximo inicio: 26 Ago 2026</span></span>
+        </a>
+        <a class="mega__item" href="/#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-kit-medical"></i></span>
+          <span class="mega__txt"><strong>Respuesta a emergencias</strong><span>Próximo inicio: 02 Sep 2026</span></span>
+        </a>
+        <a class="mega__item" href="/#cursos" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-bolt"></i></span>
+          <span class="mega__txt"><strong>Seguridad eléctrica</strong><span>Próximo inicio: 07 Oct 2026</span></span>
+        </a>
+      </div>
+      <div class="mega__col mega__col--promo">
+        <div class="mega__promo">
+          <div class="mega__promo-art"><i class="fa-solid fa-qrcode"></i></div>
+          <strong>Certificados <em>QR</em></strong>
+          <p>Valida la autenticidad de cualquier certificado TEAM HSEC escaneando el código o por código + DNI.</p>
+          <a class="btn" href="/certificados" data-mega-close>Verificar ahora</a>
+        </div>
       </div>
     </div>
-  </header>
 
-  <main>
-    <section class="section" id="certificados">
-      <div class="container">
-        
-        <!-- Header Section -->
-        <div class="section__header" style="max-width: 800px; margin: 0 auto 40px auto;">
-          <h2 style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--text);">Nuestros Certificados</h2>
-          <div class="section__bar" style="margin-bottom: 24px;"></div>
-          <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.7; max-width: 680px; margin: 0 auto; text-align: center;">
-            En TEAM HSEC, reconocemos tu esfuerzo y dedicación. Al finalizar exitosamente nuestros cursos, obtendrás un certificado de participación y/o aprobación que avala tus nuevas habilidades y conocimientos. Estos certificados son un valioso añadido a tu perfil profesional.
+    <!-- ================= MEGA-MENÚ: EMPRESAS ================= -->
+    <div class="mega" id="mega-solutions" role="menu" aria-label="Soluciones para empresas">
+      <div class="mega__col">
+        <p class="mega__label">Por necesidad</p>
+        <a class="mega__item" href="/#contacto" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-users"></i></span>
+          <span class="mega__txt"><strong>Capacitación de personal</strong><span>Programas para equipos y cuadrillas</span></span>
+        </a>
+        <a class="mega__item" href="/#contacto" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-building"></i></span>
+          <span class="mega__txt"><strong>Contratistas y mineras</strong><span>Cumplimiento normativo HSEC</span></span>
+        </a>
+        <a class="mega__item" href="/#contacto" data-mega-close>
+          <span class="mega__ico"><i class="fa-solid fa-clipboard-check"></i></span>
+          <span class="mega__txt"><strong>Verificación de certificados</strong><span>Confirma la vigencia de tu personal</span></span>
+        </a>
+      </div>
+      <div class="mega__col mega__col--promo">
+        <div class="mega__promo">
+          <div class="mega__promo-art"><i class="fa-brands fa-whatsapp"></i></div>
+          <strong>Hablemos de <em>tu equipo</em></strong>
+          <p>Cuéntanos cuántas personas necesitas certificar y armamos el programa a tu medida.</p>
+          <a class="btn" href="https://wa.me/51992809049" target="_blank" rel="noopener" data-mega-close>Contactar</a>
+        </div>
+      </div>
+    </div>
+
+    <main id="contenido">
+      <!-- ================= HERO COMPACTO ================= -->
+      <section class="certs-hero">
+        <div class="certs-hero__media" aria-hidden="true">
+          <img src="img/landing_page/pexels-chetanvlad-2892618.webp" alt="" width="1920" height="1019" fetchpriority="high">
+        </div>
+        <div class="certs-hero__tint" aria-hidden="true"></div>
+        <div class="container certs-hero__content">
+          <span class="hero__pill">Verificación oficial · QR y código único</span>
+          <h1 class="hero__title reveal">Nuestros <em>Certificados</em></h1>
+          <p class="hero__sub reveal">
+            En TEAM HSEC reconocemos tu esfuerzo: cada certificado lleva un código único, firmas
+            autorizadas con CIP y un hash de seguridad verificable en línea.
           </p>
         </div>
+      </section>
 
-        <!-- Info Cards Section -->
-        <div class="certs" id="info-cards-wrapper" style="margin-bottom: 40px;">
-          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid var(--border-soft); background: var(--bg-card);">
-            <h4 style="font-size: 16px; font-weight: 700; color: var(--text); margin: 0; display: flex; align-items: center; gap: 8px;">
-              <span style="color: var(--red); font-size: 20px; font-weight: 900;">|</span> Certificado Digital
-            </h4>
-            <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin: 0;">
-              Accede a tu certificado en PDF, listo para compartir o imprimir en cualquier momento.
-            </p>
-          </div>
-          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid var(--border-soft); background: var(--bg-card);">
-            <h4 style="font-size: 16px; font-weight: 700; color: var(--text); margin: 0; display: flex; align-items: center; gap: 8px;">
-              <span style="color: var(--red); font-size: 20px; font-weight: 900;">|</span> Certificado Físico
-            </h4>
-            <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin: 0;">
-              Para ciertos cursos de la plataforma, ofrecemos certificación física impresa de alta calidad.
-            </p>
-          </div>
-          <div class="cert" style="text-align: left; padding: 28px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); border: 1px solid var(--border-soft); background: var(--bg-card);">
-            <h4 style="font-size: 16px; font-weight: 700; color: var(--text); margin: 0; display: flex; align-items: center; gap: 8px;">
-              <span style="color: var(--red); font-size: 20px; font-weight: 900;">|</span> Reconocimiento Profesional
-            </h4>
-            <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin: 0;">
-              Avalado por ponentes certificados e instructores líderes, relevante para el mercado laboral.
-            </p>
-          </div>
-        </div>
+      <!-- ================= CONTENIDO ================= -->
+      <section class="section" id="certificados" style="padding-top: 0;">
+        <div class="container">
 
-        <!-- Toggle Search Form Button -->
-        <div class="toggle-search-container" id="toggle-btn-wrapper">
-          <button type="button" class="toggle-search-btn" id="btn-toggle-search">
-            <i class="fa-solid fa-eye-slash"></i>
-            <span id="toggle-search-text">Ocultar Buscador</span>
-          </button>
-        </div>
-
-          <!-- Search Form Panel -->
-        <div class="search-container" id="search-box-wrapper" style="margin-bottom: 30px;">
-          <form class="search" id="cert-search-form" style="max-width: 720px; margin: 0 auto; padding: 35px 24px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); background: var(--bg-card);">
-            <h3 style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 20px; text-align: center;">Buscar Certificado</h3>
-            <div class="search__fields" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 0;">
-              <input id="search-code" type="text" placeholder="ID O CÓDIGO DE CERTIFICADO (ej: PE-0001-26)" style="flex-grow: 2; min-width: 260px; padding: 12px 20px; border-radius: 999px; border: 1px solid var(--border);" required>
-              <input id="search-dni" type="text" placeholder="DNI (8 dígitos)" style="flex-grow: 1; min-width: 180px; padding: 12px 20px; border-radius: 999px; border: 1px solid var(--border);" required>
-              <button class="button primary" type="submit" style="padding: 12px 30px; font-weight: 700; background: var(--red); color: white;">Buscar</button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Split Screen Details View (Hidden by default) -->
-        <div class="split-verification" id="verification-result-wrapper" style="display: none;">
-          <!-- Left side: PDF viewer -->
-          <div class="pdf-visualizer">
-            <iframe id="pdf-frame" src="" title="Vista previa del Certificado"></iframe>
+          <!-- Tarjetas informativas -->
+          <div class="certs-cards" id="info-cards-wrapper">
+            <article class="cert-card reveal">
+              <span class="cert-card__ico"><i class="fa-solid fa-file-pdf"></i></span>
+              <h3>Certificado Digital</h3>
+              <p>Accede a tu certificado en PDF, listo para compartir o imprimir en cualquier momento
+                desde nuestra plataforma.</p>
+            </article>
+            <article class="cert-card reveal">
+              <span class="cert-card__ico"><i class="fa-solid fa-print"></i></span>
+              <h3>Certificado Físico</h3>
+              <p>Para ciertos cursos de la plataforma, ofrecemos certificación física impresa de alta
+                calidad con firmas autorizadas.</p>
+            </article>
+            <article class="cert-card reveal">
+              <span class="cert-card__ico"><i class="fa-solid fa-award"></i></span>
+              <h3>Reconocimiento Profesional</h3>
+              <p>Avalado por ponentes certificados e instructores líderes, relevante para el mercado
+                laboral y auditables por tu empresa.</p>
+            </article>
           </div>
 
-          <!-- Right side: Sidebar Info -->
-          <div class="sidebar-info">
-            <div class="profile-header">
-              <div class="profile-pic">
-                <i class="fa-solid fa-user"></i>
-              </div>
-              <h4 class="student-name" id="cert-student-name">JUAN PEREZ GOMEZ</h4>
-              <div id="cert-status-badge">
-                <span class="badge-verified"><i class="fa-solid fa-circle-check"></i> Válido y Auténtico</span>
-              </div>
-            </div>
-            <div class="info-list">
-              <div class="info-item">
-                <span class="info-label">Curso Especializado</span>
-                <span class="info-value" id="cert-course-name">Respuesta a Emergencias</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Código Oficial</span>
-                <span class="info-value code" id="cert-official-code">PE-0001-26</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Fecha de Emisión</span>
-                <span class="info-value" id="cert-issue-date">12/06/2026</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Fecha de Vencimiento</span>
-                <span class="info-value" id="cert-expiry-date">12/06/2027</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Firma e ID Blockchain</span>
-                <span class="info-value hash" id="cert-blockchain-hash">09dc6203-47d5-4e83...</span>
-              </div>
-            </div>
-            <a href="#" class="button primary btn-action" id="btn-pdf-download" style="background: var(--red); color: white; padding: 12px 20px; font-weight: 700; border-radius: 999px; display: none; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; text-decoration: none;" download>
-              <i class="fa-solid fa-file-pdf"></i> Descargar Certificado (PDF)
-            </a>
-            <button type="button" class="button primary btn-action" id="btn-search-new" style="background: var(--red); color: white; padding: 12px 20px; font-weight: 700; border-radius: 999px;">
-              Buscar Nuevo Certificado
+          <!-- Botón para ocultar/mostrar el buscador -->
+          <div class="toggle-search-container" id="toggle-btn-wrapper">
+            <button type="button" class="btn btn--red" id="btn-toggle-search">
+              <i class="fa-solid fa-eye-slash"></i>
+              <span id="toggle-search-text">Ocultar Buscador</span>
             </button>
           </div>
-        </div>
 
-        <!-- Error box when certificate is not found (Hidden by default) -->
-        <div class="search-error" id="search-error-box" style="display: none;">
-          <div style="color: #ef4444; font-size: 44px; margin-bottom: 8px;">
-            <i class="fa-solid fa-triangle-exclamation"></i>
+          <!-- Panel del buscador -->
+          <div class="search-container" id="search-box-wrapper" style="margin-bottom: 30px;">
+            <form class="cert-search" id="cert-search-form">
+              <h2>Buscar <em>Certificado</em></h2>
+              <p class="cert-search__help">Ingresa el código impreso en tu certificado junto a tu número de DNI.</p>
+              <div class="cert-search__fields">
+                <input id="search-code" type="text" placeholder="ID O CÓDIGO DE CERTIFICADO (ej: PE-0001-26)" required>
+                <input id="search-dni" type="text" placeholder="DNI (8 dígitos)" required>
+                <button class="btn btn--red" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
+              </div>
+            </form>
           </div>
-          <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 8px;">Certificado No Encontrado</h3>
-          <p style="margin-bottom: 20px; font-weight: 500;">
-            El código del certificado o el DNI ingresado no coinciden con nuestros registros oficiales de verificación.
-          </p>
-          <button type="button" class="button" id="btn-error-retry" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 10px 24px; font-weight: 600; border-radius: 999px;">
-            Intentar de Nuevo
-          </button>
+
+          <!-- Resultado: panel dividido (PDF + ficha) -->
+          <div class="split-verification" id="verification-result-wrapper" style="display: none;">
+            <div class="pdf-visualizer">
+              <iframe id="pdf-frame" src="" title="Vista previa del Certificado"></iframe>
+            </div>
+
+            <div class="sidebar-info">
+              <div class="profile-header">
+                <div class="profile-pic">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+                <h4 class="student-name" id="cert-student-name">JUAN PEREZ GOMEZ</h4>
+                <div id="cert-status-badge">
+                  <span class="badge-verified"><i class="fa-solid fa-circle-check"></i> Válido y Auténtico</span>
+                </div>
+              </div>
+              <div class="info-list">
+                <div class="info-item">
+                  <span class="info-label">Curso Especializado</span>
+                  <span class="info-value" id="cert-course-name">Respuesta a Emergencias</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Código Oficial</span>
+                  <span class="info-value code" id="cert-official-code">PE-0001-26</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Fecha de Emisión</span>
+                  <span class="info-value" id="cert-issue-date">12/06/2026</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Fecha de Vencimiento</span>
+                  <span class="info-value" id="cert-expiry-date">12/06/2027</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Firma e ID Blockchain</span>
+                  <span class="info-value hash" id="cert-blockchain-hash">09dc6203-47d5-4e83...</span>
+                </div>
+              </div>
+              <a href="#" class="btn btn--red btn-action" id="btn-pdf-download" style="display: none;" download>
+                <i class="fa-solid fa-file-pdf"></i> Descargar Certificado (PDF)
+              </a>
+              <button type="button" class="btn btn--outline-gold btn-action" id="btn-search-new">
+                Buscar Nuevo Certificado
+              </button>
+            </div>
+          </div>
+
+          <!-- Error: certificado no encontrado -->
+          <div class="search-error" id="search-error-box" style="display: none;">
+            <div class="search-error__ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3>Certificado No Encontrado</h3>
+            <p>El código del certificado o el DNI ingresado no coinciden con nuestros registros
+              oficiales de verificación.</p>
+            <button type="button" class="btn btn--outline-gold" id="btn-error-retry">Intentar de Nuevo</button>
+          </div>
+
         </div>
+      </section>
+    </main>
 
+    <!-- ================= FOOTER (mismo del landing) ================= -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__grid">
+          <div class="footer__brand">
+            <img class="footer__logo" src="img/logo_teamhsec.webp" alt="TEAM HSEC" loading="lazy" decoding="async">
+            <p>Formación profesional en seguridad minera, industrial y ocupacional que impulsa tu carrera.</p>
+            <div class="footer__credential">
+              <img src="img/cip.webp" alt="" width="256" height="256" loading="lazy" decoding="async">
+              <span>Certificados avalados por el <strong>Colegio de Ingenieros del Perú</strong></span>
+            </div>
+          </div>
+          <div>
+            <h4>Enlaces</h4>
+            <ul class="footer__links">
+              <li><a href="/#inicio">Inicio</a></li>
+              <li><a href="/#nosotros">Nosotros</a></li>
+              <li><a href="/#cursos">Cursos</a></li>
+              <li><a href="/certificados">Certificados</a></li>
+              <li><a href="/login">Plataforma</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Cursos populares</h4>
+            <ul class="footer__links">
+              <li><a href="/#cursos">Respuesta a emergencias</a></li>
+              <li><a href="/#cursos">Trabajo en altura</a></li>
+              <li><a href="/#cursos">Seguridad eléctrica</a></li>
+              <li><a href="/#cursos">Sustancias químicas</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Contacto</h4>
+            <ul class="footer__links">
+              <li><a href="https://wa.me/51992809049" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> +51 992 809 049</a></li>
+              <li><a href="mailto:contacto@teamhsec.com"><i class="fa-regular fa-envelope"></i> contacto@teamhsec.com</a></li>
+              <li><span><i class="fa-solid fa-location-dot"></i> Ate, Lima — Perú</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer__bottom">
+          <span>© 2026 TEAM HSEC E.I.R.L. Todos los derechos reservados.</span>
+          <div class="footer__social">
+            <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/51992809049" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
+        </div>
       </div>
-    </section>
-  </main>
+    </footer>
+  </div>
 
-  <footer class="footer" id="contacto">
-    <div class="container footer__content">
-      <div>
-        <strong>TEAM HSEC</strong>
-        <p>Formacion profesional que impulsa tu carrera.</p>
-      </div>
-      <div>
-        <p>Contacto</p>
-        <p>contacto@teamhsec.com</p>
-        <p>+51 992 809 049</p>
-      </div>
-      <div>
-        <p>Direccion</p>
-        <p>Mza. C Lote. 21 Dpto. Lima, Ate - Peru</p>
-      </div>
-    </div>
-  </footer>
+  <!-- ================= PÍLDORA FLOTANTE ================= -->
+  <nav class="float-pill" aria-label="Accesos rápidos">
+    <a href="/#cursos"><i class="fa-solid fa-book-open"></i> Cursos</a>
+    <a href="/certificados" class="is-active"><i class="fa-solid fa-qrcode"></i> Verificar</a>
+    <a href="https://wa.me/51992809049" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+  </nav>
 
-  <script src="/assets/js/app.js" defer></script>
+  <!-- ================= WIDGET LATERAL (tema) ================= -->
+  <aside class="side-widget" aria-label="Marca y preferencias de vista">
+    <a class="side-widget__brand" href="/" aria-label="TEAM HSEC — volver al inicio">
+      <img src="img/logo_RV.webp" alt="" width="256" height="256" loading="lazy" decoding="async">
+    </a>
+    <span class="side-widget__sep" aria-hidden="true"></span>
+    <button type="button" title="Tema oscuro" aria-label="Cambiar a tema oscuro" data-theme-dark aria-pressed="false"><i class="fa-solid fa-moon"></i></button>
+    <button type="button" title="Tema claro" aria-label="Cambiar a tema claro" data-theme-day aria-pressed="true"><i class="fa-solid fa-sun"></i></button>
+  </aside>
+
+  <script src="/assets/js/landing.js" defer></script>
   <script src="/assets/js/certificados.js" defer></script>
 </body>
+
 </html>

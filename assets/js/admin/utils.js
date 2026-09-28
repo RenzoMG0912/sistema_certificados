@@ -49,13 +49,16 @@ export const apiFetch = async (url, options = {}) => {
     'Content-Type': 'application/json',
     ...(options.headers || {})
   };
-  const token = localStorage.getItem('admin_token');
+  // El token puede vivir en localStorage (sesión recordada) o en sessionStorage
+  const token = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const response = await fetch(url, { ...options, headers });
   if (response.status === 401 || response.status === 403) {
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_user');
+    sessionStorage.removeItem('admin_token');
+    sessionStorage.removeItem('admin_user');
     window.location.href = '/login';
     return null;
   }

@@ -4,8 +4,8 @@ p{
 	line-height: 1.5;
 }
 :root {
-	--red: #b3000a;
-	--red-dark: #7a0006;
+	--red: #c41414;
+	--red-dark: #8f0e0e;
 	--gold: #d7a307;
 	--soft: #faf9f7;
 	--ink: #111318;
@@ -26,12 +26,12 @@ p{
 	--footer-text: #f3f3f3;
 	--shadow-sm: 1px 4px 6px rgba(0, 0, 0, 0.1);
 	--overlay: rgba(17, 19, 24, 0.55);
-	--hero-overlay: linear-gradient(120deg, rgba(179, 0, 10, 0.78), rgba(122, 0, 6, 0.68));
+	--hero-overlay: linear-gradient(120deg, rgba(196, 20, 20, 0.78), rgba(143, 14, 14, 0.68));
 }
 
 [data-theme="dark"] {
-	--red: #ff4d57;
-	--red-dark: #e03a44;
+	--red: #e84242;
+	--red-dark: #c93333;
 	--gold: #f0c929;
 	--soft: #151821;
 	--ink: #e4e6eb;
@@ -354,7 +354,7 @@ ul { padding-left: 20px; margin: 0; }
 }
 .hero__card-inner ul { margin: 12px 0 20px; color: var(--text-muted); }
 .hero__dots { display: flex; gap: 6px; margin-top: 24px; }
-.hero__dots span { width: 8px; height: 8px; border-radius: 999px; background: rgba(179, 0, 10, 0.25); }
+.hero__dots span { width: 8px; height: 8px; border-radius: 999px; background: rgba(196, 20, 20, 0.25); }
 .hero__dots span:first-child { background: var(--red); }
 
 .section { padding: 70px 0; }
@@ -759,13 +759,13 @@ body.modal-open {
   gap: 8px;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 10px rgba(179, 0, 10, 0.15);
+  box-shadow: 0 4px 10px rgba(196, 20, 20, 0.15);
   font-family: inherit;
 }
 .toggle-search-btn:hover {
   background-color: var(--red-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(179, 0, 10, 0.25);
+  box-shadow: 0 6px 15px rgba(196, 20, 20, 0.25);
 }
 
 .split-verification {
@@ -1040,10 +1040,10 @@ body.modal-open {
   color: #fca5a5;
 }
 [data-theme="dark"] .toggle-search-btn {
-  box-shadow: 0 4px 10px rgba(255, 77, 87, 0.2);
+  box-shadow: 0 4px 10px rgba(232, 66, 66, 0.2);
 }
 [data-theme="dark"] .toggle-search-btn:hover {
-  box-shadow: 0 6px 15px rgba(255, 77, 87, 0.35);
+  box-shadow: 0 6px 15px rgba(232, 66, 66, 0.35);
 }
 [data-theme="dark"] select option {
   background: var(--bg-card);

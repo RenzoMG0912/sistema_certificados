@@ -42,6 +42,19 @@
     megas.forEach((m) => m.classList.remove('is-open'));
     megaBtns.forEach((b) => b.setAttribute('aria-expanded', 'false'));
     backdrop && backdrop.classList.remove('is-open');
+    document.body.classList.remove('mega-open');
+  };
+
+  const openMega = (btn, target) => {
+    target.classList.add('is-open');
+    btn.setAttribute('aria-expanded', 'true');
+    backdrop && backdrop.classList.add('is-open');
+    document.body.classList.add('mega-open');
+    // Enviar el foco al primer elemento del panel para navegación por teclado
+    const firstLink = target.querySelector('a, button');
+    if (firstLink) {
+      firstLink.addEventListener('transitionend', () => firstLink.focus(), { once: true });
+    }
   };
 
   megaBtns.forEach((btn) => {
@@ -50,14 +63,12 @@
       const target = document.getElementById(`mega-${btn.dataset.mega}`);
       const willOpen = target && !target.classList.contains('is-open');
       closeMegas();
-      if (willOpen) {
-        target.classList.add('is-open');
-        btn.setAttribute('aria-expanded', 'true');
-        backdrop && backdrop.classList.add('is-open');
-      }
+      if (willOpen) openMega(btn, target);
     });
   });
 
+  // Clic sobre el velo oscuro: cierra el menú (comportamiento estándar)
+  backdrop && backdrop.addEventListener('click', closeMegas);
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.mega') && !e.target.closest('[data-mega]')) closeMegas();
   });

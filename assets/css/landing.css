@@ -670,23 +670,29 @@ body.mega-open { overflow: hidden; }
 .footer__social a:hover { color: #fff; }
 
 /* ---------- PÍLDORA FLOTANTE + WIDGET ---------- */
+/* Píldora flotante invertida: fondo blanco, enlaces en rojo */
 .float-pill {
   position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%);
   z-index: 80; display: inline-flex; align-items: center; gap: 6px;
-  background: var(--red); border: 1px solid rgba(255,255,255,.25);
+  background: #fff; border: 1px solid var(--card-border);
   border-radius: var(--r-pill); padding: 6px;
-  box-shadow: 0 18px 50px rgba(196,20,20,.4);
+  box-shadow: 0 16px 40px rgba(31,24,21,.18);
 }
 .float-pill a {
   display: inline-flex; align-items: center; gap: 8px;
-  color: #fff; font-size: 13.5px; font-weight: 600;
+  color: var(--red); font-size: 13.5px; font-weight: 600;
   padding: 10px 18px; border-radius: var(--r-pill);
-  transition: background var(--t-fast) var(--ease);
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
-.float-pill a:hover { background: rgba(255,255,255,.18); }
-.float-pill a[href*="wa.me"]:hover { background: #25d366; }
-.float-pill a.is-active { background: var(--gold); color: #2b1114; }
-.float-pill i { font-size: 12px; opacity: .85; }
+.float-pill a:hover { background: rgba(196,20,20,.1); }
+.float-pill a[href*="wa.me"]:hover { background: #25d366; color: #fff; }
+.float-pill a.is-active { background: var(--red); color: #fff; }
+.float-pill i { font-size: 12px; opacity: .9; }
+/* En tema oscuro el rojo brillante pierde contraste sobre blanco */
+body.dark-mode .float-pill { border-color: rgba(31,24,21,.14); }
+body.dark-mode .float-pill a { color: #b31212; }
+body.dark-mode .float-pill a:hover { background: rgba(179,18,18,.12); }
+body.dark-mode .float-pill a.is-active { background: var(--red); color: #fff; }
 
 .side-widget {
   position: fixed; right: 18px; top: 50%; transform: translateY(-50%); z-index: 80;

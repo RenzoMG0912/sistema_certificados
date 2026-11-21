@@ -179,15 +179,66 @@ function drawVariableText(doc, certificadoData) {
     .fillColor(COLORS.wine)
     .text(studentName, 200, 425, { width: 1136, align: 'center' });
 
-  drawCenteredLine(doc, [
-    { text: 'Por haber participado y aprobado el curso de: ', font: 'Helvetica', color: COLORS.muted },
-    { text: `"${courseName}",`, font: 'Helvetica-Bold', color: COLORS.red },
-  ], 600, 22);
+  const prefix = 'Por haber participado y aprobado el curso de: ';
+  const quotedCourse = `"${courseName}",`;
+  const areaX = 196;
+  const areaWidth = PAGE.width - areaX * 2;
+  const textSize = 22;
+  let realizadoY = 636;
+
+  doc.font('Helvetica').fontSize(textSize);
+  const prefixWidth = doc.widthOfString(prefix);
+  doc.font('Helvetica-Bold').fontSize(textSize);
+  const quotedWidth = doc.widthOfString(quotedCourse);
+
+  if (prefixWidth + quotedWidth <= areaWidth) {
+    // Título corto: una sola línea centrada, como siempre.
+    drawCenteredLine(doc, [
+      { text: prefix, font: 'Helvetica', color: COLORS.muted },
+      { text: quotedCourse, font: 'Helvetica-Bold', color: COLORS.red },
+    ], 600, textSize);
+  } else {
+    // Título largo: el prefijo va en su propia línea y el nombre del curso se reparte
+    // en varias líneas centradas, reduciendo el tamaño solo si aun así no entra.
+    const nameWidth = 1000;
+    const lineGap = 3;
+    const blockTopMax = 607;
+    const blockBottomLimit = 672;
+    const maxBlockHeight = 78;
+
+    let size = textSize;
+    doc.font('Helvetica-Bold').fontSize(size);
+    let blockHeight = doc.heightOfString(quotedCourse, { width: nameWidth, align: 'center', lineGap });
+    while (size > 14 && blockHeight > maxBlockHeight) {
+      size -= 1;
+      doc.font('Helvetica-Bold').fontSize(size);
+      blockHeight = doc.heightOfString(quotedCourse, { width: nameWidth, align: 'center', lineGap });
+    }
+
+    // Si el título ocupa muchas líneas subimos el bloque para no chocar con la línea de abajo.
+    const blockTop = Math.min(blockTopMax, blockBottomLimit - blockHeight);
+
+    doc.font('Helvetica')
+      .fontSize(textSize)
+      .fillColor(COLORS.muted)
+      .text(prefix, areaX, blockTop - 32, { width: areaWidth, align: 'center', lineBreak: false });
+
+    doc.font('Helvetica-Bold')
+      .fontSize(size)
+      .fillColor(COLORS.red)
+      .text(quotedCourse, (PAGE.width - nameWidth) / 2, blockTop, {
+        width: nameWidth,
+        align: 'center',
+        lineGap,
+      });
+
+    realizadoY = blockTop + blockHeight + 12;
+  }
 
   doc.font('Helvetica')
     .fontSize(22)
     .fillColor(COLORS.muted)
-    .text(`realizado el d\u00eda ${courseDate}, con una duraci\u00f3n de ${duration}.`, 260, 636, {
+    .text(`realizado el d\u00eda ${courseDate}, con una duraci\u00f3n de ${duration}.`, 260, realizadoY, {
       width: 970,
       align: 'center',
     });

@@ -824,6 +824,132 @@ module.exports = {
     }
   },
 
+  // Regenera el PDF de un certificado ya emitido usando los datos ACTUALES del alumno,
+  // del curso y de las firmas. Mantiene el mismo código, hash y ruta, de modo que el
+  // enlace de verificación sigue siendo válido y solo se reemplaza el archivo anterior.
+  regenerate: async (req, res, next) => {
+    const { id } = req.params;
+
+    const toDateString = (value) => {
+      if (!value) return null;
+      if (value instanceof Date) {
+        const y = value.getFullYear();
+        const m = String(value.getMonth() + 1).padStart(2, '0');
+        const d = String(value.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+      return String(value).slice(0, 10);
+    };
+
+    let tmpPath = null;
+
+    try {
+      const query = `
+        SELECT cert.id, cert.codigo, cert.hash, cert.pdf_path, cert.fecha_emision, cert.fecha_vencimiento,
+               cert.firma_id_1, cert.firma_id_2,
+               e.fecha_inicio AS curso_fecha_inicio,
+               p.nombres AS alumno_nombres, p.dni AS alumno_dni,
+               cur.nombre AS curso_nombre, cur.duracion AS curso_duracion, cur.temario AS curso_temario
+        FROM certificados cert
+        JOIN matriculas m ON cert.matricula_id = m.id
+        JOIN participantes p ON m.participante_id = p.id
+        JOIN ediciones e ON m.edicion_id = e.id
+        JOIN cursos cur ON e.curso_id = cur.id
+        WHERE cert.id = ?
+      `;
+      const [rows] = await db.query(query, [id]);
+      if (rows.length === 0) {
+        return res.status(404).json({ success: false, message: 'Certificado no encontrado' });
+      }
+
+      const cert = rows[0];
+      if (!cert.pdf_path) {
+        return res.status(400).json({ success: false, message: 'El certificado no tiene archivo PDF asociado' });
+      }
+
+      // Firmas actuales (se releen por si cambió el nombre, cargo o la imagen)
+      let firma1 = null;
+      if (cert.firma_id_1) {
+        const [f1Rows] = await db.query('SELECT * FROM firmas WHERE id = ?', [cert.firma_id_1]);
+        firma1 = f1Rows[0] || null;
+      }
+      if (!firma1) {
+        const [gerenteRows] = await db.query("SELECT * FROM firmas WHERE cargo LIKE '%Gerente%' LIMIT 1");
+        firma1 = gerenteRows[0] || null;
+      }
+      if (!firma1) {
+        return res.status(404).json({ success: false, message: 'No se encontró la firma principal del certificado' });
+      }
+
+      let firma2 = null;
+      if (cert.firma_id_2) {
+        const [f2Rows] = await db.query('SELECT * FROM firmas WHERE id = ?', [cert.firma_id_2]);
+        firma2 = f2Rows[0] || null;
+      }
+
+      const fechaEmision = toDateString(cert.fecha_emision);
+      const fechaRealizacion = toDateString(cert.curso_fecha_inicio) || fechaEmision;
+
+      const absolutePdfPath = path.join(__dirname, '..', '..', 'public', String(cert.pdf_path).replace(/^\/+/, ''));
+      tmpPath = `${absolutePdfPath}.tmp.pdf`;
+
+      const pdfParams = {
+        codigo: cert.codigo,
+        hash: cert.hash,
+        alumno_nombres: cert.alumno_nombres,
+        alumno_dni: cert.alumno_dni,
+        curso_nombre: cert.curso_nombre,
+        curso_duracion: cert.curso_duracion,
+        curso_temario: cert.curso_temario || null,
+        fecha_realizacion: fechaRealizacion,
+        fecha_emision: fechaEmision,
+        fecha_vencimiento: toDateString(cert.fecha_vencimiento),
+        firma_1: {
+          nombre: firma1.nombre,
+          cargo: firma1.cargo,
+          firma_url: firma1.firma_url,
+          cip: firma1.cip
+        },
+        firma_2: firma2 ? {
+          nombre: firma2.nombre,
+          cargo: firma2.cargo,
+          firma_url: firma2.firma_url,
+          cip: firma2.cip
+        } : null
+      };
+
+      // Se genera primero en un archivo temporal: si algo falla, el PDF anterior queda intacto.
+      await generarCertificadoPDF(pdfParams, tmpPath);
+      fs.renameSync(tmpPath, absolutePdfPath);
+      tmpPath = null;
+
+      try {
+        await crearNotificacion({
+          usuario_tipo: 'admin',
+          usuario_id: 1,
+          titulo: 'Certificado regenerado',
+          mensaje: `PDF del certificado ${cert.codigo} regenerado con los datos actuales de ${cert.alumno_nombres}.`,
+          tipo: TYPES.INFO
+        });
+      } catch (notiError) {
+        console.error('[Regenerate Certificate] No se pudo crear la notificación:', notiError.message);
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: `PDF del certificado ${cert.codigo} regenerado correctamente`,
+        pdf_path: cert.pdf_path
+      });
+    } catch (error) {
+      if (tmpPath) {
+        try { if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath); } catch (e) { /* ignore */ }
+      }
+      console.error('[Regenerate Certificate] Error:', error);
+      logErrorAArchivo('Regeneracion de PDF de certificado existente', error);
+      return res.status(500).json({ success: false, message: `No se pudo regenerar el PDF: ${error.message}` });
+    }
+  },
+
   send: async (req, res, next) => {
     const { id } = req.params;
 

@@ -154,6 +154,9 @@ export const renderCertificates = () => {
                 <button type="button" class="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors btn-cert-details" data-id="${cert.id}">
                   Ver Detalle
                 </button>
+                <button type="button" class="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors btn-regenerate-certificate" data-id="${cert.id}">
+                  Regenerar PDF
+                </button>
                 <button type="button" class="w-full text-left px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors btn-delete-certificate" data-id="${cert.id}">
                   Eliminar
                 </button>
@@ -254,6 +257,36 @@ export const renderCertificates = () => {
         el('cert-detail-status').innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">${status}</span>`;
         el('cert-detail-pdf').href = cert.pdf_path || '#';
         openModal('modal-certificate-detail');
+      }
+    });
+  });
+
+  // Bind menu option actions (Regenerar PDF)
+  list.querySelectorAll('.btn-regenerate-certificate').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const certId = button.dataset.id;
+      el(`cert-menu-${certId}`)?.classList.add('hidden');
+      const cert = state.certificates.find(c => String(c.id) === certId);
+      const detalle = cert ? `${escapeHtml(cert.alumno_nombre)} - ${escapeHtml(cert.curso_nombre)}` : 'este certificado';
+      if (!await showConfirmModal(
+        'Regenerar PDF',
+        `Se volverá a generar el PDF de ${detalle} con los datos actuales del alumno, del curso y de las firmas, reemplazando el archivo anterior. El código y el enlace de verificación no cambian.`,
+        'Sí, regenerar',
+        'Cancelar',
+        'info'
+      )) return;
+      const original = button.innerHTML;
+      button.disabled = true;
+      button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Regenerando...';
+      try {
+        const res = await apiFetch(`/api/certificados/${certId}/regenerate`, { method: 'POST' });
+        showToast(res?.message || 'PDF regenerado correctamente');
+        await loadCertificates();
+      } catch (err) {
+        showToast(err.message || 'Error al regenerar el PDF', 'error');
+        button.disabled = false;
+        button.innerHTML = original;
       }
     });
   });

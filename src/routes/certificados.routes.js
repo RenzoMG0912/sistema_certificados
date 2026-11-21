@@ -10,6 +10,7 @@ router.get('/', certificadosController.list);
 router.post('/', certificadosController.create);
 router.post('/bulk-generate', certificadosController.bulkGenerate);
 router.post('/:id/send', certificadosController.send);
+router.post('/:id/regenerate', certificadosController.regenerate);
 router.delete('/:id', certificadosController.delete);
 
 module.exports = router;

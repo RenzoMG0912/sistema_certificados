@@ -243,10 +243,22 @@ function drawVariableText(doc, certificadoData) {
       align: 'center',
     });
 
+  // Fecha de emisión: se centra en el espacio libre ENTRE las dos firmas (la imagen de
+  // la firma derecha empieza en x=902), así el último dígito del año nunca queda tapado
+  // por ese bloque. Si el mes es largo se reduce 1 pt hasta que entra en el espacio libre.
+  const issueLine = `Lima, ${issueDate}`;
+  const issueBox = { x: 621, width: 275 };
+  let issueSize = 19;
+  doc.font('Helvetica').fontSize(issueSize);
+  while (issueSize > 15 && doc.widthOfString(issueLine) > issueBox.width) {
+    issueSize -= 1;
+    doc.fontSize(issueSize);
+  }
+
   doc.font('Helvetica')
-    .fontSize(19)
+    .fontSize(issueSize)
     .fillColor(COLORS.muted)
-    .text(`Lima, ${issueDate}`, 0, 724, { width: PAGE.width, align: 'center' });
+    .text(issueLine, issueBox.x, 724, { width: issueBox.width, align: 'center', lineBreak: false });
 }
 
 function drawSignatureText(doc, block) {
@@ -433,47 +445,66 @@ function drawBackPage(doc, certificadoData, pageSize) {
   // Gold divider below title
   drawGoldDivider(doc, 195, width);
 
-  // Course name
+  // Nombre del curso: se dibuja con margenes laterales (para que un título largo no
+  // toque el borde dorado) y se reduce 1 pt hasta que ocupe como máximo 3 líneas.
   const courseName = String(certificadoData.curso_nombre || 'Curso').toUpperCase();
-  doc.font('Times-Bold')
-    .fontSize(26)
-    .fillColor(COLORS.red)
-    .text(`CURSO: ${courseName}`, 0, 220, { width, align: 'center' });
+  const courseLine = `CURSO: ${courseName}`;
+  const courseX = 120;
+  const courseWidth = width - courseX * 2;
+  const courseLineGap = 2;
 
-  // Company info
+  let courseSize = 26;
+  doc.font('Times-Bold').fontSize(courseSize);
+  let courseHeight = doc.heightOfString(courseLine, { width: courseWidth, align: 'center', lineGap: courseLineGap });
+  while (courseSize > 14 && courseHeight > 82) {
+    courseSize -= 1;
+    doc.fontSize(courseSize);
+    courseHeight = doc.heightOfString(courseLine, { width: courseWidth, align: 'center', lineGap: courseLineGap });
+  }
+
+  doc.font('Times-Bold')
+    .fontSize(courseSize)
+    .fillColor(COLORS.red)
+    .text(courseLine, courseX, 220, { width: courseWidth, align: 'center', lineGap: courseLineGap });
+
+  // Company info, justo debajo del bloque del título (sin encimarse)
+  let companyY = 220 + courseHeight + 16;
   doc.font('Helvetica')
     .fontSize(18)
     .fillColor(COLORS.muted)
-    .text('EMPRESA \u2013 TEAM HSEC E.I.R.L.', 0, 265, { width, align: 'center' });
+    .text('EMPRESA \u2013 TEAM HSEC E.I.R.L.', 0, companyY, { width, align: 'center' });
 
   // TEMARIO heading
-  const temarioStartY = 330;
+  const temarioStartY = Math.max(320, companyY + 60);
   doc.font('Times-Bold')
     .fontSize(22)
     .fillColor('#222222')
     .text('TEMARIO', 0, temarioStartY, { width, align: 'center' });
 
-  // Temario items - left-aligned at x=250
+  // Temario: cada tema se reparte en varias líneas si es largo y el siguiente baja solo.
   const temario = certificadoData.curso_temario || '';
   const lines = temario.split('\n').filter(line => line.trim());
 
-  let y = 385;
-  const lineHeight = 32;
+  const itemX = 250;
+  const itemWidth = width - itemX - 90;
+  const itemGap = 3;
+  const itemSpacing = 12;
+  let y = temarioStartY + 55;
   let itemCount = 0;
 
   for (const line of lines) {
-    if (y > height - 80) break;
+    if (y > height - 90) break;
 
     itemCount++;
     const cleanLine = line.replace(/^\d+[\.\)\s]+/, '').trim();
     const text = `${itemCount}.    ${cleanLine}`;
 
-    doc.font('Helvetica-Bold')
-      .fontSize(18)
-      .fillColor('#1a5276')
-      .text(text, 250, y, { width: width - 350, lineBreak: false });
+    doc.font('Helvetica-Bold').fontSize(18).fillColor('#1a5276');
+    const itemHeight = doc.heightOfString(text, { width: itemWidth, align: 'left', lineGap: itemGap });
+    if (y + itemHeight > height - 70) break;
 
-    y += lineHeight;
+    doc.text(text, itemX, y, { width: itemWidth, align: 'left', lineGap: itemGap });
+    y += itemHeight + itemSpacing;
   }
 
   // Gold divider near bottom

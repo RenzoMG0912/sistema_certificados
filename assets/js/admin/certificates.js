@@ -140,6 +140,11 @@ export const renderCertificates = () => {
               <i class="fa-solid fa-file-pdf text-[15px]"></i>
             </a>
 
+            <!-- Regenerate PDF button -->
+            <button type="button" class="btn-icon text-slate-500 hover:bg-slate-100 transition-all btn-regenerate-certificate" data-id="${cert.id}" title="Regenerar PDF">
+              <i class="fa-solid fa-rotate-right text-[15px]"></i>
+            </button>
+
             <!-- Send email button -->
             <button type="button" class="btn-icon ${cert.alumno_email ? 'text-blue-600 hover:bg-blue-50' : 'text-slate-300 cursor-not-allowed'} transition-all btn-send-certificate" data-id="${cert.id}" title="${cert.alumno_email ? 'Enviar por correo' : 'Sin correo registrado'}" ${cert.alumno_email ? '' : 'disabled'}>
               <i class="fa-solid fa-envelope text-[15px]"></i>
@@ -153,9 +158,6 @@ export const renderCertificates = () => {
               <div class="hidden absolute right-0 mt-1.5 w-36 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 cert-menu-dropdown" id="cert-menu-${cert.id}">
                 <button type="button" class="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors btn-cert-details" data-id="${cert.id}">
                   Ver Detalle
-                </button>
-                <button type="button" class="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors btn-regenerate-certificate" data-id="${cert.id}">
-                  Regenerar PDF
                 </button>
                 <button type="button" class="w-full text-left px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors btn-delete-certificate" data-id="${cert.id}">
                   Eliminar
